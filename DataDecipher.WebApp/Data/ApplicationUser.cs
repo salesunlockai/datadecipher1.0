@@ -12,5 +12,9 @@ namespace DataDecipher.WebApp.Data
 
         public string LastName { get; set; }
 
+        public string Organization { get; set; }
+
+        public string Plan { get; set; }
+
     }
 }
