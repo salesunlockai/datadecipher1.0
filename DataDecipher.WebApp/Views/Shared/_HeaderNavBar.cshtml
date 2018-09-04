@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 
 @inject SignInManager<DataDecipher.WebApp.Data.ApplicationUser> SignInManager
 @inject UserManager<DataDecipher.WebApp.Data.ApplicationUser> UserManager
@@ -25,9 +25,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-action="Index" asp-controller="Login">
+                            <button type="submit">
                                 <p>Logout</p>
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -46,35 +46,25 @@
 }
 else
 {
-    <nav class="navbar navbar-expand-lg bg-primary">
-    <div class="container-fluid">
-
-        <div class="dropdown button-dropdown">
-            <a id = "menu-toggle" href="#menu-toggle" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                <span class="button-bar"></span>
-                <span class="button-bar"></span>
-                <span class="button-bar"></span>
-            </a>
+    <div class="page-header-image" style="background-image:url(../../lib/bootstrap/assets/img/main-background.jpg)"></div>
+      
+    <nav class="navbar navbar-expand-lg bg-transparent">
+        <div class="container">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
+                            Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+                            <p>Login</p>
+                        </a>
+                    </li>
+                </ul>
         </div>
-
-        <div class="collapse navbar-collapse justify-content-end" data-nav-image="../assets/img/blurred-image-1.jpg">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#pablo">
-                        Register
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
-                        <p>Login</p>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
     </nav>
-@*<ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
-    </ul>*@
 }
