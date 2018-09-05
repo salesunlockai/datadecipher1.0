@@ -1,36 +1,40 @@
-﻿@using Microsoft.AspNetCore.Http.Features
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a href="#">
+                    Data Decipher
+                </a>
+            </li>
+            <li class="active">
+                <a asp-controller="Main" asp-action="Index">Home</a>
+            </li>
+            <li>
+                <a asp-controller="Method" asp-action="Index">Method</a>
+            </li>
+            <li>
+                <a href="#">Data Source</a>
+            </li>
+            <li>
+                <a href="#">Instrument</a>
+            </li>
+            <li>
+                <a href="#">Parser</a>
+            </li>
+            <li>
+                <a href="#"> Report </a>
+            </li>
+            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
+            {
+                <li>
+                    <a asp-controller="ApplicationRole" asp-action="Index">Application Roles</a>
+                </li>
+                <li>
+                    <a asp-controller="ApplicationUser" asp-action="Index">Application Users</a>
+                </li>
+            }
+        </ul>
+    </div>
 
-@{ 
 
-<div id="sidebar-wrapper">
-    <ul class="sidebar-nav">
-        <li class="sidebar-brand">
-            <a href="#">
-                Data Decipher
-            </a>
-        </li>
-        <li class="active">
-            <a asp-controller="Main" asp-action="Index">Home</a>
-        </li>
-        <li>
-            <a asp-controller="Method" asp-action="Index">Method</a>
-        </li>
-        <li>
-            <a href="#">Data Source</a>
-        </li>
-        <li>
-            <a href="#">Instrument</a>
-        </li>
-        <li>
-            <a href="#">Parser</a>
-        </li>
-        <li>
-            <a href="#"> Report </a>
-        </li>
-        <li>
-            <a asp-controller="ApplicationRole" asp-action="Index">Application Role</a>
-        </li>
-    </ul>
-</div>
-   
-}

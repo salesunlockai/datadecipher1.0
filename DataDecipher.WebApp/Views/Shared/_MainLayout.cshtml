@@ -11,31 +11,28 @@
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/now-ui-kit.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/simple-sidebar.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/jquery.dataTables.min.css" />
-
 </head>
-<body class="login-page sidebar-collapse">
+<body class="profile-page sidebar-collapse">
     @await Html.PartialAsync("_HeaderNavBar")
-    <div class="page-header">
-        <div class="page-header-image" style="background-image: url(../../lib/bootstrap/assets/img/main-background.jpg)"></div>
-        @RenderBody()
-        <footer class="footer">
-            <div class="container">
-                <div class="copyright">
-                        &copy; DataDecipher
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                    </div>
-            </div>
-     </footer>
+    <div id="wrapper" class="Wrapper">
+        @await Html.PartialAsync("~/Views/Shared/_SideBar.cshtml")
+        <div class="section">
+                @RenderBody()
+        </div>
     </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/bootstrap/assets/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/bootstrap/assets/js/now-ui-kit.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/bootstrap/assets/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/bootstrap/assets/js/now-ui-kit.js"></script>
+        <script>$("#menu-toggle").click(function(e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+});</script>
+        <script>$(document).ready(function() {
+                $('#myTable').dataTable();
+});</script>
 
-    
-@RenderSection("Scripts", required: false)
-    
+        @RenderSection("Scripts", required: false)
+
 </body>
 </html>

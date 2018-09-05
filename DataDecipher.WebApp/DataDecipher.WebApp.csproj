@@ -101,10 +101,14 @@
     <Content Remove="Views\Shared\_SideBar.cshtml" />
     <Content Remove="Views\Method\Index.cshtml" />
     <Content Remove="Views\Method\_NewMethod.cshtml" />
+    <Content Remove="wwwroot\.DS_Store" />
+    <Content Remove="Views\ApplicationRole\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
     <None Remove="Areas\Identity\.DS_Store" />
+    <None Remove="Controllers\.DS_Store" />
+    <None Remove="Views\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\assets\css\bootstrap.min.css" />
@@ -173,5 +177,6 @@
     <None Include="Views\Shared\_SideBar.cshtml" />
     <None Include="Views\Method\Index.cshtml" />
     <None Include="Views\Method\_NewMethod.cshtml" />
+    <None Include="Views\ApplicationRole\Index.cshtml" />
   </ItemGroup>
 </Project>
