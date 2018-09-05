@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using DataDecipher.WebApp.Data;
+using DataDecipher.WebApp.Controllers;
 
 namespace DataDecipher.WebApp.Areas.Identity.Pages.Account
 {
@@ -78,7 +79,7 @@ namespace DataDecipher.WebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return RedirectToAction(nameof(MainController.Index),"Main");
                 }
                 if (result.RequiresTwoFactor)
                 {

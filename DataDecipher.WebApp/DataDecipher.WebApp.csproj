@@ -97,6 +97,14 @@
     <Content Remove="wwwroot\lib\bootstrap\assets\sass\now-ui-kit\plugins\_plugin-nouislider.scss" />
     <Content Remove="Views\Login\Index.cshtml" />
     <Content Remove="Views\Shared\_HeaderNavBar.cshtml" />
+    <Content Remove="Views\Main\Index.cshtml" />
+    <Content Remove="Views\Shared\_SideBar.cshtml" />
+    <Content Remove="Views\Method\Index.cshtml" />
+    <Content Remove="Views\Method\_NewMethod.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Areas\.DS_Store" />
+    <None Remove="Areas\Identity\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\assets\css\bootstrap.min.css" />
@@ -161,5 +169,9 @@
     <None Include="wwwroot\lib\bootstrap\assets\sass\now-ui-kit\plugins\_plugin-datepicker.scss" />
     <None Include="wwwroot\lib\bootstrap\assets\sass\now-ui-kit\plugins\_plugin-nouislider.scss" />
     <None Include="Views\Shared\_HeaderNavBar.cshtml" />
+    <None Include="Views\Main\Index.cshtml" />
+    <None Include="Views\Shared\_SideBar.cshtml" />
+    <None Include="Views\Method\Index.cshtml" />
+    <None Include="Views\Method\_NewMethod.cshtml" />
   </ItemGroup>
 </Project>
