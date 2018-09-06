@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataDecipher.WebApp.Models
 {
-    public class Method
+    public class MethodViewModel
     {
         [Display(Name = "Method name")]
         [Required(ErrorMessage = "Please provide a name")]

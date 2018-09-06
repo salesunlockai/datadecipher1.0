@@ -1,21 +1,18 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Design;
+
 
 namespace DataDecipher.WebApp.Data
 {
     public class MethodDBContext : DbContext
     {
-        IConfiguration configuration;
-        public MethodDBContext(IConfiguration config) 
+
+        public MethodDBContext(DbContextOptions<MethodDBContext> options) : base(options)
         {
-            configuration = config;
         }
         public DbSet<Method> Methods { get; set; }
       
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-        }
+       
     }
 }

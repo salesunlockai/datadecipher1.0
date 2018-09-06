@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using DataDecipher.WebApp.Models;
+using DataDecipher.WebApp.Data;
 using DataDecipher.WebApp.Controllers.Extensions;
 
 
@@ -12,9 +13,19 @@ namespace DataDecipher.WebApp.Controllers
 {
     public class MethodController : Controller
     {
-        public ActionResult Create(Method method)
+        private MethodDBContext context;
+        public MethodController(MethodDBContext ctx)
         {
-            HttpContext.Session.SetObjectAsJson("LastSavedMethod", method);
+            context = ctx;
+        }
+        public ActionResult Create(MethodViewModel method)
+        {
+            Method AddMethod = new Method();
+            AddMethod.Name = method.Name;
+            AddMethod.Description = method.Description;
+
+            context.Methods.Add(AddMethod);
+            context.SaveChangesAsync();
             return View("/Views/Main/Index.cshtml",method);
         }
 
@@ -22,9 +33,9 @@ namespace DataDecipher.WebApp.Controllers
         {
           
 
-            List<Method> methodList = new List<Method>();
+            List<MethodViewModel> methodList = new List<MethodViewModel>();
 
-            var method1 = new Method()
+            var method1 = new MethodViewModel()
             {
                 Name = "Method1",
                 Description = "Description1",
@@ -33,7 +44,7 @@ namespace DataDecipher.WebApp.Controllers
                 Status = "Draft"
             };
 
-            var method2 = new Method()
+            var method2 = new MethodViewModel()
             {
                 Name = "Method2",
                 Description = "Description2",
@@ -41,7 +52,7 @@ namespace DataDecipher.WebApp.Controllers
                 Last_Modified_Date = "2/2/2002",
                 Status = "Completed"
             };
-            var method3 = new Method()
+            var method3 = new MethodViewModel()
             {
                 Name = "Method3",
                 Description = "Description2",
@@ -54,7 +65,7 @@ namespace DataDecipher.WebApp.Controllers
             methodList.Add(method2);
             methodList.Add(method3);
             if(HttpContext.Session.IsAvailable)
-                methodList.Add(HttpContext.Session.GetObjectFromJson<Method>("LastSavedMethod"));
+                methodList.Add(HttpContext.Session.GetObjectFromJson<MethodViewModel>("LastSavedMethod"));
 
             return View(methodList.AsEnumerable());
         }
