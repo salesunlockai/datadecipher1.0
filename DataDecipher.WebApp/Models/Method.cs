@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using DataDecipher.WebApp.Data;
 
 namespace DataDecipher.WebApp.Models
 {
@@ -18,9 +20,9 @@ namespace DataDecipher.WebApp.Models
         public string Description { get; set; }
 
         [Display(Name = "Created by")]
-        [ForeignKey("ApplicationUser")]
-        public string CreatedBy { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
 
+        [Display(Name = "Created date")]
         public DateTime CreatedDate { get; set; }
 
         [Display(Name = "Last modified date")]
@@ -28,6 +30,8 @@ namespace DataDecipher.WebApp.Models
 
         [Display(Name = "Status")]
         public string Status { get; set; }
+
+        public ICollection<SharedMethod> SharedUsers { get; set; }
     }
 
 

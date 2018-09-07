@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using DataDecipher.WebApp.Models;
 using DataDecipher.WebApp.Data;
 using DataDecipher.WebApp.Controllers.Extensions;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,22 +15,25 @@ namespace DataDecipher.WebApp.Controllers
 {
     public class MethodController : Controller
     {
-        private MethodDBContext context;
-        public MethodController(MethodDBContext ctx)
+        private ApplicationDbContext context;
+        private UserManager<ApplicationUser> user;
+        public MethodController(ApplicationDbContext ctx, UserManager<ApplicationUser> usr)
         {
             context = ctx;
+            user = usr;
         }
+        private Task<ApplicationUser> GetCurrentUserAsync() => user.GetUserAsync(HttpContext.User);
         public ActionResult Create(Method method)
         {
-            method.CreatedBy = "";
-           // method
+            method.CreatedBy =  GetCurrentUserAsync().Result;
+            method.CreatedDate = System.DateTime.Now;
             context.Methods.Add(method);
             context.SaveChangesAsync();
             return View("/Views/Main/Index.cshtml",method);
         }
         public ActionResult Index()
         {
-            return View(context.Methods.ToList<Method>().AsEnumerable());
+            return View(context.Methods.Where(x => x.CreatedBy.Id == GetCurrentUserAsync().Result.Id).ToList<Method>().AsEnumerable());
         }
 
 

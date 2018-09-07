@@ -40,10 +40,7 @@ namespace DataDecipher.WebApp
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<MethodDBContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-
+            
             //services.AddDefaultIdentity<ApplicationUser>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
 

@@ -76,7 +76,7 @@ namespace DataDecipher.WebApp.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
 
-                    b.Property<string>("Organization");
+                    b.Property<string>("OrganizationId");
 
                     b.Property<string>("PasswordHash");
 
@@ -84,7 +84,7 @@ namespace DataDecipher.WebApp.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("Plan");
+                    b.Property<string>("PlanId");
 
                     b.Property<string>("SecurityStamp");
 
@@ -103,7 +103,82 @@ namespace DataDecipher.WebApp.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("OrganizationId");
+
+                    b.HasIndex("PlanId");
+
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.Method", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CreatedById");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("LastModifiedDate");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("Status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.ToTable("Methods");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.Organization", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Organizations");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.Plan", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plans");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.SharedMethod", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("CanEdit");
+
+                    b.Property<string>("MethodId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MethodId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SharedMethods");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -194,6 +269,35 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Data.ApplicationUser", b =>
+                {
+                    b.HasOne("DataDecipher.WebApp.Models.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
+
+                    b.HasOne("DataDecipher.WebApp.Models.Plan", "Plan")
+                        .WithMany()
+                        .HasForeignKey("PlanId");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.Method", b =>
+                {
+                    b.HasOne("DataDecipher.WebApp.Data.ApplicationUser", "CreatedBy")
+                        .WithMany("CreatedMethods")
+                        .HasForeignKey("CreatedById");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.SharedMethod", b =>
+                {
+                    b.HasOne("DataDecipher.WebApp.Models.Method", "Method")
+                        .WithMany("SharedUsers")
+                        .HasForeignKey("MethodId");
+
+                    b.HasOne("DataDecipher.WebApp.Data.ApplicationUser", "User")
+                        .WithMany("SharedMethods")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

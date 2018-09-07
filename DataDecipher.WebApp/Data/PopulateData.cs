@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataDecipher.WebApp.Models;
 
 namespace DataDecipher.WebApp.Data
 {
@@ -39,6 +40,18 @@ namespace DataDecipher.WebApp.Data
                 await roleManager.CreateAsync(new ApplicationRole(userRole, userRoleDesc, DateTime.Now));
             }
 
+            Organization Ddorganization = new Organization { Name = "Data Decipher" };
+            if (context.Organizations.Count() >= 1)
+            {
+                await context.Organizations.AddAsync(Ddorganization);
+            }
+          
+
+            Plan FreePlan = new Plan { Name = "Free" };
+            if (context.Plans.Count() >= 1)
+            {
+                await context.Plans.AddAsync(FreePlan);
+            }
             if (await userManager.FindByNameAsync("Admin") == null)
             {
                 var user = new ApplicationUser
@@ -47,8 +60,8 @@ namespace DataDecipher.WebApp.Data
                     Email = "admin@datadecipher.com",
                     FirstName = "Admin",
                     LastName = "@datadecipher",
-                    Organization = "Data Decipher" ,
-                    Plan ="Free"
+                    Organization = Ddorganization,
+                    Plan = FreePlan
                 };
 
                 var result = await userManager.CreateAsync(user);
@@ -67,8 +80,8 @@ namespace DataDecipher.WebApp.Data
                     Email = "superuser@datadecipher.com",
                     FirstName = "Superuser",
                     LastName = "@datadecipher",
-                    Organization = "Data Decipher",
-                    Plan = "Free"
+                    Organization = Ddorganization,
+                    Plan = FreePlan
                 };
 
                 var result = await userManager.CreateAsync(user);
@@ -87,8 +100,8 @@ namespace DataDecipher.WebApp.Data
                     Email = "user@datadecipher.com",
                     FirstName = "User",
                     LastName = "@datadecipher",
-                    Organization = "Data Decipher",
-                    Plan = "Free"
+                    Organization = Ddorganization,
+                    Plan = FreePlan
                 };
 
                 var result = await userManager.CreateAsync(user);
