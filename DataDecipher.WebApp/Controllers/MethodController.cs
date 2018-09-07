@@ -18,56 +18,17 @@ namespace DataDecipher.WebApp.Controllers
         {
             context = ctx;
         }
-        public ActionResult Create(MethodViewModel method)
+        public ActionResult Create(Method method)
         {
-            Method AddMethod = new Method();
-            AddMethod.Name = method.Name;
-            AddMethod.Description = method.Description;
-
-            context.Methods.Add(AddMethod);
+            method.CreatedBy = "";
+           // method
+            context.Methods.Add(method);
             context.SaveChangesAsync();
             return View("/Views/Main/Index.cshtml",method);
         }
-
         public ActionResult Index()
         {
-          
-
-            List<MethodViewModel> methodList = new List<MethodViewModel>();
-
-            var method1 = new MethodViewModel()
-            {
-                Name = "Method1",
-                Description = "Description1",
-                Created_By = "Person1",
-                Last_Modified_Date = "1/1/2001",
-                Status = "Draft"
-            };
-
-            var method2 = new MethodViewModel()
-            {
-                Name = "Method2",
-                Description = "Description2",
-                Created_By = "Person2",
-                Last_Modified_Date = "2/2/2002",
-                Status = "Completed"
-            };
-            var method3 = new MethodViewModel()
-            {
-                Name = "Method3",
-                Description = "Description2",
-                Created_By = "Person2",
-                Last_Modified_Date = "2/2/2002",
-                Status = "Completed"
-            };
-
-            methodList.Add(method1);
-            methodList.Add(method2);
-            methodList.Add(method3);
-            if(HttpContext.Session.IsAvailable)
-                methodList.Add(HttpContext.Session.GetObjectFromJson<MethodViewModel>("LastSavedMethod"));
-
-            return View(methodList.AsEnumerable());
+            return View(context.Methods.ToList<Method>().AsEnumerable());
         }
 
 

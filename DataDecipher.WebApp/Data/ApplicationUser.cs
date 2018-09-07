@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataDecipher.WebApp.Models;
 
 namespace DataDecipher.WebApp.Data
 {
@@ -15,6 +16,8 @@ namespace DataDecipher.WebApp.Data
         public string Organization { get; set; }
 
         public string Plan { get; set; }
+
+        public virtual Method Methods { get; set; }
 
     }
 }

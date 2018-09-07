@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using DataDecipher.WebApp.Models;
 
 
 namespace DataDecipher.WebApp.Data
