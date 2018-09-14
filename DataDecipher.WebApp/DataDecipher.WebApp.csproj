@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Views\DataSource\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -111,6 +112,7 @@
     <Content Remove="wwwroot\lib\bootstrap\.DS_Store" />
     <Content Remove="wwwroot\lib\bootstrap\assets\.DS_Store" />
     <Content Remove="wwwroot\lib\bootstrap\dist\.DS_Store" />
+    <Content Remove="Views\RawData\DisplayRawData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -186,5 +188,6 @@
     <None Include="Views\Method\Index.cshtml" />
     <None Include="Views\Method\_NewMethod.cshtml" />
     <None Include="Views\ApplicationRole\Index.cshtml" />
+    <None Include="Views\RawData\DisplayRawData.cshtml" />
   </ItemGroup>
 </Project>

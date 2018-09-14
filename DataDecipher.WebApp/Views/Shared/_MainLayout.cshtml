@@ -13,26 +13,28 @@
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/jquery.dataTables.min.css" />
 </head>
 <body class="profile-page sidebar-collapse">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/assets/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/bootstrap/assets/js/now-ui-kit.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
     @await Html.PartialAsync("_HeaderNavBar")
     <div id="wrapper" class="Wrapper">
         @await Html.PartialAsync("~/Views/Shared/_SideBar.cshtml")
         <div class="section">
-                @RenderBody()
+            @RenderBody()
         </div>
     </div>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/lib/bootstrap/assets/js/jquery.dataTables.min.js"></script>
-        <script src="~/lib/bootstrap/assets/js/now-ui-kit.js"></script>
-        <script>$("#menu-toggle").click(function(e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
-});</script>
-        <script>$(document).ready(function() {
-                $('#myTable').dataTable();
-});</script>
 
-        @RenderSection("Scripts", required: false)
+    <script>$("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+});</script>
+    <script>$(document).ready(function() {
+            $('#myTable').dataTable();
+});</script>
 
 </body>
 </html>
