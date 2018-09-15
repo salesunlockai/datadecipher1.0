@@ -188,6 +188,5 @@
     <None Include="Views\Method\Index.cshtml" />
     <None Include="Views\Method\_NewMethod.cshtml" />
     <None Include="Views\ApplicationRole\Index.cshtml" />
-    <None Include="Views\RawData\DisplayRawData.cshtml" />
   </ItemGroup>
 </Project>
