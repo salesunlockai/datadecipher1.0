@@ -24,13 +24,17 @@ namespace DataDecipher.WebApp.Controllers
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => user.GetUserAsync(HttpContext.User);
 
+        [HttpPost]
         public ActionResult Create(Method method)
         {
-            method.CreatedBy =  GetCurrentUserAsync().Result;
-            method.CreatedDate = System.DateTime.Now;
-            context.Methods.Add(method);
-            context.SaveChangesAsync();
-            return View("/Views/Main/Index.cshtml",method);
+            if (ModelState.IsValid)
+            {
+                method.CreatedBy = GetCurrentUserAsync().Result;
+                method.CreatedDate = System.DateTime.Now;
+                context.Methods.Add(method);
+                context.SaveChangesAsync();
+            }
+            return PartialView("_NewMethod",method);
         }
 
         public ActionResult Index()
