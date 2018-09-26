@@ -23,6 +23,7 @@ namespace DataDecipher.WebApp.Controllers
             user = usr;
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => user.GetUserAsync(HttpContext.User);
+
         public ActionResult Create(Method method)
         {
             method.CreatedBy =  GetCurrentUserAsync().Result;
@@ -31,6 +32,7 @@ namespace DataDecipher.WebApp.Controllers
             context.SaveChangesAsync();
             return View("/Views/Main/Index.cshtml",method);
         }
+
         public ActionResult Index()
         {
             return View(context.Methods.Where(x => x.CreatedBy.Id == GetCurrentUserAsync().Result.Id).ToList<Method>().AsEnumerable());
