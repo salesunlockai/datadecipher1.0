@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace DataDecipher.WebApp.Models
@@ -13,12 +14,14 @@ namespace DataDecipher.WebApp.Models
 
         [Display(Name = "Enable dataconnectors")]
         [Required(ErrorMessage = "Please select atleast one data connector")]
-        public ICollection<DataSourceType> EnabledDataConnectors { get; set; }
+        public ICollection<DataSourceConnector> EnabledDataConnectors { get; set; }
 
         [Display(Name = "Trial period (in days)")]
+        [DefaultValue(0)]
         public int TrialPeriod { get; set; }
 
         [Display(Name = "Monthly charges in USD (per month per user)")]
+        [DefaultValue(0)]
         public int Price { get; set; }
 
         public ICollection<Organization> Organizations { get; set; }

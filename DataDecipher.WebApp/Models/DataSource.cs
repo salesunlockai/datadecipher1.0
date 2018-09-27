@@ -4,12 +4,18 @@ using DataDecipher.WebApp.Data;
 
 namespace DataDecipher.WebApp.Models
 {
-    public enum DataSourceType
+    public class DataSourceConnector
     {
-        Xml,
-        Text,
-        CSV,
-        DAT
+        public string Id { get; set; }
+
+        [Display(Name = "Connector name")]
+        [Required(ErrorMessage = "Please provide a name")]
+        public string Name { get; set; }
+
+        [Display(Name = "File extenstion")]
+        [Required(ErrorMessage = "Please provide a valid file extension")]
+        public string Extension { get; set; }
+
     }
 
     public class DataSource
@@ -24,7 +30,7 @@ namespace DataDecipher.WebApp.Models
         public string Description { get; set; }
 
         [Display(Name = "Datasource type")]
-        public DataSourceType Type { get; set; }
+        public DataSourceConnector Type { get; set; }
 
         [Display(Name = "Datasource URL")]
         public string Uri { get; set; }
@@ -48,7 +54,7 @@ namespace DataDecipher.WebApp.Models
         public string Description { get; set; }
 
         [Display(Name = "Datasource type")]
-        public DataSourceType Type { get; set; }
+        public DataSourceConnector Type { get; set; }
 
         [Display(Name = "Datasource URL")]
         public string Uri { get; set; }

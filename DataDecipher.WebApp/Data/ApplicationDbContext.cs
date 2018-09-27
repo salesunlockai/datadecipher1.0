@@ -15,6 +15,9 @@ namespace DataDecipher.WebApp.Data
         }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Plan> Plans { get; set; }
+        public DbSet<DataSourceConnector> DataSourceConnectors { get; set; }
+        public DbSet<SampleDataSource> SampleDataSources { get; set; }
+        public DbSet<DataSource> DataSources { get; set; }
         public DbSet<Method> Methods { get; set; }
         public DbSet<SharedMethod> SharedMethods { get; set; }
         public DbSet<MethodDataSource> MethodDataSources { get; set; }

@@ -17,9 +17,9 @@ namespace DataDecipher.WebApp.Data
 
         public virtual Plan Plan { get; set; }
 
-        public ICollection<Method> CreatedMethods { get; set; }
+        public virtual ICollection<Method> CreatedMethods { get; set; }
 
-        public ICollection<SharedMethod> SharedMethods { get; set; }
+        public virtual ICollection<SharedMethod> SharedMethods { get; set; }
 
     }
 }
