@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DataDecipher.WebApp.Data;
 
@@ -15,6 +16,8 @@ namespace DataDecipher.WebApp.Models
         [Display(Name = "File extenstion")]
         [Required(ErrorMessage = "Please provide a valid file extension")]
         public string Extension { get; set; }
+
+        public ICollection<Plan> Plan { get; set; }
 
     }
 
