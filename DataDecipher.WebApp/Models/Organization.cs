@@ -16,8 +16,10 @@ namespace DataDecipher.WebApp.Models
         [Required(ErrorMessage = "Please provide a name")]
         public string Name { get; set; }
 
-       
-       
+        [Display(Name = "Select plan")]
+        [Required(ErrorMessage = "Please select a plan")]
+        public Plan SelectedPlan { get; set; }
 
+        public ICollection<ApplicationUser> Users { get; set; }
     }
 }

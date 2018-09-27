@@ -32,6 +32,8 @@ namespace DataDecipher.WebApp.Models
         public string Status { get; set; }
 
         public ICollection<SharedMethod> SharedUsers { get; set; }
+
+        public ICollection<DataSource> LinkedDataSources { get; set; }
     }
 
 

@@ -17,5 +17,6 @@ namespace DataDecipher.WebApp.Data
         public DbSet<Plan> Plans { get; set; }
         public DbSet<Method> Methods { get; set; }
         public DbSet<SharedMethod> SharedMethods { get; set; }
+        public DbSet<MethodDataSource> MethodDataSources { get; set; }
     }
 }
