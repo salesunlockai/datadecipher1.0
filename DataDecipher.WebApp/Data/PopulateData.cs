@@ -15,6 +15,37 @@ namespace DataDecipher.WebApp.Data
         {
             context.Database.EnsureCreated();
 
+            //Seed Dataconnectors
+            if (context.DataSourceConnectors.Count() == 0)
+            {
+                DataSourceConnector xmlConnector = new DataSourceConnector { Name = "XML", Extension = "xml" };
+                DataSourceConnector datConnector = new DataSourceConnector { Name = "DAT", Extension = "dat" };
+                DataSourceConnector csvConnector = new DataSourceConnector { Name = "CSV", Extension = "csv" };
+                DataSourceConnector txtConnector = new DataSourceConnector { Name = "TXT", Extension = "txt" };
+
+                await context.DataSourceConnectors.AddRangeAsync(new DataSourceConnector[] { xmlConnector, datConnector, csvConnector, txtConnector });
+                await context.SaveChangesAsync();
+
+            }
+
+            //Seed Plan
+            if (context.Plans.Count() == 0)
+            {
+                Plan freePlan = new Plan { Name = "Free", TrialPeriod=30, Price=0, EnabledDataConnectors=context.DataSourceConnectors.ToList()};
+                await context.Plans.AddAsync(freePlan);
+                await context.SaveChangesAsync();
+            }
+
+            //Seed Organization
+            if (context.Organizations.Count() == 0)
+            {
+                Organization ddOrganization = new Organization { Name = "Data Decipher", SelectedPlan= context.Plans.First()};
+                await context.Organizations.AddAsync(ddOrganization);
+                await context.SaveChangesAsync();
+            }
+          
+            //Seed Roles
+
             string ddAdminRole = "DD Admin";
             string ddAdminRoleDesc = "This is the administrator role for Data Decipher";
 
@@ -40,18 +71,7 @@ namespace DataDecipher.WebApp.Data
                 await roleManager.CreateAsync(new ApplicationRole(userRole, userRoleDesc, DateTime.Now));
             }
 
-            Organization Ddorganization = new Organization { Name = "Data Decipher" };
-            if (context.Organizations.Count() >= 1)
-            {
-                await context.Organizations.AddAsync(Ddorganization);
-            }
-          
-
-            Plan FreePlan = new Plan { Name = "Free" };
-            if (context.Plans.Count() >= 1)
-            {
-                await context.Plans.AddAsync(FreePlan);
-            }
+            // Seed Users
             if (await userManager.FindByNameAsync("Admin") == null)
             {
                 var user = new ApplicationUser
@@ -60,8 +80,8 @@ namespace DataDecipher.WebApp.Data
                     Email = "admin@datadecipher.com",
                     FirstName = "Admin",
                     LastName = "@datadecipher",
-                    Organization = Ddorganization,
-                    Plan = FreePlan
+                    Organization = context.Organizations.First(),
+                    Plan = context.Plans.First()
                 };
 
                 var result = await userManager.CreateAsync(user);
@@ -80,8 +100,8 @@ namespace DataDecipher.WebApp.Data
                     Email = "superuser@datadecipher.com",
                     FirstName = "Superuser",
                     LastName = "@datadecipher",
-                    Organization = Ddorganization,
-                    Plan = FreePlan
+                    Organization = context.Organizations.First(),
+                    Plan = context.Plans.First()
                 };
 
                 var result = await userManager.CreateAsync(user);
@@ -100,8 +120,8 @@ namespace DataDecipher.WebApp.Data
                     Email = "user@datadecipher.com",
                     FirstName = "User",
                     LastName = "@datadecipher",
-                    Organization = Ddorganization,
-                    Plan = FreePlan
+                    Organization = context.Organizations.First(),
+                    Plan = context.Plans.First()
                 };
 
                 var result = await userManager.CreateAsync(user);
