@@ -28,6 +28,12 @@
             @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
             {
                 <li>
+                    <a asp-controller="Plan" asp-action="Index">Plan</a>
+                </li>
+                <li>
+                    <a asp-controller="Organization" asp-action="Index">Organization</a>
+                </li>
+                <li>
                     <a asp-controller="ApplicationRole" asp-action="Index">Application Roles</a>
                 </li>
                 <li>
