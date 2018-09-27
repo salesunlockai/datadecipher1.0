@@ -8,8 +8,7 @@
   <ItemGroup>
     <Compile Remove="Data\MethodDBContext.cs" />
     <Compile Remove="DesignTimeDBContextFactory.cs" />
-    <Compile Remove="Migrations\20180927062309_InitDB.cs" />
-    <Compile Remove="Migrations\20180927062309_InitDB.Designer.cs" />
+    <Compile Remove="Models\OrganizationPlan.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -124,6 +123,16 @@
     <Content Remove="wwwroot\lib\jquery-ajax-unobtrusive-master\dist\jquery.unobtrusive-ajax.js" />
     <Content Remove="wwwroot\lib\jquery-ajax-unobtrusive-master\dist\jquery.unobtrusive-ajax.min.js" />
     <Content Remove="wwwroot\lib\jquery-ajax-unobtrusive-master\src\jquery.unobtrusive-ajax.js" />
+    <Content Remove="Views\Organization\Create.cshtml" />
+    <Content Remove="Views\Organization\Delete.cshtml" />
+    <Content Remove="Views\Organization\Details.cshtml" />
+    <Content Remove="Views\Organization\Edit.cshtml" />
+    <Content Remove="Views\Organization\Index.cshtml" />
+    <Content Remove="Views\Plan\Create.cshtml" />
+    <Content Remove="Views\Plan\Delete.cshtml" />
+    <Content Remove="Views\Plan\Details.cshtml" />
+    <Content Remove="Views\Plan\Edit.cshtml" />
+    <Content Remove="Views\Plan\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -206,5 +215,15 @@
     <None Include="wwwroot\lib\jquery-ajax-unobtrusive-master\dist\jquery.unobtrusive-ajax.js" />
     <None Include="wwwroot\lib\jquery-ajax-unobtrusive-master\dist\jquery.unobtrusive-ajax.min.js" />
     <None Include="wwwroot\lib\jquery-ajax-unobtrusive-master\src\jquery.unobtrusive-ajax.js" />
+    <None Include="Views\Organization\Create.cshtml" />
+    <None Include="Views\Organization\Delete.cshtml" />
+    <None Include="Views\Organization\Details.cshtml" />
+    <None Include="Views\Organization\Edit.cshtml" />
+    <None Include="Views\Organization\Index.cshtml" />
+    <None Include="Views\Plan\Create.cshtml" />
+    <None Include="Views\Plan\Delete.cshtml" />
+    <None Include="Views\Plan\Details.cshtml" />
+    <None Include="Views\Plan\Edit.cshtml" />
+    <None Include="Views\Plan\Index.cshtml" />
   </ItemGroup>
 </Project>
