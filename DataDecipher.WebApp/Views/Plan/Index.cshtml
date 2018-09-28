@@ -41,7 +41,7 @@
                     </td>
                     <td>
                         @{
-                            string connectors = item.EnabledDataConnectors.ToString();
+                            string connectors = item.EnabledDataConnectors.Count().ToString();
                         }
                         @Html.DisplayFor(modelItem => connectors)
                     </td>

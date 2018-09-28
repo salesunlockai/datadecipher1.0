@@ -25,6 +25,19 @@ namespace DataDecipher.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSourceConnectors",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Extension = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSourceConnectors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Plans",
                 columns: table => new
                 {
@@ -60,26 +73,6 @@ namespace DataDecipher.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DataSourceConnectors",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Extension = table.Column<string>(nullable: false),
-                    PlanId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataSourceConnectors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DataSourceConnectors_Plans_PlanId",
-                        column: x => x.PlanId,
-                        principalTable: "Plans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Organizations",
                 columns: table => new
                 {
@@ -93,6 +86,30 @@ namespace DataDecipher.WebApp.Migrations
                     table.ForeignKey(
                         name: "FK_Organizations_Plans_SelectedPlanId",
                         column: x => x.SelectedPlanId,
+                        principalTable: "Plans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlanDataConnectors",
+                columns: table => new
+                {
+                    PlanId = table.Column<string>(nullable: false),
+                    DataSourceConnectorId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlanDataConnectors", x => new { x.PlanId, x.DataSourceConnectorId });
+                    table.ForeignKey(
+                        name: "FK_PlanDataConnectors_DataSourceConnectors_DataSourceConnectorId",
+                        column: x => x.DataSourceConnectorId,
+                        principalTable: "DataSourceConnectors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlanDataConnectors_Plans_PlanId",
+                        column: x => x.PlanId,
                         principalTable: "Plans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -225,6 +242,35 @@ namespace DataDecipher.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSources",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    TypeId = table.Column<string>(nullable: true),
+                    Uri = table.Column<string>(nullable: true),
+                    CreatedById = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSources", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSources_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DataSources_DataSourceConnectors_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "DataSourceConnectors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Methods",
                 columns: table => new
                 {
@@ -277,37 +323,26 @@ namespace DataDecipher.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DataSources",
+                name: "MethodDataSources",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    TypeId = table.Column<string>(nullable: true),
-                    Uri = table.Column<string>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    MethodId = table.Column<string>(nullable: true)
+                    MethodId = table.Column<string>(nullable: true),
+                    DatafileId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DataSources", x => x.Id);
+                    table.PrimaryKey("PK_MethodDataSources", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DataSources_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
+                        name: "FK_MethodDataSources_DataSources_DatafileId",
+                        column: x => x.DatafileId,
+                        principalTable: "DataSources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DataSources_Methods_MethodId",
+                        name: "FK_MethodDataSources_Methods_MethodId",
                         column: x => x.MethodId,
                         principalTable: "Methods",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_DataSources_DataSourceConnectors_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "DataSourceConnectors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -334,31 +369,6 @@ namespace DataDecipher.WebApp.Migrations
                         name: "FK_SharedMethods_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MethodDataSources",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    MethodId = table.Column<string>(nullable: true),
-                    DatafileId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MethodDataSources", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MethodDataSources_DataSources_DatafileId",
-                        column: x => x.DatafileId,
-                        principalTable: "DataSources",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MethodDataSources_Methods_MethodId",
-                        column: x => x.MethodId,
-                        principalTable: "Methods",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -413,19 +423,9 @@ namespace DataDecipher.WebApp.Migrations
                 column: "PlanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DataSourceConnectors_PlanId",
-                table: "DataSourceConnectors",
-                column: "PlanId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DataSources_CreatedById",
                 table: "DataSources",
                 column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataSources_MethodId",
-                table: "DataSources",
-                column: "MethodId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DataSources_TypeId",
@@ -451,6 +451,11 @@ namespace DataDecipher.WebApp.Migrations
                 name: "IX_Organizations_SelectedPlanId",
                 table: "Organizations",
                 column: "SelectedPlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanDataConnectors_DataSourceConnectorId",
+                table: "PlanDataConnectors",
+                column: "DataSourceConnectorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SampleDataSources_CreatedById",
@@ -492,6 +497,9 @@ namespace DataDecipher.WebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "MethodDataSources");
+
+            migrationBuilder.DropTable(
+                name: "PlanDataConnectors");
 
             migrationBuilder.DropTable(
                 name: "SampleDataSources");

@@ -17,7 +17,7 @@ namespace DataDecipher.WebApp.Models
         [Required(ErrorMessage = "Please provide a valid file extension")]
         public string Extension { get; set; }
 
-        public ICollection<Plan> Plan { get; set; }
+        public virtual ICollection<PlanDataConnector> Plans { get;  } = new List<PlanDataConnector>();
 
     }
 

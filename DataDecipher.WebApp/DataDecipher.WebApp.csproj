@@ -8,7 +8,10 @@
   <ItemGroup>
     <Compile Remove="Data\MethodDBContext.cs" />
     <Compile Remove="DesignTimeDBContextFactory.cs" />
-    <Compile Remove="Models\OrganizationPlan.cs" />
+    <Compile Remove="Migrations\20180927140307_InitDB.cs" />
+    <Compile Remove="Migrations\20180927140307_InitDB.Designer.cs" />
+    <Compile Remove="Migrations\20180928122904_InitDB.cs" />
+    <Compile Remove="Migrations\20180928122904_InitDB.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

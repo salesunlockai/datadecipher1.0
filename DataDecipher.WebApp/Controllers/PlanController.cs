@@ -22,7 +22,7 @@ namespace DataDecipher.WebApp.Controllers
         // GET: Plan
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Plans.ToListAsync());
+            return View(await _context.Plans.Include( i => i.EnabledDataConnectors).ToListAsync());
         }
 
         // GET: Plan/Details/5

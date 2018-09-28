@@ -12,9 +12,9 @@ namespace DataDecipher.WebApp.Models
         [Required(ErrorMessage = "Please provide a name")]
         public string Name { get; set; }
 
-        [Display(Name = "Enable dataconnectors")]
+        [Display(Name = "Enabled dataconnectors")]
         [Required(ErrorMessage = "Please select atleast one data connector")]
-        public ICollection<DataSourceConnector> EnabledDataConnectors { get; set; }
+        public virtual ICollection<PlanDataConnector> EnabledDataConnectors { get; } = new List<PlanDataConnector>();
 
         [Display(Name = "Trial period (in days)")]
         [DefaultValue(0)]

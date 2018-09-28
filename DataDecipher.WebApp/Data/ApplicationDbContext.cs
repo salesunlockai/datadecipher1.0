@@ -21,5 +21,13 @@ namespace DataDecipher.WebApp.Data
         public DbSet<Method> Methods { get; set; }
         public DbSet<SharedMethod> SharedMethods { get; set; }
         public DbSet<MethodDataSource> MethodDataSources { get; set; }
+        public DbSet<PlanDataConnector> PlanDataConnectors { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<PlanDataConnector>().HasKey(t => new { t.PlanId, t.DataSourceConnectorId });
+            base.OnModelCreating(builder);
+
+        }
     }
 }

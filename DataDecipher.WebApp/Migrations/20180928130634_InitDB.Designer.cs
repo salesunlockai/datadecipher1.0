@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataDecipher.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180927140307_InitDB")]
+    [Migration("20180928130634_InitDB")]
     partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,8 +123,6 @@ namespace DataDecipher.WebApp.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("MethodId");
-
                     b.Property<string>("Name")
                         .IsRequired();
 
@@ -135,8 +133,6 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("MethodId");
 
                     b.HasIndex("TypeId");
 
@@ -154,11 +150,7 @@ namespace DataDecipher.WebApp.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("PlanId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PlanId");
 
                     b.ToTable("DataSourceConnectors");
                 });
@@ -239,6 +231,19 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Plans");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.PlanDataConnector", b =>
+                {
+                    b.Property<string>("PlanId");
+
+                    b.Property<string>("DataSourceConnectorId");
+
+                    b.HasKey("PlanId", "DataSourceConnectorId");
+
+                    b.HasIndex("DataSourceConnectorId");
+
+                    b.ToTable("PlanDataConnectors");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.SampleDataSource", b =>
@@ -395,20 +400,9 @@ namespace DataDecipher.WebApp.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("DataDecipher.WebApp.Models.Method")
-                        .WithMany("LinkedDataSources")
-                        .HasForeignKey("MethodId");
-
                     b.HasOne("DataDecipher.WebApp.Models.DataSourceConnector", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId");
-                });
-
-            modelBuilder.Entity("DataDecipher.WebApp.Models.DataSourceConnector", b =>
-                {
-                    b.HasOne("DataDecipher.WebApp.Models.Plan")
-                        .WithMany("EnabledDataConnectors")
-                        .HasForeignKey("PlanId");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.Method", b =>
@@ -425,7 +419,7 @@ namespace DataDecipher.WebApp.Migrations
                         .HasForeignKey("DatafileId");
 
                     b.HasOne("DataDecipher.WebApp.Models.Method", "Method")
-                        .WithMany()
+                        .WithMany("LinkedDataSources")
                         .HasForeignKey("MethodId");
                 });
 
@@ -434,6 +428,19 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasOne("DataDecipher.WebApp.Models.Plan", "SelectedPlan")
                         .WithMany("Organizations")
                         .HasForeignKey("SelectedPlanId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.PlanDataConnector", b =>
+                {
+                    b.HasOne("DataDecipher.WebApp.Models.DataSourceConnector", "DataSourceConnector")
+                        .WithMany("Plans")
+                        .HasForeignKey("DataSourceConnectorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DataDecipher.WebApp.Models.Plan", "Plan")
+                        .WithMany("EnabledDataConnectors")
+                        .HasForeignKey("PlanId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

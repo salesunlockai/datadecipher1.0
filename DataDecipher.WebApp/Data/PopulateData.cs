@@ -31,8 +31,19 @@ namespace DataDecipher.WebApp.Data
             //Seed Plan
             if (context.Plans.Count() == 0)
             {
-                Plan freePlan = new Plan { Name = "Free", TrialPeriod=30, Price=0, EnabledDataConnectors=context.DataSourceConnectors.ToList()};
+                Plan freePlan = new Plan { Name = "Free", TrialPeriod=30, Price=0};
                 await context.Plans.AddAsync(freePlan);
+                await context.SaveChangesAsync();
+            }
+
+            //Seed PlanDataConnector
+            if (context.PlanDataConnectors.Count() == 0)
+            {
+                foreach ( DataSourceConnector item in context.DataSourceConnectors)
+                {
+
+                    await context.PlanDataConnectors.AddAsync(new PlanDataConnector { Plan = context.Plans.First(), DataSourceConnector = item });
+                }
                 await context.SaveChangesAsync();
             }
 
