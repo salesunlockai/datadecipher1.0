@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataDecipher.WebApp.Models
 {
@@ -25,5 +26,8 @@ namespace DataDecipher.WebApp.Models
         public int Price { get; set; }
 
         public ICollection<Organization> Organizations { get; set; }
+
+        [NotMapped]
+        public List<DataSourceConnector> AvailableDataConnectors { get; set; }
     }
 }

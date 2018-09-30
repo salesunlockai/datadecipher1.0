@@ -22,7 +22,8 @@ namespace DataDecipher.WebApp.Controllers
         // GET: Plan
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Plans.Include( i => i.EnabledDataConnectors).ToListAsync());
+
+            return View(await _context.Plans.Include( i => i.EnabledDataConnectors).ThenInclude((i => i.DataSourceConnector)).Include(e => e.Organizations).ToListAsync());
         }
 
         // GET: Plan/Details/5
@@ -33,7 +34,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var plan = await _context.Plans
+            Plan plan = await _context.Plans.Include(i => i.EnabledDataConnectors).ThenInclude((i => i.DataSourceConnector)).Include(e => e.Organizations)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (plan == null)
             {
@@ -46,7 +47,10 @@ namespace DataDecipher.WebApp.Controllers
         // GET: Plan/Create
         public IActionResult Create()
         {
-            return View();
+            
+            Plan pass = new Plan();
+            pass.AvailableDataConnectors = _context.DataSourceConnectors.ToList();
+            return View(pass);
         }
 
         // POST: Plan/Create
@@ -54,11 +58,15 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,TrialPeriod,Price")] Plan plan)
+        public async Task<IActionResult> Create(Plan plan)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(plan);
+                foreach (DataSourceConnector i in plan.AvailableDataConnectors.Where(t=>t.IsSelected==true))
+                {
+                    _context.Add(new PlanDataConnector() { PlanId = plan.Id, DataSourceConnectorId = i.Id });
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -78,6 +86,14 @@ namespace DataDecipher.WebApp.Controllers
             {
                 return NotFound();
             }
+
+            List<PlanDataConnector> linkedDS = _context.PlanDataConnectors.Where(x=> x.PlanId == id ).ToList();
+            if(linkedDS != null)
+            {
+                plan.AvailableDataConnectors = _context.DataSourceConnectors.Select(dc => new DataSourceConnector()
+                { Id = dc.Id, Name = dc.Name, Extension = dc.Extension, IsSelected = linkedDS.Any(x=>x.DataSourceConnectorId == dc.Id)}).ToList();
+
+            }
             return View(plan);
         }
 
@@ -86,7 +102,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,TrialPeriod,Price")] Plan plan)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,TrialPeriod,Price,AvailableDataConnectors")] Plan plan)
         {
             if (id != plan.Id)
             {
@@ -98,6 +114,18 @@ namespace DataDecipher.WebApp.Controllers
                 try
                 {
                     _context.Update(plan);
+                    List<PlanDataConnector> linkedDS = _context.PlanDataConnectors.Where(x => x.PlanId == id).ToList();
+                    if (linkedDS != null)
+                    {
+                        foreach(var item in linkedDS)
+                            _context.Remove(item);
+
+                    }
+                    foreach (DataSourceConnector i in plan.AvailableDataConnectors.Where(t => t.IsSelected == true))
+                    {
+                        _context.Add(new PlanDataConnector() { PlanId = plan.Id, DataSourceConnectorId = i.Id });
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -124,7 +152,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var plan = await _context.Plans
+            var plan = await _context.Plans.Include(i => i.EnabledDataConnectors).ThenInclude((i => i.DataSourceConnector)).Include(e => e.Organizations)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (plan == null)
             {

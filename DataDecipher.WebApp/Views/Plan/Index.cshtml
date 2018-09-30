@@ -8,9 +8,10 @@
     <p>
         <a asp-action="Create">Create New</a>
     </p>
-    <table class="table">
+    <table id="myTable" class="table table-bordered table-hover">
         <thead>
             <tr>
+                <th></th>
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
@@ -23,6 +24,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.EnabledDataConnectors)
                 </th>
+                <th>
+                    No of Organizations
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -30,6 +34,7 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td><input type="checkbox" name="" value=""></td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
@@ -41,9 +46,15 @@
                     </td>
                     <td>
                         @{
-                            string connectors = item.EnabledDataConnectors.Count().ToString();
-                        }
+                            string connectors = String.Join(',',item.EnabledDataConnectors.Select(e=> e.DataSourceConnector.Name).ToArray());
+                         }
                         @Html.DisplayFor(modelItem => connectors)
+                    </td>
+                    <td>
+                        @{
+                            string count = item.Organizations.Count().ToString();
+                        }
+                        @Html.DisplayFor(modelItem => count)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

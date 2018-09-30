@@ -1,21 +1,14 @@
 ﻿@model DataDecipher.WebApp.Models.Organization
-
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
-<div>
-    <h4>Organization</h4>
-    <hr />
+@{
+    Layout = "_MainLayout"; ;
+}
+<div class="container-fluid">
+     <h5>Organization Details</h5>
+    <div>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -23,11 +16,23 @@
         <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SelectedPlan)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SelectedPlan.Name)
+        </dd>
+        <dt>
+            No of users
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Users.Count)
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
-</body>
-</html>
+</div>
+
