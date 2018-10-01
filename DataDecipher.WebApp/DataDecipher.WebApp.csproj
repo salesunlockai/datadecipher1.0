@@ -215,7 +215,6 @@
     <None Include="Views\Shared\_SideBar.cshtml" />
     <None Include="Views\Method\Index.cshtml" />
     <None Include="Views\Method\_NewMethod.cshtml" />
-    <None Include="Views\ApplicationRole\Index.cshtml" />
     <None Include="wwwroot\lib\jquery-ajax-unobtrusive-master\LICENSE.txt" />
     <None Include="wwwroot\lib\jquery-ajax-unobtrusive-master\bower.json" />
     <None Include="wwwroot\lib\jquery-ajax-unobtrusive-master\gulpfile.js" />
