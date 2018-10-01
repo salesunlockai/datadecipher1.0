@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using DataDecipher.WebApp.Models;
+using DataDecipher.WebApp.Data;
 
 namespace DataDecipher.WebApp.Data
 {
@@ -29,5 +30,7 @@ namespace DataDecipher.WebApp.Data
             base.OnModelCreating(builder);
 
         }
+
+        public DbSet<DataDecipher.WebApp.Data.ApplicationRole> ApplicationRole { get; set; }
     }
 }
