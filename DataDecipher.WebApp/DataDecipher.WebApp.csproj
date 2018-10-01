@@ -136,6 +136,11 @@
     <Content Remove="Views\Plan\Details.cshtml" />
     <Content Remove="Views\Plan\Edit.cshtml" />
     <Content Remove="Views\Plan\Index.cshtml" />
+    <Content Remove="Views\ApplicationRoles\Create.cshtml" />
+    <Content Remove="Views\ApplicationRoles\Delete.cshtml" />
+    <Content Remove="Views\ApplicationRoles\Details.cshtml" />
+    <Content Remove="Views\ApplicationRoles\Edit.cshtml" />
+    <Content Remove="Views\ApplicationRoles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -228,5 +233,10 @@
     <None Include="Views\Plan\Details.cshtml" />
     <None Include="Views\Plan\Edit.cshtml" />
     <None Include="Views\Plan\Index.cshtml" />
+    <None Include="Views\ApplicationRoles\Create.cshtml" />
+    <None Include="Views\ApplicationRoles\Delete.cshtml" />
+    <None Include="Views\ApplicationRoles\Details.cshtml" />
+    <None Include="Views\ApplicationRoles\Edit.cshtml" />
+    <None Include="Views\ApplicationRoles\Index.cshtml" />
   </ItemGroup>
 </Project>

@@ -6,22 +6,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataDecipher.WebApp.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataDecipher.WebApp.Controllers
 {
     public class ApplicationRolesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public ApplicationRolesController(ApplicationDbContext context)
+
+        public ApplicationRolesController(ApplicationDbContext context, RoleManager<ApplicationRole> roleManager)
         {
             _context = context;
+            _roleManager = roleManager;
         }
 
         // GET: ApplicationRoles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ApplicationRole.ToListAsync());
+            List<ApplicationRole> roles = await _context.ApplicationRole.ToListAsync();
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+            foreach (ApplicationRole x in roles)
+            {
+                keyValuePairs.Add(x.Id, _context.UserRoles.Where(y => y.RoleId == x.Id).Count().ToString());
+            }
+            ViewBag.LinkedUserCount = keyValuePairs;
+            return View(roles);
         }
 
         // GET: ApplicationRoles/Details/5
@@ -38,7 +49,7 @@ namespace DataDecipher.WebApp.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Count = _context.UserRoles.Where(y => y.RoleId == id).Count().ToString();
             return View(applicationRole);
         }
 
@@ -53,13 +64,16 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Description,CreatedDate,Id,Name,NormalizedName,ConcurrencyStamp")] ApplicationRole applicationRole)
+        public async Task<IActionResult> Create([Bind("Description,Name")] ApplicationRole applicationRole)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(applicationRole);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                applicationRole.CreatedDate = DateTime.Now;
+                if (await _roleManager.FindByNameAsync(applicationRole.Name) == null)
+                {
+                    await _roleManager.CreateAsync(applicationRole);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(applicationRole);
         }
@@ -85,7 +99,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Description,CreatedDate,Id,Name,NormalizedName,ConcurrencyStamp")] ApplicationRole applicationRole)
+        public async Task<IActionResult> Edit(string id, [Bind("Description,Name,Id,NormalizedName,CreatedDate,ConcurrencyStamp")] ApplicationRole applicationRole)
         {
             if (id != applicationRole.Id)
             {
@@ -96,8 +110,10 @@ namespace DataDecipher.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(applicationRole);
-                    await _context.SaveChangesAsync();
+                    //_context.Update(applicationRole);
+                    //await _context.SaveChangesAsync();
+                   await _roleManager.UpdateAsync(applicationRole);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,7 +145,7 @@ namespace DataDecipher.WebApp.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Count = _context.UserRoles.Where(y => y.RoleId == id).Count().ToString();
             return View(applicationRole);
         }
 
@@ -139,8 +155,7 @@ namespace DataDecipher.WebApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var applicationRole = await _context.ApplicationRole.FindAsync(id);
-            _context.ApplicationRole.Remove(applicationRole);
-            await _context.SaveChangesAsync();
+            await _roleManager.DeleteAsync(applicationRole);
             return RedirectToAction(nameof(Index));
         }
 
