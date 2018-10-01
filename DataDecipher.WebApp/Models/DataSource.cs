@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DataDecipher.WebApp.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataDecipher.WebApp.Models
 {
@@ -18,6 +19,9 @@ namespace DataDecipher.WebApp.Models
         public string Extension { get; set; }
 
         public virtual ICollection<PlanDataConnector> Plans { get;  } = new List<PlanDataConnector>();
+
+        [NotMapped]
+        public bool IsSelected { get; set; }
 
     }
 

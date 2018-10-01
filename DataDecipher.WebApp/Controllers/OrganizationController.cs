@@ -22,7 +22,7 @@ namespace DataDecipher.WebApp.Controllers
         // GET: Organization
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Organizations.ToListAsync());
+            return View(await _context.Organizations.Include(x=>x.SelectedPlan).Include(x=>x.Users).ToListAsync());
         }
 
         // GET: Organization/Details/5
@@ -33,7 +33,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var organization = await _context.Organizations
+            var organization = await _context.Organizations.Include(x => x.SelectedPlan).Include(x => x.Users)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (organization == null)
             {
@@ -46,6 +46,7 @@ namespace DataDecipher.WebApp.Controllers
         // GET: Organization/Create
         public IActionResult Create()
         {
+            ViewBag.Plans = _context.Plans.ToList();
             return View();
         }
 
@@ -54,7 +55,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Organization organization)
+        public async Task<IActionResult> Create([Bind("Id,Name,SelectedPlanId")] Organization organization)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +63,7 @@ namespace DataDecipher.WebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Plans = _context.Plans.ToList();
             return View(organization);
         }
 
@@ -73,11 +75,14 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var organization = await _context.Organizations.FindAsync(id);
+
+
+            var organization = await _context.Organizations.Include(x => x.SelectedPlan).Where(y => y.Id == id).FirstOrDefaultAsync();
             if (organization == null)
             {
                 return NotFound();
             }
+            ViewBag.Plans = _context.Plans.ToList();
             return View(organization);
         }
 
@@ -86,7 +91,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name")] Organization organization)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,SelectedPlanId")] Organization organization)
         {
             if (id != organization.Id)
             {
@@ -113,6 +118,7 @@ namespace DataDecipher.WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Plans = _context.Plans.ToList();
             return View(organization);
         }
 
@@ -124,7 +130,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var organization = await _context.Organizations
+            var organization = await _context.Organizations.Include(x => x.SelectedPlan).Include(x => x.Users)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (organization == null)
             {
