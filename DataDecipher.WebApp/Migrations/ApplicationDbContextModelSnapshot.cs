@@ -204,8 +204,7 @@ namespace DataDecipher.WebApp.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("SelectedPlanId")
-                        .IsRequired();
+                    b.Property<string>("SelectedPlanId");
 
                     b.HasKey("Id");
 
@@ -425,8 +424,7 @@ namespace DataDecipher.WebApp.Migrations
                 {
                     b.HasOne("DataDecipher.WebApp.Models.Plan", "SelectedPlan")
                         .WithMany("Organizations")
-                        .HasForeignKey("SelectedPlanId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SelectedPlanId");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.PlanDataConnector", b =>

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataDecipher.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180928130634_InitDB")]
+    [Migration("20181002145142_Init DB")]
     partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,8 +206,7 @@ namespace DataDecipher.WebApp.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("SelectedPlanId")
-                        .IsRequired();
+                    b.Property<string>("SelectedPlanId");
 
                     b.HasKey("Id");
 
@@ -427,8 +426,7 @@ namespace DataDecipher.WebApp.Migrations
                 {
                     b.HasOne("DataDecipher.WebApp.Models.Plan", "SelectedPlan")
                         .WithMany("Organizations")
-                        .HasForeignKey("SelectedPlanId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SelectedPlanId");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.PlanDataConnector", b =>
