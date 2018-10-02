@@ -23,6 +23,8 @@ namespace DataDecipher.WebApp.Data
         public DbSet<SharedMethod> SharedMethods { get; set; }
         public DbSet<MethodDataSource> MethodDataSources { get; set; }
         public DbSet<PlanDataConnector> PlanDataConnectors { get; set; }
+        public DbSet<DataDecipher.WebApp.Data.ApplicationRole> ApplicationRole { get; set; }
+        public DbSet<DataDecipher.WebApp.Data.ApplicationUser> ApplicationUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -31,6 +33,6 @@ namespace DataDecipher.WebApp.Data
 
         }
 
-        public DbSet<DataDecipher.WebApp.Data.ApplicationRole> ApplicationRole { get; set; }
+       
     }
 }

@@ -141,12 +141,19 @@
     <Content Remove="Views\ApplicationRoles\Details.cshtml" />
     <Content Remove="Views\ApplicationRoles\Edit.cshtml" />
     <Content Remove="Views\ApplicationRoles\Index.cshtml" />
+    <Content Remove="Views\ApplicationUser\Index.cshtml" />
+    <Content Remove="Views\ApplicationUser\_AddUser.cshtml" />
+    <Content Remove="Views\ApplicationUser\_DeleteUser.cshtml" />
+    <Content Remove="Views\ApplicationUser\_EditUser.cshtml" />
+    <Content Remove="Views\ApplicationUser\Delete.cshtml" />
+    <Content Remove="Views\ApplicationUser\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
     <None Remove="Areas\Identity\.DS_Store" />
     <None Remove="Controllers\.DS_Store" />
     <None Remove="Views\.DS_Store" />
+    <None Remove="Views\ApplicationUser\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\assets\css\bootstrap.min.css" />
@@ -237,5 +244,6 @@
     <None Include="Views\ApplicationRoles\Details.cshtml" />
     <None Include="Views\ApplicationRoles\Edit.cshtml" />
     <None Include="Views\ApplicationRoles\Index.cshtml" />
+    <None Include="Views\ApplicationUser\Index.cshtml" />
   </ItemGroup>
 </Project>
