@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataDecipher.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181002145142_Init DB")]
+    [Migration("20181002153923_InitDB")]
     partial class InitDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
