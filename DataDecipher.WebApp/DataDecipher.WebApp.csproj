@@ -12,8 +12,6 @@
     <Compile Remove="Migrations\20180927140307_InitDB.Designer.cs" />
     <Compile Remove="Migrations\20180928122904_InitDB.cs" />
     <Compile Remove="Migrations\20180928122904_InitDB.Designer.cs" />
-    <Compile Remove="Migrations\20180928130634_InitDB.cs" />
-    <Compile Remove="Migrations\20180928130634_InitDB.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -147,8 +145,6 @@
     <Content Remove="Views\ApplicationUser\_AddUser.cshtml" />
     <Content Remove="Views\ApplicationUser\_DeleteUser.cshtml" />
     <Content Remove="Views\ApplicationUser\_EditUser.cshtml" />
-    <Content Remove="Views\ApplicationUser\Delete.cshtml" />
-    <Content Remove="Views\ApplicationUser\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
