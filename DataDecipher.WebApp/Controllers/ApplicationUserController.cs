@@ -18,7 +18,7 @@ namespace DataDecipher.WebApp.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<ApplicationRole> roleManager;
 
-        public ApplicationUserController(ApplicationDbContext context,UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        public ApplicationUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             this.context = context;
             this.userManager = userManager;
@@ -28,18 +28,27 @@ namespace DataDecipher.WebApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<ApplicationUser> users = context.ApplicationUser.Include(x=>x.Organization).ToList();
+            List<ApplicationUser> users = context.ApplicationUser.Include(x => x.Organization).ToList();
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
             foreach (ApplicationUser x in users)
             {
-                string roleid = context.UserRoles.Where(y => y.UserId == x.Id).First().RoleId;
-                ApplicationRole role = context.ApplicationRole.Find(roleid);
-                keyValuePairs.Add(x.Id, role.Name);
+                string roleName = "";
+                var lrole = context.UserRoles.Where(y => y.UserId == x.Id);
+                if (lrole.Count() != 0)
+                {
+                    string roleid = lrole.FirstOrDefault().RoleId;
+                    if (roleid != "")
+                    {
+                        ApplicationRole role = context.ApplicationRole.Find(roleid);
+                        roleName = role.Name;
+                    }
+                }
+                keyValuePairs.Add(x.Id, roleName);
             }
             ViewBag.LinkedRole = keyValuePairs;
             return View(users);
         }
-      
+
         public IActionResult Create()
         {
             ApplicationUserListViewModel model = new ApplicationUserListViewModel();
@@ -53,7 +62,7 @@ namespace DataDecipher.WebApp.Controllers
             model.AvailableRoles = roleManager.Roles.Select(r => new SelectListItem
             {
                 Text = r.Name,
-                Value = r.Id
+                Value = r.Name
             }).ToList();
 
             return View(model);
@@ -64,7 +73,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( ApplicationUserListViewModel applicationUser)
+        public async Task<IActionResult> Create(ApplicationUserListViewModel applicationUser)
         {
             applicationUser.AvailableOrganizations = context.Organizations.Select(r => new SelectListItem
             {
@@ -75,7 +84,7 @@ namespace DataDecipher.WebApp.Controllers
             applicationUser.AvailableRoles = roleManager.Roles.Select(r => new SelectListItem
             {
                 Text = r.Name,
-                Value = r.Id
+                Value = r.Name
             }).ToList();
 
             if (ModelState.IsValid)
@@ -101,166 +110,165 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var applicationUser = await context.ApplicationUser.Include(x=>x.Organization)
+            var applicationUser = await context.ApplicationUser.Include(x => x.Organization)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (applicationUser == null)
             {
                 return NotFound();
             }
-            string roleid = context.UserRoles.Where(y => y.UserId == id).First().RoleId;
-            ApplicationRole role = context.ApplicationRole.Find(roleid);
-
-            ViewBag.LinkedRole = role.Name;
+            var lrole = context.UserRoles.Where(y => y.UserId == id);
+            string roleName = "";
+            if (lrole.Count() != 0)
+            {
+                string roleid = lrole.FirstOrDefault().RoleId;
+                if (roleid != "")
+                {
+                    ApplicationRole role = context.ApplicationRole.Find(roleid);
+                    roleName = role.Name;
+                }
+            }
+            ViewBag.LinkedRole = roleName;
             return View(applicationUser);
         }
 
-        [HttpGet]
-        public IActionResult AddUser()
+
+        // GET: ApplicationUser/Delete/5
+        public async Task<IActionResult> Delete(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var applicationUser = await context.ApplicationUser.Include(x => x.Organization)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+            var lrole = context.UserRoles.Where(y => y.UserId == id);
+            string roleName = "";
+            if (lrole.Count() != 0)
+            {
+                string roleid = lrole.FirstOrDefault().RoleId;
+                if (roleid != "")
+                {
+                    ApplicationRole role = context.ApplicationRole.Find(roleid);
+                    roleName = role.Name;
+                }
+            }
+            ViewBag.LinkedRole = roleName;
+            return View(applicationUser);
+        }
+
+        // POST: ApplicationRoles/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var applicationUser = await context.ApplicationUser.FindAsync(id);
+            await userManager.DeleteAsync(applicationUser);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: ApplicationRoles/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ApplicationUser applicationUser = await context.ApplicationUser.FindAsync(id);
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+
             ApplicationUserListViewModel model = new ApplicationUserListViewModel();
+            model.UserName = applicationUser.UserName;
+            model.Email = applicationUser.Email;
+            model.FirstName = applicationUser.FirstName;
+            model.LastName = applicationUser.LastName;
+            model.OrganizationId = applicationUser.OrganizationId;
+           
+            var lrole = context.UserRoles.Where(y => y.UserId == id);
+            string roleName = "";
+            if (lrole.Count() != 0)
+            {
+                string roleid = lrole.FirstOrDefault().RoleId;
+                if (roleid != "")
+                {
+                    ApplicationRole role = context.ApplicationRole.Find(roleid);
+                    roleName = role.Name;
+                }
+            }
+            model.ApplicationRoleId = roleName;
+           
+            model.AvailableOrganizations = context.Organizations.Select(r => new SelectListItem
+            {
+                Text = r.Name,
+                Value = r.Id
+            }).ToList();
+
             model.AvailableRoles = roleManager.Roles.Select(r => new SelectListItem
             {
                 Text = r.Name,
-                Value = r.Id
+                Value = r.Name
             }).ToList();
-            return PartialView("_AddUser", model);
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser(ApplicationUserListViewModel model)
-        {
-            Organization Ddorganization = new Organization { Name = "Data Decipher" };
-            Plan FreePlan = new Plan { Name = "Free" };
 
-            if (ModelState.IsValid)
-            {
-                ApplicationUser user = new ApplicationUser
-                {
-                    FirstName = model.FirstName,
-                    UserName = model.UserName,
-                    Email = model.Email,
-                    LastName = "@datadecipher",
-                    Organization = Ddorganization,
-                    Plan = FreePlan
-                };
-
-                
-
-                IdentityResult result = await userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    ApplicationRole applicationRole = await roleManager.FindByIdAsync(model.ApplicationRoleId);
-                    await userManager.AddPasswordAsync(user, model.Password);
-
-                    if (applicationRole != null)
-                    {
-                        IdentityResult roleResult = await userManager.AddToRoleAsync(user, applicationRole.Name);
-                        if (roleResult.Succeeded)
-                        {
-                            return RedirectToAction("Index");
-                        }
-                    }
-                }
-            }
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EditUser(string id)
+        // POST: ApplicationRoles/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(ApplicationUserListViewModel applicationUser)
         {
-            EditUserViewModel model = new EditUserViewModel();
-            model.ApplicationRoles = roleManager.Roles.Select(r => new SelectListItem
+            applicationUser.AvailableOrganizations = context.Organizations.Select(r => new SelectListItem
             {
                 Text = r.Name,
                 Value = r.Id
             }).ToList();
 
-            if (!String.IsNullOrEmpty(id))
+            applicationUser.AvailableRoles = roleManager.Roles.Select(r => new SelectListItem
             {
-                ApplicationUser user = await userManager.FindByIdAsync(id);
-                if (user != null)
-                {
-                    model.Name = user.FirstName;
-                    model.Email = user.Email;
-                    model.ApplicationRoleId = roleManager.Roles.Single(r => r.Name == userManager.GetRolesAsync(user).Result.Single()).Id;
-                }
-            }
-            return PartialView("_EditUser", model);
-        }
+                Text = r.Name,
+                Value = r.Name
+            }).ToList();
 
-        [HttpPost]
-        public async Task<IActionResult> EditUser(string id, EditUserViewModel model)
-        {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = await userManager.FindByIdAsync(id);
+                ApplicationUser user = await userManager.FindByIdAsync(applicationUser.Id);
                 if (user != null)
                 {
-                    user.FirstName = model.Name;
-                    user.Email = model.Email;
-                    string existingRole = userManager.GetRolesAsync(user).Result.Single();
-                    string existingRoleId = roleManager.Roles.Single(r => r.Name == existingRole).Id;
+                    user.FirstName = applicationUser.FirstName;
+                    user.LastName = applicationUser.LastName;
+                    user.OrganizationId = applicationUser.OrganizationId;
+                    var lRole = userManager.GetRolesAsync(user).Result;
+                    string existingRole = lRole.Count() == 0 ? "":lRole.Single();
                     IdentityResult result = await userManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
-                        if (existingRoleId != model.ApplicationRoleId)
+                        if (existingRole != applicationUser.ApplicationRoleId)
                         {
-                            IdentityResult roleResult = await userManager.RemoveFromRoleAsync(user, existingRole);
-                            if (roleResult.Succeeded)
-                            {
-                                ApplicationRole applicationRole = await roleManager.FindByIdAsync(model.ApplicationRoleId);
-                                if (applicationRole != null)
-                                {
-                                    IdentityResult newRoleResult = await userManager.AddToRoleAsync(user, applicationRole.Name);
-                                    if (newRoleResult.Succeeded)
-                                    {
-                                        return RedirectToAction("Index");
-                                    }
-                                }
-                            }
+                            if(existingRole != "")
+                                await userManager.RemoveFromRoleAsync(user, existingRole);
+                            await userManager.AddToRoleAsync(user, applicationUser.ApplicationRoleId);
                         }
+                            return RedirectToAction("Index");
                     }
                 }
             }
-            return PartialView("_EditUser", model);
-        }
+            return View(applicationUser);
 
-        [HttpGet]
-        public async Task<IActionResult> DeleteUser(string id)
-        {
-            string name = string.Empty;
-            ApplicationUserListViewModel deletedUserDetails = null;
-            if (!String.IsNullOrEmpty(id))
-            {
-                ApplicationUser applicationUser = await userManager.FindByIdAsync(id);
-                if (applicationUser != null)
-                {
-                    deletedUserDetails = new ApplicationUserListViewModel();
-                    deletedUserDetails.UserName = applicationUser.UserName;
-                    deletedUserDetails.Email = applicationUser.Email;
-                    //  deletedUserDetails.RoleName = applicationUser.Description;
-                    //name = applicationUser.FirstName;
-                }
-            }
-            return PartialView("_DeleteUser", deletedUserDetails);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteUser(string id, IFormCollection form)
-        {
-            if (!String.IsNullOrEmpty(id))
-            {
-                ApplicationUser applicationUser = await userManager.FindByIdAsync(id);
-                if (applicationUser != null)
-                {
-                    IdentityResult result = await userManager.DeleteAsync(applicationUser);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Index");
-                    }
-                }
-            }
-            return View();
         }
     }
 }
+
+
+
+
