@@ -39,11 +39,17 @@
         <dd>
             @Html.DisplayFor(model => model.CreatedBy.FirstName)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Type.Name)
+        </dd>
     </dl>
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <input type="submit" value="Delete" class="btn btn-primary" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>

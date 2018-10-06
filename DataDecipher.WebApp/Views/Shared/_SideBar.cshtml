@@ -7,6 +7,9 @@
                     Data Decipher
                 </a>
             </li>
+            <li class="sidebar-brand">
+                Main functions
+            </li>
             <li class="active">
                 <a asp-controller="Main" asp-action="Index">Home</a>
             </li>
@@ -24,11 +27,11 @@
             </li>
             @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
             {
-                <li>
-                    <a asp-controller="DataSourceConnectors" asp-action="Index">Data Connectors</a>
+                <li class="sidebar-brand">
+                        Administrator functions
                 </li>
                 <li>
-                    <a asp-controller="SampleDataSources" asp-action="Index">Sample Datasets</a>
+                    <a asp-controller="DataSourceConnectors" asp-action="Index">Data Connectors</a>
                 </li>
                 <li>
                     <a asp-controller="Plan" asp-action="Index">Plan</a>
@@ -41,6 +44,9 @@
                 </li>
                 <li>
                     <a asp-controller="ApplicationUser" asp-action="Index">Application Users</a>
+                </li>
+                <li>
+                    <a asp-controller="SampleDataSources" asp-action="Index">Sample Datasets</a>
                 </li>
             }
         </ul>

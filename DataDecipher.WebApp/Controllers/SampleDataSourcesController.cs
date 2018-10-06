@@ -10,7 +10,9 @@ using DataDecipher.WebApp.Models;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.a
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.File;
+using Microsoft.Extensions.Configuration;
 
 namespace DataDecipher.WebApp.Controllers
 {
@@ -19,17 +21,20 @@ namespace DataDecipher.WebApp.Controllers
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _user;
-        public SampleDataSourcesController(ApplicationDbContext ctx, UserManager<ApplicationUser> usr)
+        private readonly IConfiguration _configuration;
+
+        public SampleDataSourcesController(ApplicationDbContext ctx, UserManager<ApplicationUser> usr, IConfiguration configuration)
         {
             _context = ctx;
             _user = usr;
+            _configuration = configuration;
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => _user.GetUserAsync(HttpContext.User);
 
         // GET: SampleDataSources
         public async Task<IActionResult> Index()
         {
-            return View(await _context.SampleDataSources.Include(x=> x.CreatedBy).ToListAsync());
+            return View(await _context.SampleDataSources.Include(x=> x.CreatedBy).Include(y=>y.Type).ToListAsync());
         }
 
         // GET: SampleDataSources/Details/5
@@ -40,7 +45,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var sampleDataSource = await _context.SampleDataSources.Include(x => x.CreatedBy)
+            var sampleDataSource = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (sampleDataSource == null)
             {
@@ -53,6 +58,7 @@ namespace DataDecipher.WebApp.Controllers
         // GET: SampleDataSources/Create
         public IActionResult Create()
         {
+            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.ToList();
             return View();
         }
 
@@ -61,7 +67,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Uri,CreatedDate,DataFile")] SampleDataSource sampleDataSource)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Uri,TypeId,CreatedDate,DataFile")] SampleDataSource sampleDataSource)
         {
             
             if (ModelState.IsValid)
@@ -74,23 +80,38 @@ namespace DataDecipher.WebApp.Controllers
                             Directory.GetCurrentDirectory(), "SampleDataSets",
                     sampleDataSource.DataFile.FileName);
 
-                sampleDataSource.Uri = path;
+               
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+                // Create a CloudFileClient object for credentialed access to Azure Files.
+                CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+                // Get a reference to the file share we created previously.
+                CloudFileShare cloudFileShare = fileClient.GetShareReference("samples");
+                await cloudFileShare.CreateIfNotExistsAsync();
+
+                CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+                CloudFile cloudFile = cloudFileDirectory.GetFileReference(sampleDataSource.DataFile.FileName);
+                await cloudFile.DeleteIfExistsAsync();
+                using (var stream = new MemoryStream())
+                {
+                    await sampleDataSource.DataFile.CopyToAsync(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    await cloudFile.UploadFromStreamAsync(stream);
+                }
+
+                sampleDataSource.Uri = cloudFile.Uri.ToString();
                 sampleDataSource.CreatedBy = GetCurrentUserAsync().Result;
                 sampleDataSource.CreatedDate = System.DateTime.Now;
 
-                CloudStorageAccount storageAccount = null;
-                CloudBlobContainer cloudBlobContainer = null;
-                string sourceFile = null;
-                string destinationFile = null;
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await sampleDataSource.DataFile.CopyToAsync(stream);
-                }
                 _context.Add(sampleDataSource);
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.ToList();
             return View(sampleDataSource);
         }
 
@@ -107,6 +128,8 @@ namespace DataDecipher.WebApp.Controllers
             {
                 return NotFound();
             }
+            sampleDataSource.CreatedBy = await _context.Users.FindAsync(sampleDataSource.CreatedById);
+            sampleDataSource.Type = await _context.DataSourceConnectors.FindAsync(sampleDataSource.TypeId);
             return View(sampleDataSource);
         }
 
@@ -115,7 +138,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,Uri,CreatedDate")] SampleDataSource sampleDataSource)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description")] SampleDataSource sampleDataSource)
         {
             if (id != sampleDataSource.Id)
             {
@@ -126,7 +149,11 @@ namespace DataDecipher.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(sampleDataSource);
+                    var getSampleDataSource = await _context.SampleDataSources.FindAsync(id);
+                    getSampleDataSource.Name = sampleDataSource.Name;
+                    getSampleDataSource.Description = sampleDataSource.Description;
+
+                    _context.Update(getSampleDataSource);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -169,10 +196,26 @@ namespace DataDecipher.WebApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var sampleDataSource = await _context.SampleDataSources.FindAsync(id);
-            FileInfo file = new FileInfo(sampleDataSource.Uri);
-            if (file.Exists)
-                file.Delete();
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference("samples");
+            await cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+            string cloudFilename = sampleDataSource.Uri.Split("/").Last();
+
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(cloudFilename);
+            await cloudFile.DeleteIfExistsAsync();
+
+
             _context.SampleDataSources.Remove(sampleDataSource);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

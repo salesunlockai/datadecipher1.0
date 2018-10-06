@@ -38,30 +38,9 @@ namespace DataDecipher.WebApp.Models
         public string Description { get; set; }
 
         [Display(Name = "Datasource type")]
-        public DataSourceConnector Type { get; set; }
+        public string TypeId { get; set; }
 
-        [Display(Name = "Datasource URL")]
-        public string Uri { get; set; }
-
-        [Display(Name = "Created by")]
-        public ApplicationUser CreatedBy { get; set; }
-
-        [Display(Name = "Created date")]
-        public DateTime CreatedDate { get; set; }
-
-    }
-    public class SampleDataSource
-    {
-        public string Id { get; set; }
-
-        [Display(Name = "Datasource name")]
-        [Required(ErrorMessage = "Please provide a name")]
-        public string Name { get; set; }
-
-        [Display(Name = "Datasource description")]
-        public string Description { get; set; }
-
-        [Display(Name = "Datasource type")]
+        [ForeignKey("TypeId")]
         public DataSourceConnector Type { get; set; }
 
         [Display(Name = "Datasource URL")]
@@ -76,5 +55,41 @@ namespace DataDecipher.WebApp.Models
         [NotMapped]
         public IFormFile DataFile { get; set; }
 
+     
+
+    }
+    public class SampleDataSource
+    {
+        public string Id { get; set; }
+
+        [Display(Name = "Datasource name")]
+        [Required(ErrorMessage = "Please provide a name")]
+        public string Name { get; set; }
+
+        [Display(Name = "Datasource description")]
+        public string Description { get; set; }
+
+        [Display(Name = "Datasource type")]
+        public string TypeId { get; set; }
+
+        [ForeignKey("TypeId")]
+        public DataSourceConnector Type { get; set; }
+
+        [Display(Name = "Datasource URL")]
+        public string Uri { get; set; }
+
+        public string CreatedById { get; set; }
+
+        [ForeignKey("CreatedById")]
+        [Display(Name = "Created by")]
+        public ApplicationUser CreatedBy { get; set; }
+
+        [Display(Name = "Created date")]
+        public DateTime CreatedDate { get; set; }
+
+        [NotMapped]
+        public IFormFile DataFile { get; set; }
+
+      
     }
 }
