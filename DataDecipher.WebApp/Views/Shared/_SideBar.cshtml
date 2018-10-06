@@ -11,15 +11,12 @@
                 <a asp-controller="Main" asp-action="Index">Home</a>
             </li>
             <li>
-                <a asp-controller="Method" asp-action="Index">Method</a>
+                <a asp-controller="Methods" asp-action="Index">Method</a>
             </li>
             <li>
-                <a href="#">Data Source</a>
+                <a asp-controller="DataSources" asp-action="Index">Data Source</a>
             </li>
-            <li>
-                <a href="#">Instrument</a>
-            </li>
-            <li>
+             <li>
                 <a href="#">Parser</a>
             </li>
             <li>
@@ -27,6 +24,12 @@
             </li>
             @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
             {
+                <li>
+                    <a asp-controller="DataSourceConnectors" asp-action="Index">Data Connectors</a>
+                </li>
+                <li>
+                    <a asp-controller="SampleDataSources" asp-action="Index">Sample Datasets</a>
+                </li>
                 <li>
                     <a asp-controller="Plan" asp-action="Index">Plan</a>
                 </li>

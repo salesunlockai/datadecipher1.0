@@ -5,11 +5,8 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>SampleDataSource</h4>
-    <hr />
+<div class="container-fluid">
+    <h5>Sample Dataset Details</h5>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -34,6 +31,12 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy.FirstName)
         </dd>
     </dl>
 </div>

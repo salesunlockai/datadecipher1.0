@@ -158,6 +158,9 @@
     <None Remove="Controllers\.DS_Store" />
     <None Remove="Views\.DS_Store" />
     <None Remove="Views\ApplicationUser\Create.cshtml" />
+    <None Remove="SampleDataSets\GC2.DAT" />
+    <None Remove="SampleDataSets\GC2.DAT" />
+    <None Remove="SampleDataSets\test.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\assets\css\bootstrap.min.css" />

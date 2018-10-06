@@ -5,12 +5,13 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
-<h2>Index</h2>
-
+<div class="container-fluid">
+    <h5> List of all the accessible methods</h5>
+    <p>The following table displays all the methods that are accessible to you. You can create, edit, delete and share the methods using this screen</p>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table id="myTable" class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>
@@ -51,6 +52,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Share</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
@@ -58,3 +60,4 @@
 }
     </tbody>
 </table>
+    </div>

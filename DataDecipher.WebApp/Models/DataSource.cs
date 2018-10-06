@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DataDecipher.WebApp.Data;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace DataDecipher.WebApp.Models
 {
@@ -71,6 +72,9 @@ namespace DataDecipher.WebApp.Models
 
         [Display(Name = "Created date")]
         public DateTime CreatedDate { get; set; }
+
+        [NotMapped]
+        public IFormFile DataFile { get; set; }
 
     }
 }
