@@ -31,7 +31,7 @@ namespace DataDecipher.WebApp.Controllers
             {
                 //filePath = "TestData/GC2.DAT"
                 fileName = inputSelectedFile,
-                filePath = "TestData/" + inputSelectedFile
+                filePath = "TestData/Raw/" + inputSelectedFile
             };
             model1.rawData = model1.GetRawData(model1.filePath);
 
@@ -44,7 +44,7 @@ namespace DataDecipher.WebApp.Controllers
         {
             var model1 = new ParsedData
             {
-                filePath = "TestData/Output/GC2_output.csv",
+                filePath = "TestData/Parsed/GC2_output.csv",
                 fileName = "GC2.DAT"
             };
             //model1.parsedData = model1.GetParsedData(model1.filePath);

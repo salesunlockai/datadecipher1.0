@@ -35,6 +35,7 @@ namespace DataDecipher.WebApp.Models
                 {
                     string[] row = record.Split(',');
                     DataRow dataRow = dataTable.NewRow();
+
                     for (int i = 0; i < row.Length; i++)
                     {
                         dataRow[0] = row[0];
@@ -54,6 +55,6 @@ namespace DataDecipher.WebApp.Models
             //}
             //DataRecords = listRecords.ToArray();
             //return DataRecords;
-            }
+        }
     }
 }

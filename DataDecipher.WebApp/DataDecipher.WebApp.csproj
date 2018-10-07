@@ -30,6 +30,8 @@
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Views\DataSource\" />
+    <Folder Include="TestData\Parsed\" />
+    <Folder Include="TestData\Raw\" />
   </ItemGroup>
 
   <ItemGroup>
