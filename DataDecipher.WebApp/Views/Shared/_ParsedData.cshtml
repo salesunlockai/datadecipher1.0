@@ -1,23 +1,29 @@
 ﻿@model DataDecipher.WebApp.Models.ParsedData
+@using System.Data;
+
 <br>
 <div>Parsed contents of the file: @Model.fileName</div>
 <br /><br />
 <div style="overflow: auto; width:600px; height:600px">
-    @*<asp:TextBox textmode="multiline">
-            <ul>
-                @for (int i=0; i < @Model.records.Length; i++){
-                    <li>@Model.records[i]</li>
+    <table border="1">
+        <thead>
+            <tr>
+                @foreach (DataColumn col in Model.parsedDataTable.Columns)
+                {
+                    <th>@col.ColumnName</th>
                 }
-            </ul>
-        </asp:TextBox>*@
-    <asp:TextBox textmode="multiline">
-        <table border="1">
-            @for (int i = 0; i < @Model.records.Length; i++)
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in Model.parsedDataTable.Rows)
             {
                 <tr>
-                    <td>@Model.records[i]</td>
+                    @foreach (DataColumn col in Model.parsedDataTable.Columns)
+            {
+                <td>@row[col.ColumnName]</td>
+            }
                 </tr>
             }
-        </table>
-    </asp:TextBox>
+        </tbody>
+    </table>
 </div>

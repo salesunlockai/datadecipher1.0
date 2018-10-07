@@ -1,5 +1,5 @@
-Sample Name,Instrument,Sample Amount,Time,Time,Component,Adj Amt,Area
-95-10397 1:50            ,HP5890_#99_FREDDIE,1.0000,7/13/95,[min],Name,(ppb),[Vs]
+Sample Name,Instrument,Sample Amount,Time,DateTime,Component,Adj Amt,Area
+95-10397 1:50            ,HP5890_#99_FREDDIE,1.0000,7/13/95,[min],Name,(ppb),[µV·s]
 95-10397 1:50            ,HP5890_#99_FREDDIE,1.0000,7/13/95, 7.981,MeCl                 ,   1.7835,    75537.00
 95-10397 1:50            ,HP5890_#99_FREDDIE,1.0000,7/13/95,24.285,TetClE               ,   0.0000,        0.00
 95-10397 1:50            ,HP5890_#99_FREDDIE,1.0000,7/13/95,24.953,1CL4FLBZ             ,  44.0775,   705861.48

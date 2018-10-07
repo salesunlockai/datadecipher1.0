@@ -35,7 +35,7 @@ namespace DataDecipher.WebApp.Controllers
             };
             model1.rawData = model1.GetRawData(model1.filePath);
 
-            return PartialView("_RawData",model1);
+            return PartialView("_RawData", model1);
            
         }
 
@@ -50,7 +50,7 @@ namespace DataDecipher.WebApp.Controllers
             //model1.parsedData = model1.GetParsedData(model1.filePath);
             model1.parsedDataTable = model1.GetParsedData(model1.filePath);
 
-            return View(model1);
+            return PartialView("_ParsedData", model1);
         }
 
 

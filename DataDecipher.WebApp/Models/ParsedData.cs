@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace DataDecipher.WebApp.Models
 {
@@ -28,33 +29,39 @@ namespace DataDecipher.WebApp.Models
         //}
 
         public DataTable GetParsedData(string path){
-            DataTable dataTable = new DataTable();
-
-            if (File.Exists(path)){
-                foreach (var record in File.ReadAllLines(path))
+            DataTable dtCsv = new DataTable();
+            string Fulltext;
+            using (StreamReader sr = new StreamReader(path))
+            {
+                while (!sr.EndOfStream)
                 {
-                    string[] row = record.Split(',');
-                    DataRow dataRow = dataTable.NewRow();
-
-                    for (int i = 0; i < row.Length; i++)
+                    Fulltext = sr.ReadToEnd().ToString(); //read full file text  
+                    string[] rows = Fulltext.Split('\n'); //split full file text into rows  
+                    for (int i = 0; i < rows.Count() - 1; i++)
                     {
-                        dataRow[0] = row[0];
+                        string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
+                        {
+                            if (i == 0)
+                            {
+                                for (int j = 0; j < rowValues.Count(); j++)
+                                {
+                                    dtCsv.Columns.Add(rowValues[j]); //add headers  
+                                }
+                            }
+                            else
+                            {
+                                DataRow dr = dtCsv.NewRow();
+                                for (int k = 0; k < rowValues.Count(); k++)
+                                {
+                                    dr[k] = rowValues[k].ToString();
+                                }
+                                dtCsv.Rows.Add(dr); //add other rows  
+                            }
+                        }
                     }
-                    dataTable.Rows.Add(dataRow);
                 }
             }
-            return dataTable;
-
-            //string[] DataRecords = null;
-            //List<string> listRecords = new List<string>();
-
-            //if (File.Exists(path)){
-            //    foreach (var record in File.ReadAllLines(path)){
-            //        listRecords.Add(record);
-            //    }
-            //}
-            //DataRecords = listRecords.ToArray();
-            //return DataRecords;
+            return dtCsv;
         }
     }
 }
