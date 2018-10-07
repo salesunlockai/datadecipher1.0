@@ -30,14 +30,29 @@ namespace DataDecipher.WebApp.Controllers
             var model1 = new RawData
             {
                 //filePath = "TestData/GC2.DAT"
-                FileName = inputSelectedFile,
-                FilePath = "TestData/" + inputSelectedFile
+                fileName = inputSelectedFile,
+                filePath = "TestData/" + inputSelectedFile
             };
-            model1.Data = model1.GetRawData(model1.FilePath);
+            model1.rawData = model1.GetRawData(model1.filePath);
 
             return PartialView("_RawData",model1);
            
         }
+
+        [HttpPost]
+        public IActionResult DisplayParsedData(string inputSelectedFile)
+        {
+            var model1 = new ParsedData
+            {
+                filePath = "TestData/Output/GC2_output.csv",
+                fileName = "GC2.DAT"
+            };
+            //model1.parsedData = model1.GetParsedData(model1.filePath);
+            model1.parsedDataTable = model1.GetParsedData(model1.filePath);
+
+            return View(model1);
+        }
+
 
     }
 }

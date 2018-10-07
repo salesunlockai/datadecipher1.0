@@ -1,10 +1,42 @@
-﻿@model DataDecipher.WebApp.Models.RawData
-
+﻿@model DataDecipher.WebApp.Models.RawDataModel
 <br>
-<div>Contents of the file: @Model.FileName</div>
+<div>Contents of the file: @Model.fileName</div>
+<br />
+<textarea textmode="multiline" contenteditable="true" rows="20" cols="120" placeholder="Raw Data of the File">
+    @Model.rawData
+</textarea>
 <br /><br />
-<div style="overflow: auto; width:600px; height:600px">
-    <asp:TextBox textmode="multiline">
-        @Model.Data
-    </asp:TextBox>
+<input type="checkbox" id="cleanData" class="checkbox" placeholder="Clean Data" onChange="enableCleaningControls()">
+<label for="cleanData">Clean Data</label><br />
+<div class="input-group form-group-no-border input-lg">
+    <span class="input-group-addon">
+        <i class="now-ui-icons text_caps-small"></i>
+    </span>
+    <input type="text" id="inputFindText" placeholder="Find text..." class="form-control textCleaningControls" disabled="disabled" />
 </div>
+<input type="button" id="findText" value="Find" class="btn btn-primary btn-round textCleaningControls" disabled="disabled" />
+<br />
+<br />
+<div>
+    <div class="input-group form-group-no-border input-lg textCleaningControls">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" id="inputReplaceText" placeholder="Replace with text..." class="form-control textCleaningControls" disabled="disabled" />
+    </div>
+    <input type="button" id="replaceAllText" value="Replace All" class="btn btn-primary btn-round textCleaningControls" disabled="disabled" />
+    <input type="button" id="replaceText" value="Replace" class="btn btn-primary btn-round textCleaningControls" disabled="disabled" />
+</div><br />
+<br />
+<input type="button" id="saveCleanText" value="Save" class="btn btn-primary" />
+<script>function enableCleaningControls() {
+        var elements = document.getElementsByClassName("textCleaningControls");
+        var el = document.getElementById("cleanData");
+        for (var i = 0; i < elements.length; i++) {
+            if (el.checked) {
+              elements[i].disabled = false;
+            } else {
+              elements[i].disabled = true;
+            }
+        }
+    }</script>

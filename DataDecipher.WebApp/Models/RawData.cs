@@ -12,9 +12,9 @@ namespace DataDecipher.WebApp.Models
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class RawData
     {
-        public string FileName { get; set; }
-        public string FilePath { get; set; }
-        public string Data { get; set; }
+        public string fileName { get; set; }
+        public string filePath { get; set; }
+        public string rawData { get; set; }
 
         public string GetRawData(string path)
         {
