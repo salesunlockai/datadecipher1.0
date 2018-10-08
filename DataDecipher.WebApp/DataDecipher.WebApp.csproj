@@ -24,7 +24,6 @@
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" PrivateAssets="All" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.2" />
-    <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -155,6 +154,7 @@
     <Content Remove="Views\ApplicationUser\_EditUser.cshtml" />
     <Content Remove="Views\ApplicationUser\Delete.cshtml" />
     <Content Remove="Views\ApplicationUser\Details.cshtml" />
+    <Content Remove="Views\Shared\_ParsedData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -256,5 +256,6 @@
     <None Include="Views\ApplicationRoles\Edit.cshtml" />
     <None Include="Views\ApplicationRoles\Index.cshtml" />
     <None Include="Views\ApplicationUser\Index.cshtml" />
+    <None Include="Views\Shared\_ParsedData.cshtml" />
   </ItemGroup>
 </Project>

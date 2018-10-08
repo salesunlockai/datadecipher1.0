@@ -26,5 +26,11 @@ namespace DataDecipher.WebApp.Data
 
         public virtual ICollection<SharedMethod> SharedMethods { get; set; }
 
+        [NotMapped]
+        public bool IsSelected { get; set; }
+
+        [NotMapped]
+        public bool CanEditMethod { get; set;}
+
     }
 }

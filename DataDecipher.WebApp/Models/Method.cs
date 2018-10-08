@@ -34,6 +34,9 @@ namespace DataDecipher.WebApp.Models
         public ICollection<SharedMethod> SharedUsers { get; set; }
 
         public ICollection<MethodDataSource> LinkedDataSources { get; set; }
+
+        [NotMapped]
+        public List<ApplicationUser> AvailableUsers { get; set; }
     }
 
 
