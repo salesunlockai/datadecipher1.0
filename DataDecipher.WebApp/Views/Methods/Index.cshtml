@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<DataDecipher.WebApp.Models.Method>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<DataDecipher.WebApp.Data.ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -33,7 +35,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -51,10 +54,26 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Share" asp-route-id="@item.Id">Share</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @{
+                    string currentUserId = UserManager.GetUserId(User);
+                    bool showEdit = item.SharedUsers.Where(x => (x.UserId == currentUserId && x.CanEdit)).Count() > 0;
+                 }
+                @if (item.CreatedBy.Id == currentUserId)
+                { 
+                  <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>  
+                  <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                  <a asp-action="Share" asp-route-id="@item.Id">Share</a>
+                  <a asp-action="Delete" asp-route-id="@item.Id">Details</a>  
+                }
+                else if (showEdit)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>  
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>   
+                }
+                else
+                {
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>  
+                }
             </td>
         </tr>
 }

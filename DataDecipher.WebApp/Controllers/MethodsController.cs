@@ -29,11 +29,15 @@ namespace DataDecipher.WebApp.Controllers
         {
            
            
-            var sharedMethods = _context.SharedMethods.Where(x => x.UserId == GetCurrentUserAsync().Result.Id).Include(y => y.Method).Select(z=>z.Method);
+            //var sharedMethodsIds = _context.SharedMethods.Where(x => x.UserId == GetCurrentUserAsync().Result.Id).Include(y => y.Method).Select(z=>z.Method);
 
-            var methodList = await _context.Methods.Include(y=> y.SharedUsers).Where(x => x.CreatedBy.Id == GetCurrentUserAsync().Result.Id).ToListAsync();
+            var sharedMethods= _context.SharedMethods.Where(x => x.UserId == GetCurrentUserAsync().Result.Id);
 
-            methodList.AddRange(sharedMethods);                               
+            string sharedMethodsIds = String.Join(',',sharedMethods.Select(x => x.MethodId).ToArray());
+
+            var methodList = await _context.Methods.Include(y=> y.SharedUsers).Include(y=>y.CreatedBy).Where(x => x.CreatedBy.Id == GetCurrentUserAsync().Result.Id || sharedMethodsIds.Contains(x.Id)).ToListAsync();
+
+            //methodList.AddRange(sharedMethods);                               
 
 
             return View(methodList);
