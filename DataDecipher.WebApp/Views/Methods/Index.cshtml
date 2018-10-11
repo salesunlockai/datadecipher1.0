@@ -1,82 +1,85 @@
 ﻿@model IEnumerable<DataDecipher.WebApp.Models.Method>
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @inject UserManager<DataDecipher.WebApp.Data.ApplicationUser> UserManager
-
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
-
 <div class="container-fluid">
     <h5> List of all the accessible methods</h5>
     <p>The following table displays all the methods that are accessible to you. You can create, edit, delete and share the methods using this screen</p>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table id="myTable" class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastModifiedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
-{
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastModifiedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @{
-                    string currentUserId = UserManager.GetUserId(User);
-                    bool showEdit = item.SharedUsers.Where(x => (x.UserId == currentUserId && x.CanEdit)).Count() > 0;
-                 }
-                @if (item.CreatedBy.Id == currentUserId)
-                { 
-                  <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>  
-                  <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                  <a asp-action="Share" asp-route-id="@item.Id">Share</a>
-                  <a asp-action="Delete" asp-route-id="@item.Id">Details</a>  
-                }
-                else if (showEdit)
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>  
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>   
-                }
-                else
-                {
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>  
-                }
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-    </div>
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded || (await AuthorizationService.AuthorizeAsync(User, "RequireSuperUserRole")).Succeeded)
+    {
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
+    <table id="myTable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastModifiedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastModifiedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @{
+                            string currentUserId = UserManager.GetUserId(User);
+                            bool showEdit = item.SharedUsers.Where(x => (x.UserId == currentUserId && x.CanEdit)).Count() > 0;
+                        }
+                        @if (item.CreatedBy.Id == currentUserId)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> @:| 
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> @:|
+                            <a asp-action="Share" asp-route-id="@item.Id">Share</a> @: |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Details</a>
+                        }
+                        else if (showEdit)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> @:|
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

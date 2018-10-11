@@ -7,22 +7,37 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataDecipher.WebApp.Data;
 using DataDecipher.WebApp.Models;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.File;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using System.IO;
 
 namespace DataDecipher.WebApp.Controllers
 {
     public class DataSourcesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _user;
+        private readonly IConfiguration _configuration;
 
-        public DataSourcesController(ApplicationDbContext context)
+        public DataSourcesController(ApplicationDbContext context, UserManager<ApplicationUser> usr, IConfiguration configuration)
         {
             _context = context;
+            _user = usr;
+            _configuration = configuration;
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _user.GetUserAsync(HttpContext.User);
         // GET: DataSources
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DataSources.ToListAsync());
+            
+            var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z=>z.SelectedPlanId);
+            var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z=>z.DataSourceConnectorId);
+            var connectorIds = String.Join(',',connectors.ToArray());
+                    
+            return View(await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z=> connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync());
         }
 
         // GET: DataSources/Details/5
@@ -33,7 +48,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var dataSource = await _context.DataSources
+            var dataSource = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (dataSource == null)
             {
@@ -46,6 +61,11 @@ namespace DataDecipher.WebApp.Controllers
         // GET: DataSources/Create
         public IActionResult Create()
         {
+            var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
+            var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
+            var connectorIds = String.Join(',', connectors.ToArray());
+
+            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y=>connectorIds.Contains(y.Id)).ToList();
             return View();
         }
 
@@ -54,14 +74,50 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Uri,CreatedDate")] DataSource dataSource)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Uri,TypeId,CreatedDate,DataFile")] DataSource dataSource)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dataSource);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            if (dataSource == null ||
+                dataSource.DataFile == null || dataSource.DataFile.Length == 0)
+                return Content("file not selected");
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+            await cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(dataSource.DataFile.FileName);
+            await cloudFile.DeleteIfExistsAsync();
+            using (var stream = new MemoryStream())
+            {
+                await dataSource.DataFile.CopyToAsync(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                await cloudFile.UploadFromStreamAsync(stream);
             }
+
+            dataSource.Uri = cloudFile.Uri.ToString();
+            dataSource.CreatedBy = GetCurrentUserAsync().Result;
+            dataSource.CreatedDate = System.DateTime.Now;
+
+            _context.Add(dataSource);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+            }
+            var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
+            var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
+            var connectorIds = String.Join(',', connectors.ToArray());
+
+            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
+
             return View(dataSource);
         }
 
@@ -78,6 +134,8 @@ namespace DataDecipher.WebApp.Controllers
             {
                 return NotFound();
             }
+            dataSource.CreatedBy = await _context.Users.FindAsync(dataSource.CreatedById);
+            dataSource.Type = await _context.DataSourceConnectors.FindAsync(dataSource.TypeId);
             return View(dataSource);
         }
 
@@ -86,7 +144,7 @@ namespace DataDecipher.WebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,Uri,CreatedDate")] DataSource dataSource)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description")] DataSource dataSource)
         {
             if (id != dataSource.Id)
             {
@@ -97,7 +155,11 @@ namespace DataDecipher.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(dataSource);
+                    var getDataSource = await _context.DataSources.FindAsync(id);
+                    getDataSource.Name = dataSource.Name;
+                    getDataSource.Description = dataSource.Description;
+
+                    _context.Update(getDataSource);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -124,7 +186,7 @@ namespace DataDecipher.WebApp.Controllers
                 return NotFound();
             }
 
-            var dataSource = await _context.DataSources
+            var dataSource = await _context.DataSources.Include(x => x.CreatedBy)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (dataSource == null)
             {
@@ -140,7 +202,26 @@ namespace DataDecipher.WebApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var dataSource = await _context.DataSources.FindAsync(id);
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+            await cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+            string cloudFilename = dataSource.Uri.Split("/").Last();
+
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(cloudFilename);
+            await cloudFile.DeleteIfExistsAsync();
+
+
             _context.DataSources.Remove(dataSource);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

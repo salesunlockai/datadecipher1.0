@@ -46,6 +46,9 @@ namespace DataDecipher.WebApp.Models
         [Display(Name = "Datasource URL")]
         public string Uri { get; set; }
 
+        public string CreatedById { get; set; }
+
+        [ForeignKey("CreatedById")]
         [Display(Name = "Created by")]
         public ApplicationUser CreatedBy { get; set; }
 

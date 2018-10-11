@@ -52,6 +52,7 @@ namespace DataDecipher.WebApp
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireDDAdminRole", policy => policy.RequireRole("DD Admin"));
+                options.AddPolicy("RequireSuperUserRole", policy => policy.RequireRole("Super User"));
             });
 
             services.AddMvc(config =>

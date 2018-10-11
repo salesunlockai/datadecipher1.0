@@ -76,11 +76,6 @@ namespace DataDecipher.WebApp.Controllers
                 sampleDataSource.DataFile == null || sampleDataSource.DataFile.Length == 0)
                     return Content("file not selected");
 
-                var path = Path.Combine(
-                            Directory.GetCurrentDirectory(), "SampleDataSets",
-                    sampleDataSource.DataFile.FileName);
-
-               
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
                 // Create a CloudFileClient object for credentialed access to Azure Files.
