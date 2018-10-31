@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DataDecipher.WebApp.Models;
 using System.IO;
+using RestSharp;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,17 +43,64 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public IActionResult DisplayParsedData(string inputSelectedFile)
         {
+            inputSelectedFile = "TestData/Raw/Sample_CSV.json";
             var model1 = new ParsedData
             {
-                filePath = "TestData/Parsed/GC2_output.csv",
-                fileName = "GC2.DAT"
+                filePath = inputSelectedFile,
+                fileName = Path.GetFileName(inputSelectedFile)
             };
-            //model1.parsedData = model1.GetParsedData(model1.filePath);
-            model1.parsedDataTable = model1.GetParsedData(model1.filePath);
+
+            string fileExtension = Path.GetExtension(inputSelectedFile);
+            if (fileExtension == ".csv")
+            {
+                string parsingRules = "{\"funcInput\":{\"attribute_list\" : [\"Testfile\",\"SampleName\",\"ExtCal.Average\",\"iCapOES\"],\"delimiter\" : \";\"  }}";
+                //REST Call
+                var client = new RestClient("https://fileparserapp.appspot.com/FileParser/CSV");
+                var request = new RestRequest();
+                request.Method = RestSharp.Method.POST;
+                request.JsonSerializer.ContentType = "multipart/form-data";
+                request.Parameters.Clear();
+                request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+                request.AddParameter("ParsingRules", parsingRules);
+                IRestResponse response = client.Execute(request);
+                model1.parsedData = response.Content; // raw content as string
+                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+            }
+            else if (fileExtension == ".xml")
+            {
+                string parsingRules = "{\"funcInput\": {\"parentTag\": \"TestOrder\",\"headerFields\": [\"TestOrder:Id\",\"TestOrder:LastModificationActorId\",\"TestOrder:Specimen\",\"Detail:Value\"],\"tableFields\": [\"TestOrder:TestOrderDate\",\"TestOrder:Status\",\"TestData:Id\",\"TestResult:Id\",\"ProcessOrder:Id\"]}}";
+                //REST Call
+                var client = new RestClient("https://fileparserapp.appspot.com/FileParser/XML");
+                var request = new RestRequest();
+                request.Method = RestSharp.Method.POST;
+                request.JsonSerializer.ContentType = "multipart/form-data";
+                request.Parameters.Clear();
+                request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+                request.AddParameter("ParsingRules", parsingRules);
+                IRestResponse response = client.Execute(request);
+                model1.parsedData = response.Content; // raw content as string
+                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+            }
+            else if (fileExtension == ".txt" || fileExtension == ".dat") {
+                string parsingRules = "{\"funcInput\":{\"attribute_list\" : [\"Testfile\",\"SampleName\",\"ExtCal.Average\",\"iCapOES\"],\"delimiter\" : \";\"  }}";
+                //REST Call
+                var client = new RestClient("https://fileparserapp.appspot.com/FileParser/TXT");
+                var request = new RestRequest();
+                request.Method = RestSharp.Method.POST;
+                request.JsonSerializer.ContentType = "multipart/form-data";
+                request.Parameters.Clear();
+                request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+                request.AddParameter("ParsingRules", parsingRules);
+                IRestResponse response = client.Execute(request);
+                model1.parsedData = response.Content; // raw content as string
+                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+            }
+            else {
+                model1.parsedData = "File Format Not Supported :( \r\n No Data To Display";
+                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+            }
 
             return PartialView("_ParsedData", model1);
         }
-
-
     }
 }

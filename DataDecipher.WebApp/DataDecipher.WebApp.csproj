@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" PrivateAssets="All" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.2" />
+    <PackageReference Include="RestSharp" Version="106.5.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -155,6 +156,8 @@
     <Content Remove="Views\ApplicationUser\Delete.cshtml" />
     <Content Remove="Views\ApplicationUser\Details.cshtml" />
     <Content Remove="Views\Shared\_ParsedData.cshtml" />
+    <Content Remove="TestData\Raw\MPX_XML_JSON.json" />
+    <Content Remove="TestData\Raw\Sample_XML.json" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -165,6 +168,7 @@
     <None Remove="SampleDataSets\GC2.DAT" />
     <None Remove="SampleDataSets\GC2.DAT" />
     <None Remove="SampleDataSets\test.txt" />
+    <None Remove="TestData\Raw\Sample1.csv" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\assets\css\bootstrap.min.css" />
