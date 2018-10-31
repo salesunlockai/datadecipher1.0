@@ -66,11 +66,12 @@
                 <label for="fileList">File: </label>
                 <select id="fileList" onChange="storeRawFileSelection(this);">
                     <option value="0">Select a file...</option>
-                    <option value="1">GC2.DAT</option>
-                    <option value="2">LL_SPOT_DATA.csv</option>
-                    <option value="3">test.txt</option>
+                    <option value="1">TestData/Raw/Sample.csv</option>
+                    <option value="2">TestData/Raw/Sample.xml</option>
+                    <option value="3">TestData/Raw/Sample.txt</option>
+                    <option value="4">TestData/Raw/Sample.dat</option>
                 </select>
-                <input type="text" id="inputSelectedFile" hidden />
+                <input type="text" id="inputSelectedFile" hidden/>
                 <input type="button" id="showRawData" value="Show Raw Data" class="btn btn-primary btn-round" />
                 <br />
                 <div id="divRawDataContainer">
@@ -189,15 +190,13 @@ $(document).ready(function() {
             type: 'POST',
             datatype: 'text',
             contentType: 'application/x-www-form-urlencoded',
-            data: {headerStart: $('#headerStart').val()},
+            data: { inputSelectedFile: $('#inputSelectedFile').val() },
             success: function(content) {
                 $('#divParsedDataContainer').html(content);
             },
             error: function(e) { }
         });
     });
-});
-
-</script>
+});</script>
 
 

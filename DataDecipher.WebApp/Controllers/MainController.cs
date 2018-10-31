@@ -30,9 +30,8 @@ namespace DataDecipher.WebApp.Controllers
         {
             var model1 = new RawData
             {
-                //filePath = "TestData/GC2.DAT"
-                fileName = inputSelectedFile,
-                filePath = "TestData/Raw/" + inputSelectedFile
+                fileName = Path.GetFileName(inputSelectedFile),
+                filePath = inputSelectedFile
             };
             model1.rawData = model1.GetRawData(model1.filePath);
 
@@ -43,7 +42,6 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public IActionResult DisplayParsedData(string inputSelectedFile)
         {
-            inputSelectedFile = "TestData/Raw/Sample_CSV.json";
             var model1 = new ParsedData
             {
                 filePath = inputSelectedFile,
@@ -51,11 +49,10 @@ namespace DataDecipher.WebApp.Controllers
             };
 
             string fileExtension = Path.GetExtension(inputSelectedFile);
-            if (fileExtension == ".csv")
-            {
+            if (fileExtension == ".csv"){
                 string parsingRules = "{\"funcInput\":{\"attribute_list\" : [\"Testfile\",\"SampleName\",\"ExtCal.Average\",\"iCapOES\"],\"delimiter\" : \";\"  }}";
                 //REST Call
-                var client = new RestClient("https://fileparserapp.appspot.com/FileParser/CSV");
+                var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
                 var request = new RestRequest();
                 request.Method = RestSharp.Method.POST;
                 request.JsonSerializer.ContentType = "multipart/form-data";
@@ -66,11 +63,10 @@ namespace DataDecipher.WebApp.Controllers
                 model1.parsedData = response.Content; // raw content as string
                 model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
             }
-            else if (fileExtension == ".xml")
-            {
-                string parsingRules = "{\"funcInput\": {\"parentTag\": \"TestOrder\",\"headerFields\": [\"TestOrder:Id\",\"TestOrder:LastModificationActorId\",\"TestOrder:Specimen\",\"Detail:Value\"],\"tableFields\": [\"TestOrder:TestOrderDate\",\"TestOrder:Status\",\"TestData:Id\",\"TestResult:Id\",\"ProcessOrder:Id\"]}}";
+            else if (fileExtension == ".xml"){
+                string parsingRules = "{\"funcInput\": {\"parentTag\": \"TestOrder\",\"headerFields\": [\"TestOrder:Id\",\"TestOrder:LastModificationActorId\",\"TestOrder:Specimen\"],\"tableFields\": [\"TestOrder:TestOrderDate\",\"TestOrder:Status\",\"TestData:Id\"]}}";
                 //REST Call
-                var client = new RestClient("https://fileparserapp.appspot.com/FileParser/XML");
+                var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/XML");
                 var request = new RestRequest();
                 request.Method = RestSharp.Method.POST;
                 request.JsonSerializer.ContentType = "multipart/form-data";
@@ -82,9 +78,9 @@ namespace DataDecipher.WebApp.Controllers
                 model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
             }
             else if (fileExtension == ".txt" || fileExtension == ".dat") {
-                string parsingRules = "{\"funcInput\":{\"attribute_list\" : [\"Testfile\",\"SampleName\",\"ExtCal.Average\",\"iCapOES\"],\"delimiter\" : \";\"  }}";
+                string parsingRules = "{\"funcInput\":{\"recordMarkerStartText\" : \"Software Version\",\"recordMarkerEndText\" : \"XXX Laboratories\",\"tableMarkerStartText\" : \"Water Report\",\"tableMarkerEndText\" : \"Timed Event Table\",\"headerMarkerStartText\" : \"Software Version\",\"headerMarkerEndText\" : \"Water Report\",\"headerFieldsSelection\" : [\"Sample Name\",\"Sample Number\",\"Instrument\",\"Sample Amount\"],\"tableFieldsSelection\" : [\"Time\",\"Component\",\"Adj Amt\",\"Area\"],\"delimiter\" : \",\"}}";
                 //REST Call
-                var client = new RestClient("https://fileparserapp.appspot.com/FileParser/TXT");
+                var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/TXT");
                 var request = new RestRequest();
                 request.Method = RestSharp.Method.POST;
                 request.JsonSerializer.ContentType = "multipart/form-data";
