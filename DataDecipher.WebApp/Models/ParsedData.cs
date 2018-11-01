@@ -33,23 +33,26 @@ namespace DataDecipher.WebApp.Models
             string[] rows = content.Split('\n'); //split full file text into rows  
             for (int i = 0; i < rows.Count() - 1; i++)
             {
-                string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
-                {
-                    if (i == 0)
+                if (!string.IsNullOrEmpty(rows[i]) || !string.IsNullOrWhiteSpace(rows[i])) 
+                { 
+                    string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
                     {
-                        for (int j = 0; j < rowValues.Count(); j++)
+                        if (i == 0)
                         {
-                            dtCsv.Columns.Add(rowValues[j]); //add headers  
+                            for (int j = 0; j < rowValues.Count(); j++)
+                            {
+                                dtCsv.Columns.Add(rowValues[j]); //add headers  
+                            }
                         }
-                    }
-                    else
-                    {
-                        DataRow dr = dtCsv.NewRow();
-                        for (int k = 0; k < dtCsv.Columns.Count; k++)
+                        else
                         {
-                            dr[k] = rowValues[k].ToString();
+                            DataRow dr = dtCsv.NewRow();
+                            for (int k = 0; k < dtCsv.Columns.Count; k++)
+                            {
+                                dr[k] = rowValues[k].ToString();
+                            }
+                            dtCsv.Rows.Add(dr); //add other rows  
                         }
-                        dtCsv.Rows.Add(dr); //add other rows  
                     }
                 }
             }
