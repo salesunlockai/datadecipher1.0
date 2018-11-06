@@ -1,0 +1,41 @@
+﻿@model DataDecipher.WebApp.Models.RawData
+<div>
+    <form action="">
+        <label for="columns">Column(s):</label>
+        <div class="input-group form-group-no-border input-lg">
+            <span class="input-group-addon">
+                <i class="now-ui-icons text_caps-small"></i>
+            </span>
+            <input id="columnList" type="text" name="columns" placeholder="Enter one or more column names separated by comma" class="form-control" />
+        </div>
+        <br />
+        <label for="lstDelimiter">Delimiter: </label>
+        <select id="listDelimiter" name="lstDelimiter">
+            <option value=",">Comma (,)</option>
+            <option value=";">Semicolon (;)</option>
+            <option value=":">Colon (:)</option>
+            <option value="|">Pipe (|)</option>
+        </select>
+        <br /><br />
+        <input type="button" id="showParsedCsvData" value="Parse Data" class="btn btn-primary btn-round" title="Click to parse the input data as per configuration above" />
+    </form>
+</div>
+
+<script>
+$(document).ready(function() {
+    var e = document.getElementById("listDelimiter");
+    $('#showParsedCsvData').click(function() {
+        $.ajax({
+            url: '/Main/DisplayParsedCsvFile',
+            type: 'POST',
+            datatype: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { inputSelectedFile: '@Model.filePath', columns: $('#columnList').val(), delimiter: e.options[e.selectedIndex].value},
+            success: function(content) {
+                $('#divParsedDataContainer').html(content);
+            },
+            error: function(e) { }
+        });
+    });
+});
+</script>

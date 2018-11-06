@@ -1,0 +1,56 @@
+﻿<form action="">
+    <label for="recordStart">Record Start:</label>
+    <div class="input-group form-group-no-border input-lg">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" name="recordStart" placeholder="Record Start String..." class="form-control" />
+    </div>
+    <label for="recordEnd">Record End:</label>
+    <div class="input-group form-group-no-border input-lg">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" name="recordEnd" placeholder="Record End String..." class="form-control" />
+    </div>
+    <br />
+    <label for="headerStart">Header Start:</label>
+    <div class="input-group form-group-no-border input-lg">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" name="headerStart" placeholder="Header Start String..." class="form-control" />
+    </div>
+    <label for="headerEnd">Header End:</label>
+    <div class="input-group form-group-no-border input-lg">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" name="headerEnd" placeholder="Header End String..." class="form-control" />
+    </div>
+    <br />
+    <label for="tableStart">Table Start:</label>
+    <div class="input-group form-group-no-border input-lg">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" name="tableStart" placeholder="Table Start String..." class="form-control" />
+    </div>
+    <label for="tableEnd">Table End:</label>
+    <div class="input-group form-group-no-border input-lg">
+        <span class="input-group-addon">
+            <i class="now-ui-icons text_caps-small"></i>
+        </span>
+        <input type="text" name="tableEnd" placeholder="Table End String..." class="form-control" />
+    </div>
+    <br />
+    <label for="listDelimiter">Delimiter: </label>
+    <select name="listDelimiter">
+        <option value=",">Comma (,)</option>
+        <option value=";">Semicolon (;)</option>
+        <option value=":">Colon (:)</option>
+        <option value="|">Pipe (|)</option>
+    </select>
+    <br /><br />
+    <input type="button" id="showParsedData" value="Parse Data" class="btn btn-primary btn-round" title="Click to parse the input data as per configuration above" />
+</form>

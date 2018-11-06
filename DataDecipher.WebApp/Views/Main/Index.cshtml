@@ -4,6 +4,11 @@
     Layout = "_MainLayout";
 }
 <br />
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<link href="https://cdn.quilljs.com/1.1.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.1.6/quill.js"></script>
+
 <div class="container-fluid">
     <h5>Welcome to Data Decipher</h5>
     <p>Use instructions below to quickly obtain insights from your data and generate reports</p>
@@ -71,7 +76,7 @@
                     <option value="3">TestData/Raw/Sample.txt</option>
                     <option value="4">TestData/Raw/Sample.dat</option>
                 </select>
-                <input type="text" id="inputSelectedFile" hidden/>
+                <input type="text" id="inputSelectedFile" hidden />
                 <input type="button" id="showRawData" value="Show Raw Data" class="btn btn-primary btn-round" />
                 <br />
                 <div id="divRawDataContainer">
@@ -86,62 +91,8 @@
             <div class=col-md-4>
                 <h6>4. Set parser configuration</h6>
                 <br />
-                <form action="">
-                    <label for="recordStart">Record Start:</label>
-                    <div class="input-group form-group-no-border input-lg">
-                        <span class="input-group-addon">
-                            <i class="now-ui-icons text_caps-small"></i>
-                        </span>
-                        <input type="text" name="recordStart" placeholder="Record Start String..." class="form-control" />
-                    </div>
-                    <label for="recordEnd">Record End:</label>
-                    <div class="input-group form-group-no-border input-lg">
-                        <span class="input-group-addon">
-                            <i class="now-ui-icons text_caps-small"></i>
-                        </span>
-                        <input type="text" name="recordEnd" placeholder="Record End String..." class="form-control" />
-                    </div>
-                    <br />
-                    <label for="headerStart">Header Start:</label>
-                    <div class="input-group form-group-no-border input-lg">
-                        <span class="input-group-addon">
-                            <i class="now-ui-icons text_caps-small"></i>
-                        </span>
-                        <input type="text" name="headerStart" placeholder="Header Start String..." class="form-control" />
-                    </div>
-                    <label for="headerEnd">Header End:</label>
-                    <div class="input-group form-group-no-border input-lg">
-                        <span class="input-group-addon">
-                            <i class="now-ui-icons text_caps-small"></i>
-                        </span>
-                        <input type="text" name="headerEnd" placeholder="Header End String..." class="form-control" />
-                    </div>
-                    <br />
-                    <label for="tableStart">Table Start:</label>
-                    <div class="input-group form-group-no-border input-lg">
-                        <span class="input-group-addon">
-                            <i class="now-ui-icons text_caps-small"></i>
-                        </span>
-                        <input type="text" name="tableStart" placeholder="Table Start String..." class="form-control" />
-                    </div>
-                    <label for="tableEnd">Table End:</label>
-                    <div class="input-group form-group-no-border input-lg">
-                        <span class="input-group-addon">
-                            <i class="now-ui-icons text_caps-small"></i>
-                        </span>
-                        <input type="text" name="tableEnd" placeholder="Table End String..." class="form-control" />
-                    </div>
-                    <br />
-                    <label for="listDelimiter">Delimiter: </label>
-                    <select name="listDelimiter">
-                        <option value=",">Comma (,)</option>
-                        <option value=";">Semicolon (;)</option>
-                        <option value=":">Colon (:)</option>
-                        <option value="|">Pipe (|)</option>
-                    </select>
-                    <br /><br />
-                    <input type="button" id="showParsedData" value="Parse Data" class="btn btn-primary btn-round" title="Click to parse the input data as per configuration above" />
-                </form>
+                <div id="parsingRules">
+                </div>
                 <br />
             </div>
         </div>
@@ -163,7 +114,59 @@
     </div>
 </div>
 
-<script type="text/javascript">$(document).ready(function() {
+<script type="text/javascript">
+
+function storeRawFileSelection(sel) {
+    $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
+    fullFilePath = sel.options[sel.selectedIndex].text;
+    fileExtension = fullFilePath.replace(/^.*\./, '');
+    switch (fileExtension) {
+            case 'txt': case 'dat':
+                $.ajax({
+                    url: '/Main/DisplayParsingViewTxtDat',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { filePath: fullFilePath },
+                    success: function(content) {
+                        $('#parsingRules').html(content);
+                    },
+                error: function(e) { }
+                });
+                break;
+            case 'csv':
+                $.ajax({
+                    url: '/Main/DisplayParsingViewCsv',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { filePath: fullFilePath },
+                    success: function(content) {
+                        $('#parsingRules').html(content);
+                    },
+                error: function(e) { }
+                });
+                break;
+            case 'xml':
+                $.ajax({
+                    url: '/Main/DisplayParsingViewXml',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { filePath: fullFilePath },
+                    success: function(content) {
+                        $('#parsingRules').html(content);
+                    },
+                error: function(e) { }
+                });
+                break;
+            default:
+                x.innerhtml = 'none';
+        }
+
+}
+
+$(document).ready(function() {
     $('#showRawData').click(function() {
         $.ajax({
             url: '/Main/DisplayRawData',
@@ -179,24 +182,5 @@
     });
 });
 
-function storeRawFileSelection(sel) {
-            $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
-}
-
-$(document).ready(function() {
-    $('#showParsedData').click(function() {
-        $.ajax({
-            url: '/Main/DisplayParsedData',
-            type: 'POST',
-            datatype: 'text',
-            contentType: 'application/x-www-form-urlencoded',
-            data: { inputSelectedFile: $('#inputSelectedFile').val() },
-            success: function(content) {
-                $('#divParsedDataContainer').html(content);
-            },
-            error: function(e) { }
-        });
-    });
-});</script>
-
+</script>
 

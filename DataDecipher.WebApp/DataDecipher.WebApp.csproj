@@ -158,6 +158,7 @@
     <Content Remove="Views\Shared\_ParsedData.cshtml" />
     <Content Remove="TestData\Raw\MPX_XML_JSON.json" />
     <Content Remove="TestData\Raw\Sample_XML.json" />
+    <Content Remove="Views\Shared\_ParsingRulesCsv.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
