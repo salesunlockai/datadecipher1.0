@@ -1,18 +1,14 @@
 ﻿@model DataDecipher.WebApp.Models.RawData
-
-<br>
 <div>Contents of the file: @Model.fileName</div>
 <br />
 
-<div id="container" style="height:600px; width:800px;">
-    <div id="rawEditor">
-        @Model.rawData
-    </div>
+<div id="rawEditor" style="height: 800px; width: 1000px;">
 </div>
 <script>
-var quill = new Quill('#rawEditor', {
-  theme: 'snow'
-});
+var quill = new Quill('#rawEditor',{
+          theme: 'snow'
+        });
+quill.setText('@Model.rawData.ToString()');
 </script>
 
 <br /><br />
@@ -24,7 +20,7 @@ var quill = new Quill('#rawEditor', {
     </span>
     <input type="text" id="inputFindText" placeholder="Find text..." class="form-control textCleaningControls" disabled="disabled" />
 </div>
-<input type="button" id="findText" value="Find" class="btn btn-primary btn-round textCleaningControls" disabled="disabled" />
+<input type="button" id="findText" value="Find" onclick="findText()" class="btn btn-primary btn-round textCleaningControls" disabled="disabled" />
 <br />
 <br />
 <div>
@@ -46,12 +42,23 @@ function enableCleaningControls() {
     var el = document.getElementById("cleanData");
     for (var i = 0; i < elements.length; i++) {
         if (el.checked) {
-          elements[i].disabled = false;
-        } else {
-          elements[i].disabled = true;
+          elements[i].disabled = false;}
+        else {
+          elements[i].disabled = true;}
         }
     }
-}
 
+function enableEditing(){
+    var range = quill.getSelection();
+    if (range) {
+      if (range.length == 0) {
+        console.log('User cursor is at index', range.index);
+      } else {
+        var text = quill.getText(range.index, range.length);
+        quill.setText(text);
+      }
+    } else {
+      console.log('User cursor is not in editor');
+    }
+}
 </script>
-<br />
