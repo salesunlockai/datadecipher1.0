@@ -75,6 +75,8 @@ namespace DataDecipher.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ApplicationUserListViewModel applicationUser)
         {
+            applicationUser.UserName = applicationUser.Email;
+
             applicationUser.AvailableOrganizations = context.Organizations.Select(r => new SelectListItem
             {
                 Text = r.Name,
