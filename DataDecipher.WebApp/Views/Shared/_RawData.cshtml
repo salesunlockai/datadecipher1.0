@@ -11,7 +11,7 @@ var quill = new Quill('#rawEditor',{
 quill.setText('@Model.rawData.ToString()');
 </script>
 
-<br /><br />
+@*<br /><br />
 <input type="checkbox" id="cleanData" class="checkbox" placeholder="Clean Data" onChange="enableCleaningControls()">
 <label for="cleanData">Clean Data</label><br />
 <div class="input-group form-group-no-border input-lg">
@@ -34,9 +34,24 @@ quill.setText('@Model.rawData.ToString()');
     <input type="button" id="replaceText" value="Replace" class="btn btn-primary btn-round textCleaningControls" disabled="disabled" />
 </div><br />
 <br />
-<input type="button" id="saveCleanText" value="Save" class="btn btn-primary" />
+<input type="button" id="saveCleanText" value="Save" class="btn btn-primary" />*@
 
 <script>
+$(document).ready(function() {
+    function loadFileAsText(@Model.filePath)
+    {
+        var fileToLoad = filePath;
+        alert(fileToLoad.path);
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent)
+        {
+            var textFromFileLoaded = fileLoadedEvent.target.result;
+            document.getElementById("rawDataText").value = textFromFileLoaded;
+        };
+        fileReader.readAsText(fileToLoad, "UTF-8");
+    }
+}
+
 function enableCleaningControls() {
     var elements = document.getElementsByClassName("textCleaningControls");
     var el = document.getElementById("cleanData");

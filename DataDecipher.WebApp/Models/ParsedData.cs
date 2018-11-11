@@ -26,7 +26,7 @@ namespace DataDecipher.WebApp.Models
         public DataTable parsedDataTable { get; set; }
         public string[] records { get; set; }
 
-        public DataTable GetParsedDataTable(string content)
+        public DataTable GetParsedDataTable(string content, string delimiter)
         {
             DataTable dtCsv = new DataTable();
 
@@ -35,7 +35,7 @@ namespace DataDecipher.WebApp.Models
             {
                 if (!string.IsNullOrEmpty(rows[i]) || !string.IsNullOrWhiteSpace(rows[i])) 
                 { 
-                    string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
+                    string[] rowValues = rows[i].Split(delimiter); //split each row with comma to get individual values  
                     {
                         if (i == 0)
                         {

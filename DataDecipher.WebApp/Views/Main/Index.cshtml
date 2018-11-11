@@ -37,14 +37,25 @@
                 <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
                     <div class="form-inline">
                         <div class="form-group">
-                            <input type="file" class="file btn btn-primary btn-simple" name="files[]" id="js-upload-files" multiple>
+                            <input type="file" class="file btn btn-primary btn-simple" id="uploadSourceFiles" accept=".csv,.txt,.dat,.xml" multiple>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-round" id="js-upload-submit">Upload files</button>
+                        <br />
+                        <label for="parentTag">Folder Path: </label>
+                        <div class="input-group form-group-no-border input-lg">
+                            <span class="input-group-addon">
+                                <i class="now-ui-icons text_caps-small"></i>
+                            </span>
+                            <input type="text" id="sourceFolderPath" placeholder="Please enter the folder path" class="form-control" />
+                        </div>
+                        <br /><br />
+                        <div class="input-group form-group-no-border input-lg">
+                            <input type="button" id="submitSourceFiles" onclick="updateSourceFileList()" value="Submit files" class="btn btn-primary btn-round" />
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="row>">
+        @*<div class="row>">
             <div class=col-md-4>
                 <br />
                 <p>Or drag and drop files below</p>
@@ -57,9 +68,8 @@
             <div class=col-md-4>
                 <br />
                 <p>Or Select from existing datasources</p>
-                @*@await Html.PartialAsync("~/Views/DataSource/_ListDataSource.cshtml",Model)*@
             </div>
-        </div>
+        </div>*@
     </div>
 </div>
 <div id="instrument" class="section">
@@ -68,13 +78,8 @@
             <div class=col-md-4>
                 <h6>3. Set instrument configuration</h6>
                 <br />
-                <label for="fileList">File: </label>
+                <label for="fileList">File:  </label>
                 <select id="fileList" onChange="storeRawFileSelection(this);">
-                    <option value="0">Select a file...</option>
-                    <option value="1">TestData/Raw/Sample.csv</option>
-                    <option value="2">TestData/Raw/Sample.xml</option>
-                    <option value="3">TestData/Raw/Sample.txt</option>
-                    <option value="4">TestData/Raw/Sample.dat</option>
                 </select>
                 <input type="text" id="inputSelectedFile" hidden />
                 <input type="button" id="showRawData" value="Show Raw Data" class="btn btn-primary btn-round" />
@@ -106,61 +111,60 @@
                 <br />
                 <div id="divParsedDataContainer">
                 </div>
-                <br />
-                <input type="file" id="btnDataExtract" value="Create Data Extract" onclick="saveParsedDataAsExtract()" class="btn btn-primary" />
-                <input type="button" id="btnStoreDatabase" value="Store in Database" class="btn btn-primary" disabled="true" />
             </div>
         </div>
     </div>
 </div>
 
-<script type="text/javascript">function storeRawFileSelection(sel) {
+<script type="text/javascript">
+
+function storeRawFileSelection(sel) {
     $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
     fullFilePath = sel.options[sel.selectedIndex].text;
     fileExtension = fullFilePath.replace(/^.*\./, '');
     switch (fileExtension) {
-            case 'txt': case 'dat':
-                $.ajax({
-                    url: '/Main/DisplayParsingViewTxtDat',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { filePath: fullFilePath },
-                    success: function(content) {
-                        $('#parsingRules').html(content);
-                    },
-                error: function(e) { }
-                });
-                break;
-            case 'csv':
-                $.ajax({
-                    url: '/Main/DisplayParsingViewCsv',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { filePath: fullFilePath },
-                    success: function(content) {
-                        $('#parsingRules').html(content);
-                    },
-                error: function(e) { }
-                });
-                break;
-            case 'xml':
-                $.ajax({
-                    url: '/Main/DisplayParsingViewXml',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { filePath: fullFilePath },
-                    success: function(content) {
-                        $('#parsingRules').html(content);
-                    },
-                error: function(e) { }
-                });
-                break;
-            default:
-                x.innerhtml = 'none';
-        }
+        case 'txt': case 'dat':
+            $.ajax({
+                url: '/Main/DisplayParsingViewTxtDat',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { filePath: fullFilePath },
+                success: function(content) {
+                    $('#parsingRules').html(content);
+                },
+            error: function(e) { }
+            });
+            break;
+        case 'csv':
+            $.ajax({
+                url: '/Main/DisplayParsingViewCsv',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { filePath: fullFilePath },
+                success: function(content) {
+                    $('#parsingRules').html(content);
+                },
+            error: function(e) { }
+            });
+            break;
+        case 'xml':
+            $.ajax({
+                url: '/Main/DisplayParsingViewXml',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { filePath: fullFilePath },
+                success: function(content) {
+                    $('#parsingRules').html(content);
+                },
+            error: function(e) { }
+            });
+            break;
+        default:
+            x.innerhtml = 'none';
+    }
 }
 
 $(document).ready(function() {
@@ -179,7 +183,26 @@ $(document).ready(function() {
     });
 });
 
-function saveParsedDataAsExtract(){
+function updateSourceFileList(){
+    var sourceFolderPath = document.getElementById("sourceFolderPath").value;
+    var inputFilelist = document.getElementById("uploadSourceFiles");
+    var files = inputFilelist.files;
+    var inputFilelistDropDown = document.getElementById("fileList");
+    inputFilelistDropDown.options.length = 0;
+    if(inputFilelist.files.length!=0)
+    {
+        inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Select a file", 0);
+
+        // loop through files
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option(sourceFolderPath + file.name, i+1);
+        }
+    }
+    else
+    {
+        inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Please provide an input data source", 0);
+    }
 }
 
 </script>

@@ -169,6 +169,8 @@
     <None Remove="SampleDataSets\GC2.DAT" />
     <None Remove="SampleDataSets\test.txt" />
     <None Remove="TestData\Raw\Sample1.csv" />
+    <None Remove="TestData\.DS_Store" />
+    <None Remove="TestData\Raw\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap\assets\css\bootstrap.min.css" />

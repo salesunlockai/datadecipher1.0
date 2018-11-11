@@ -17,7 +17,7 @@ namespace DataDecipher.WebApp.Models
         [Required(ErrorMessage = "Please select atleast one data connector")]
         public virtual ICollection<PlanDataConnector> EnabledDataConnectors { get; } = new List<PlanDataConnector>();
 
-        [Display(Name = "Trial period (in days)")]
+        [Display(Name = "Plan period (in days)")]
         [DefaultValue(0)]
         public int TrialPeriod { get; set; }
 

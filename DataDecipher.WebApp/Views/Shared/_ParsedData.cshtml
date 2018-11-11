@@ -1,6 +1,5 @@
 ﻿@model DataDecipher.WebApp.Models.ParsedData
 @using System.Data;
-
 <br>
 <div>Parsed contents of the file: @Model.fileName</div>
 <br /><br />
@@ -19,11 +18,80 @@
             {
                 <tr>
                     @foreach (DataColumn col in Model.parsedDataTable.Columns)
-            {
-                <td>@row[col.ColumnName]</td>
-            }
+                    {
+                        <td>@row[col.ColumnName]</td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 </div>
+<br />
+<label for="outputFileName">Output Filename: </label>
+<div class="input-group form-group-no-border input-lg">
+    <span class="input-group-addon">
+        <i class="now-ui-icons text_caps-small"></i>
+    </span>
+    <input type="text" id="inputFileNameToSaveAs" name="outputFileName" placeholder="Please enter the folder path" class="form-control" />
+</div>
+<input type="button" id="btnSaveAsFile" onclick="saveTextAsFile()" value="Download output as file" class="btn btn-primary btn-round" />
+
+@*<table>
+    <tr><td>Text to Save:</td></tr>
+    <tr>
+        <td colspan="3">
+            <textarea id="inputTextToSave" cols="80" rows="25"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>Filename to Save As:</td>
+        <td><input id="inputFileNameToSaveAs"></input></td>
+        <td><button onclick="saveTextAsFile()">Save Text to File</button></td>
+    </tr>
+    <tr>
+        <td>Select a File to Load:</td>
+        <td><input type="file" id="fileToLoad"></td>
+        <td><button onclick="loadFileAsText()">Load Selected File</button>
+        <td>
+    </tr>
+</table>*@
+
+<script type="text/javascript">
+
+function saveTextAsFile()
+{
+    var textToSave = '@Model.parsedData';
+    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+    var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+}
+
+function destroyClickedElement(event)
+{
+    document.body.removeChild(event.target);
+}
+
+function loadFileAsText()
+{
+    var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+    var fileReader = new FileReader();
+    fileReader.onload = function(fileLoadedEvent)
+    {
+        var textFromFileLoaded = fileLoadedEvent.target.result;
+        document.getElementById("inputTextToSave").value = textFromFileLoaded;
+    };
+    fileReader.readAsText(fileToLoad, "UTF-8");
+}
+
+</script>

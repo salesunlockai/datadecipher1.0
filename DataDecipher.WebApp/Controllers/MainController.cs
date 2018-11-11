@@ -111,7 +111,7 @@ namespace DataDecipher.WebApp.Controllers
                 request.AddParameter("ParsingRules", parsingRules);
                 IRestResponse response = client.Execute(request);
                 model1.parsedData = response.Content; // raw content as string
-                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
                 return PartialView("_ParsedData", model1);
             }
             else return null;
@@ -168,7 +168,7 @@ namespace DataDecipher.WebApp.Controllers
             request.AddParameter("ParsingRules", parsingRules);
             IRestResponse response = client.Execute(request);
             model1.parsedData = response.Content; // raw content as string
-            model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+            model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
             return PartialView("_ParsedData", model1);
         }
 
@@ -208,7 +208,7 @@ namespace DataDecipher.WebApp.Controllers
             request.AddParameter("ParsingRules", parsingRules);
             IRestResponse response = client.Execute(request);
             model1.parsedData = response.Content; // raw content as string
-            model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData);
+            model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, ",");
             return PartialView("_ParsedData", model1);
         }
     }
