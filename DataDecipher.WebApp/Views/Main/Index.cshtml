@@ -28,31 +28,21 @@
             <div class=col-md-4>
                 <h6>2. Set datasource</h6>
                 <br />
+                <p>Select files from your computer: </p>
+                <div class="form-group">
+                    <input type="file" class="file btn btn-primary btn-simple" id="uploadSourceFiles" accept=".csv,.txt,.dat,.xml" multiple>
+                </div>
+                <label for="sourceFolderPath">Folder Path: </label>
+                <div class="input-group form-group-no-border input-lg">
+                    <span class="input-group-addon">
+                        <i class="now-ui-icons text_caps-small"></i>
+                    </span>
+                    <input type="text" id="sourceFolderPath" name="sourceFolderPath" placeholder="Please enter the folder path" class="form-control" />
+                </div>
                 <br />
-            </div>
-        </div>
-        <div class="row>">
-            <div class=col-md-6>
-                <p>Select files from your computer</p>
-                <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <input type="file" class="file btn btn-primary btn-simple" id="uploadSourceFiles" accept=".csv,.txt,.dat,.xml" multiple>
-                        </div>
-                        <br />
-                        <label for="parentTag">Folder Path: </label>
-                        <div class="input-group form-group-no-border input-lg">
-                            <span class="input-group-addon">
-                                <i class="now-ui-icons text_caps-small"></i>
-                            </span>
-                            <input type="text" id="sourceFolderPath" placeholder="Please enter the folder path" class="form-control" />
-                        </div>
-                        <br /><br />
-                        <div class="input-group form-group-no-border input-lg">
-                            <input type="button" id="submitSourceFiles" onclick="updateSourceFileList()" value="Submit files" class="btn btn-primary btn-round" />
-                        </div>
-                    </div>
-                </form>
+                <div class="input-group form-group-no-border input-lg">
+                    <input type="button" id="submitSourceFiles" onclick="updateSourceFileList()" value="Submit files" class="btn btn-primary btn-round" />
+                </div>
             </div>
         </div>
         @*<div class="row>">
@@ -75,12 +65,13 @@
 <div id="instrument" class="section">
     <div class="container-fluid">
         <div class="row>">
-            <div class=col-md-4>
+            <div class=col-md-10>
                 <h6>3. Set instrument configuration</h6>
                 <br />
                 <label for="fileList">File:  </label>
                 <select id="fileList" onChange="storeRawFileSelection(this);">
                 </select>
+                <br />
                 <input type="text" id="inputSelectedFile" hidden />
                 <input type="button" id="showRawData" value="Show Raw Data" class="btn btn-primary btn-round" />
                 <br />
@@ -93,7 +84,7 @@
 <div id="parser" class="section">
     <div class="container-fluid">
         <div class="row>">
-            <div class=col-md-4>
+            <div class=col-md-10>
                 <h6>4. Set parser configuration</h6>
                 <br />
                 <div id="parsingRules">
@@ -106,7 +97,7 @@
 <div id="report" class="section">
     <div class="container-fluid">
         <div class="row>">
-            <div class=col-md-4>
+            <div class=col-md-10>
                 <h6>5. Set reporting configuration</h6>
                 <br />
                 <div id="divParsedDataContainer">
