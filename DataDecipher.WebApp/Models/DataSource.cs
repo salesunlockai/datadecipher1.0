@@ -55,6 +55,8 @@ namespace DataDecipher.WebApp.Models
         [Display(Name = "Created date")]
         public DateTime CreatedDate { get; set; }
 
+        public ICollection<DataSourceProcessingRule> DataSourceProcessingRules { get; set; }
+    
         [NotMapped]
         public IFormFile DataFile { get; set; }
 
