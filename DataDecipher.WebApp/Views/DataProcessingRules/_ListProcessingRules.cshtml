@@ -1,0 +1,42 @@
+﻿@model IEnumerable<DataDecipher.WebApp.Models.DataProcessingRule>
+
+<form asp-controller="DataProcessingRules" asp-action="ApplyRules" data-ajax-begin="onBegin" data-ajax-complete="onComplete"
+      data-ajax-failure="onFailed" data-ajax-success="onSuccess"
+      data-ajax="true" data-ajax-method="POST">
+    <div class="container-fluid">
+        <div class="form-group">
+          
+            @foreach (var item in Model)
+            {
+
+            <div class="checkbox">
+                <input asp-for="@item.IsSelected" id="@item.Id" type="checkbox">
+                <label for="@item.Id">
+                    @item.Name
+                </label>
+                <input asp-for="@item.Id" type="hidden" />
+            </div>
+
+            }
+            </div>
+
+        <input class="btn btn-primary" type="submit" value="Apply" />
+    </div>
+</form>
+<script>var results = $("#Results");
+var onBegin = function() {
+        results.html("");
+};
+
+var onComplete = function() {
+        results.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>New method created successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+};
+
+var onSuccess = function(context) {
+
+};
+
+var onFailed = function(context) {
+
+};</script>
+

@@ -26,5 +26,9 @@ namespace DataDecipher.WebApp.Models
         public string ReplaceWith { get; set; }
 
         public ICollection<DataSourceProcessingRule> DataSourceProcessingRules { get; set; }
+
+        [NotMapped]
+        public bool IsSelected { get; set; }
+
     }
 }

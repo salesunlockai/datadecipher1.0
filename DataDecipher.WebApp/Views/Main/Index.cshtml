@@ -3,12 +3,12 @@
     ViewData["Title"] = "Main Page";
     Layout = "_MainLayout";
 }
+@using DataDecipher.WebApp.Data
+@inject ApplicationDbContext ctx
 <br />
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <link href="https://cdn.quilljs.com/1.1.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.1.6/quill.js"></script>
-
 <div class="container-fluid">
     <h5>Welcome to Data Decipher</h5>
     <p>Use instructions below to quickly obtain insights from your data and generate reports</p>
@@ -46,20 +46,20 @@
             </div>
         </div>
         @*<div class="row>">
-            <div class=col-md-4>
-                <br />
-                <p>Or drag and drop files below</p>
-                <div class="upload-drop-zone" id="drop-zone">
-                    Just drag and drop files here
+                <div class=col-md-4>
+                    <br />
+                    <p>Or drag and drop files below</p>
+                    <div class="upload-drop-zone" id="drop-zone">
+                        Just drag and drop files here
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row>">
-            <div class=col-md-4>
-                <br />
-                <p>Or Select from existing datasources</p>
-            </div>
-        </div>*@
+            <div class="row>">
+                <div class=col-md-4>
+                    <br />
+                    <p>Or Select from existing datasources</p>
+                </div>
+            </div>*@
     </div>
 </div>
 <div id="instrument" class="section">
@@ -69,8 +69,7 @@
                 <h6>3. Set instrument configuration</h6>
                 <br />
                 <label for="fileList">File:  </label>
-                <select id="fileList" onChange="storeRawFileSelection(this);">
-                </select>
+                <select id="fileList" onChange="storeRawFileSelection(this);"></select>
                 <br />
                 <input type="text" id="inputSelectedFile" hidden />
                 <input type="button" id="showRawData" value="Show Raw Data" class="btn btn-primary btn-round" />
@@ -81,11 +80,21 @@
         </div>
     </div>
 </div>
+<div id="rule" class="section">
+    <div class="container-fluid">
+        <div class="row>">
+            <div class=col-md-10>
+                <h6>4. Apply processing rule</h6>
+            </div>
+        </div>
+        @await Html.PartialAsync("~/Views/DataProcessingRules/_ListProcessingRules.cshtml", ctx.DataProcessingRule.ToList());
+    </div>
+</div>
 <div id="parser" class="section">
     <div class="container-fluid">
         <div class="row>">
             <div class=col-md-10>
-                <h6>4. Set parser configuration</h6>
+                <h6>5. Set parser configuration</h6>
                 <br />
                 <div id="parsingRules">
                 </div>
@@ -98,7 +107,7 @@
     <div class="container-fluid">
         <div class="row>">
             <div class=col-md-10>
-                <h6>5. Set reporting configuration</h6>
+                <h6>6. Set reporting configuration</h6>
                 <br />
                 <div id="divParsedDataContainer">
                 </div>
@@ -106,95 +115,87 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-
-function storeRawFileSelection(sel) {
-    $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
-    fullFilePath = sel.options[sel.selectedIndex].text;
-    fileExtension = fullFilePath.replace(/^.*\./, '');
-    switch (fileExtension) {
-        case 'txt': case 'dat':
-            $.ajax({
-                url: '/Main/DisplayParsingViewTxtDat',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { filePath: fullFilePath },
-                success: function(content) {
-                    $('#parsingRules').html(content);
-                },
-            error: function(e) { }
-            });
-            break;
-        case 'csv':
-            $.ajax({
-                url: '/Main/DisplayParsingViewCsv',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { filePath: fullFilePath },
-                success: function(content) {
-                    $('#parsingRules').html(content);
-                },
-            error: function(e) { }
-            });
-            break;
-        case 'xml':
-            $.ajax({
-                url: '/Main/DisplayParsingViewXml',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { filePath: fullFilePath },
-                success: function(content) {
-                    $('#parsingRules').html(content);
-                },
-            error: function(e) { }
-            });
-            break;
-        default:
-            x.innerhtml = 'none';
-    }
+<script type="text/javascript">function storeRawFileSelection(sel) {
+        $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
+        fullFilePath = sel.options[sel.selectedIndex].text;
+        fileExtension = fullFilePath.replace(/^.*\./, '');
+        switch (fileExtension) {
+            case 'txt': case 'dat':
+                $.ajax({
+                    url: '/Main/DisplayParsingViewTxtDat',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { filePath: fullFilePath },
+                    success: function(content) {
+                        $('#parsingRules').html(content);
+                    },
+                    error: function(e) { }
+                });
+                break;
+            case 'csv':
+                $.ajax({
+                    url: '/Main/DisplayParsingViewCsv',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { filePath: fullFilePath },
+                    success: function(content) {
+                        $('#parsingRules').html(content);
+                    },
+                    error: function(e) { }
+                });
+                break;
+            case 'xml':
+                $.ajax({
+                    url: '/Main/DisplayParsingViewXml',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { filePath: fullFilePath },
+                    success: function(content) {
+                        $('#parsingRules').html(content);
+                    },
+                    error: function(e) { }
+                });
+                break;
+            default:
+                x.innerhtml = 'none';
+        }
 }
 
 $(document).ready(function() {
-    $('#showRawData').click(function() {
-        $.ajax({
-            url: '/Main/DisplayRawData',
-            type: 'POST',
-            datatype: 'text',
-            contentType: 'application/x-www-form-urlencoded',
-            data: { inputSelectedFile: $('#inputSelectedFile').val() },
-            success: function(content) {
-                $('#divRawDataContainer').html(content);
-            },
-            error: function(e) { }
+        $('#showRawData').click(function() {
+            $.ajax({
+                url: '/Main/DisplayRawData',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { inputSelectedFile: $('#inputSelectedFile').val() },
+                success: function(content) {
+                    $('#divRawDataContainer').html(content);
+                },
+                error: function(e) { }
+            });
         });
-    });
 });
 
-function updateSourceFileList(){
-    var sourceFolderPath = document.getElementById("sourceFolderPath").value;
-    var inputFilelist = document.getElementById("uploadSourceFiles");
-    var files = inputFilelist.files;
-    var inputFilelistDropDown = document.getElementById("fileList");
-    inputFilelistDropDown.options.length = 0;
-    if(inputFilelist.files.length!=0)
-    {
-        inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Select a file", 0);
+function updateSourceFileList() {
+        var sourceFolderPath = document.getElementById("sourceFolderPath").value;
+        var inputFilelist = document.getElementById("uploadSourceFiles");
+        var files = inputFilelist.files;
+        var inputFilelistDropDown = document.getElementById("fileList");
+        inputFilelistDropDown.options.length = 0;
+        if (inputFilelist.files.length != 0) {
+            inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Select a file", 0);
 
-        // loop through files
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option(sourceFolderPath + file.name, i+1);
+            // loop through files
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option(sourceFolderPath + file.name, i + 1);
+            }
         }
-    }
-    else
-    {
-        inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Please provide an input data source", 0);
-    }
-}
-
-</script>
-
+        else {
+            inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Please provide an input data source", 0);
+        }
+}</script>
