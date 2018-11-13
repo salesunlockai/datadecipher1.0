@@ -1,0 +1,43 @@
+﻿@model DataDecipher.WebApp.Models.DataProcessingRule
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_MainLayout";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DataProcessingRule</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MatchCondition)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MatchCondition)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ReplaceWith)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ReplaceWith)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

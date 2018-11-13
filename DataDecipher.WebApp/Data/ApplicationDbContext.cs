@@ -33,6 +33,8 @@ namespace DataDecipher.WebApp.Data
 
         }
 
+        public DbSet<DataDecipher.WebApp.Models.DataProcessingRule> DataProcessingRule { get; set; }
+
        
     }
 }

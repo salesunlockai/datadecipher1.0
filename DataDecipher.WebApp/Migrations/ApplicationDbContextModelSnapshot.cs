@@ -110,6 +110,26 @@ namespace DataDecipher.WebApp.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("DataDecipher.WebApp.Models.DataProcessingRule", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("MatchCondition")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("ReplaceWith");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataProcessingRule");
+                });
+
             modelBuilder.Entity("DataDecipher.WebApp.Models.DataSource", b =>
                 {
                     b.Property<string>("Id")
@@ -151,6 +171,24 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DataSourceConnectors");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.DataSourceProcessingRule", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("DataProcessingRuleId");
+
+                    b.Property<string>("DataSourceId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DataProcessingRuleId");
+
+                    b.HasIndex("DataSourceId");
+
+                    b.ToTable("DataSourceProcessingRule");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.Method", b =>
@@ -400,6 +438,17 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasOne("DataDecipher.WebApp.Models.DataSourceConnector", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.DataSourceProcessingRule", b =>
+                {
+                    b.HasOne("DataDecipher.WebApp.Models.DataProcessingRule", "Rule")
+                        .WithMany("DataSourceProcessingRules")
+                        .HasForeignKey("DataProcessingRuleId");
+
+                    b.HasOne("DataDecipher.WebApp.Models.DataSource", "DataSource")
+                        .WithMany("DataSourceProcessingRules")
+                        .HasForeignKey("DataSourceId");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.Method", b =>

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataDecipher.WebApp.Migrations
 {
-    public partial class InitDB : Migration
+    public partial class initDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,6 +22,21 @@ namespace DataDecipher.WebApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DataProcessingRule",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    MatchCondition = table.Column<string>(nullable: false),
+                    ReplaceWith = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataProcessingRule", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -323,6 +338,31 @@ namespace DataDecipher.WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataSourceProcessingRule",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    DataProcessingRuleId = table.Column<string>(nullable: true),
+                    DataSourceId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataSourceProcessingRule", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DataSourceProcessingRule_DataProcessingRule_DataProcessingRuleId",
+                        column: x => x.DataProcessingRuleId,
+                        principalTable: "DataProcessingRule",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DataSourceProcessingRule_DataSources_DataSourceId",
+                        column: x => x.DataSourceId,
+                        principalTable: "DataSources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MethodDataSources",
                 columns: table => new
                 {
@@ -423,6 +463,16 @@ namespace DataDecipher.WebApp.Migrations
                 column: "PlanId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DataSourceProcessingRule_DataProcessingRuleId",
+                table: "DataSourceProcessingRule",
+                column: "DataProcessingRuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataSourceProcessingRule_DataSourceId",
+                table: "DataSourceProcessingRule",
+                column: "DataSourceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DataSources_CreatedById",
                 table: "DataSources",
                 column: "CreatedById");
@@ -496,6 +546,9 @@ namespace DataDecipher.WebApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "DataSourceProcessingRule");
+
+            migrationBuilder.DropTable(
                 name: "MethodDataSources");
 
             migrationBuilder.DropTable(
@@ -509,6 +562,9 @@ namespace DataDecipher.WebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "DataProcessingRule");
 
             migrationBuilder.DropTable(
                 name: "DataSources");
