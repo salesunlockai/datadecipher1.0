@@ -4,6 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DataDecipher.WebApp.Models;
+using DataDecipher.WebApp.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+
 using System.IO;
 using RestSharp;
 
@@ -13,8 +18,19 @@ namespace DataDecipher.WebApp.Controllers
 {
     public class MainController : Controller
     {
+        private ApplicationDbContext _context;
+        private UserManager<ApplicationUser> user;
+
+        public MainController(ApplicationDbContext ctx, UserManager<ApplicationUser> usr)
+        {
+            _context = ctx;
+            user = usr;
+        }
+        private Task<ApplicationUser> GetCurrentUserAsync() => user.GetUserAsync(HttpContext.User);
+
+
         // GET: /<controller>/
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             //List<DataSource> dataSources = new List<DataSource>();
             //dataSources.Add(new DataSource { Id="1", Name = "test", Description = "sample test data", Uri="TestData/test.txt", Type=DataSourceType.Text });
@@ -22,7 +38,19 @@ namespace DataDecipher.WebApp.Controllers
             //dataSources.Add(new DataSource { Id = "3", Name = "LL_Spot_data", Description = "sample test data", Uri = "TestData/LL_SPOT_DATA.csv", Type = DataSourceType.CSV });
             //MainViewModel pass = new MainViewModel { DataSourceViewModel = dataSources };
             //return View(pass);
-            return View();
+            MainViewModel main = new MainViewModel();
+           
+            var sharedMethods = _context.SharedMethods.Where(x => x.UserId == GetCurrentUserAsync().Result.Id);
+            string sharedMethodsIds = String.Join(',', sharedMethods.Select(x => x.MethodId).ToArray());
+            var methodList = await _context.Methods.Include(y => y.SharedUsers).Include(y => y.CreatedBy).Where(x => x.CreatedBy.Id == GetCurrentUserAsync().Result.Id || sharedMethodsIds.Contains(x.Id)).ToListAsync();
+            main.AvailableMethods = methodList;
+
+            var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
+            var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
+            var connectorIds = String.Join(',', connectors.ToArray());
+            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
+
+            return View(main);
         }
 
         [HttpPost]

@@ -31,11 +31,14 @@ namespace DataDecipher.WebApp.Controllers
             {
                 method.CreatedBy = GetCurrentUserAsync().Result;
                 method.CreatedDate = System.DateTime.Now;
+                method.LastModifiedDate = System.DateTime.Now;
+                method.Status = "Draft";
                 context.Methods.Add(method);
                 context.SaveChangesAsync();
             }
             return PartialView("_NewMethod",method);
         }
+
 
         public ActionResult Index()
         {

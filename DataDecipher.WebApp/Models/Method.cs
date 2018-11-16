@@ -37,6 +37,7 @@ namespace DataDecipher.WebApp.Models
 
         [NotMapped]
         public List<ApplicationUser> AvailableUsers { get; set; }
+
     }
 
 

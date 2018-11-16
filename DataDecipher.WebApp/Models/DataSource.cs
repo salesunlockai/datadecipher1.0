@@ -60,9 +60,11 @@ namespace DataDecipher.WebApp.Models
         [NotMapped]
         public IFormFile DataFile { get; set; }
 
-     
+        [NotMapped]
+        public ICollection<DataProcessingRule> AvailableRules { get; set; }
 
     }
+
     public class SampleDataSource
     {
         public string Id { get; set; }

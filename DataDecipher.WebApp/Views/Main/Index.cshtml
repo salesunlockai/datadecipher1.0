@@ -1,28 +1,63 @@
-﻿@model DataDecipher.WebApp.Models.Method
+﻿@model DataDecipher.WebApp.Models.MainViewModel
 @{
     ViewData["Title"] = "Main Page";
     Layout = "_MainLayout";
 }
-@using DataDecipher.WebApp.Data
-@inject ApplicationDbContext ctx
-<br />
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<link href="https://cdn.quilljs.com/1.1.6/quill.snow.css" rel="stylesheet">
-<script src="https://cdn.quilljs.com/1.1.6/quill.js"></script>
 <div class="container-fluid">
     <h5>Welcome to Data Decipher</h5>
     <p>Use instructions below to quickly obtain insights from your data and generate reports</p>
-</div>
-<div id="method" class="container-fluid">
-    <div class="row>">
-        <div class="col-md-4">
-            <h6>1. Define your method</h6>
-            <br />
+    <br/>
+    <div id="SetMethod">
+        <div class="row>">
+            <div class="col-md-12">
+                <h6>1. Set your method</h6>
+                <br />
+            </div>
+        </div>
+        <div class="card-deck">
+            @await Html.PartialAsync("~/Views/Method/_NewMethod.cshtml", Model.SelectedMethod)
+            @await Html.PartialAsync("~/Views/Methods/_ListMethods.cshtml", Model)
         </div>
     </div>
-    @await Html.PartialAsync("~/Views/Method/_NewMethod.cshtml")
+    <br />
+    <div id="SetDataSource">
+        <div class="row>">
+            <div class="col-md-12">
+                <h6>2. Set your datasource</h6>
+                <br />
+            </div>
+        </div>
+        <div class="card-deck">
+            @await Html.PartialAsync("~/Views/DataSources/_NewDataSource.cshtml", Model.SelectedDataSource)
+        </div>
+    </div>
 </div>
-<div id="datasource" class="section">
+@*@using DataDecipher.WebApp.Data
+@inject ApplicationDbContext ctx
+`<div class="container-fluid">
+    <h5>Welcome to Data Decipher</h5>
+    <p>Use instructions below to quickly obtain insights from your data and generate reports</p>
+
+        <div class="row>">
+            <div class="col-md-12">
+                <h6>1. Set your method</h6>
+                <br />
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col-md-4">
+                <h6>1. Set your method</h6>
+                @await Html.PartialAsync("~/Views/Method/_NewMethod.cshtml", Model.MethodViewModel)
+            </div>
+            <div class="col-md-4">
+                <h6>1. Set your method</h6>
+                @await Html.PartialAsync("~/Views/Methods/_ListMethods.cshtml")
+            </div>
+        </div>
+    
+</div>*@
+
+@*<div id="datasource" class="section">
     <div class="container-fluid">
         <div class="row>">
             <div class=col-md-4>
@@ -59,7 +94,7 @@
                     <br />
                     <p>Or Select from existing datasources</p>
                 </div>
-            </div>*@
+            </div>
     </div>
 </div>
 <div id="instrument" class="section">
@@ -85,6 +120,8 @@
         <div class="row>">
             <div class=col-md-10>
                 <h6>4. Apply processing rule</h6>
+                <br />
+                <p>Choose the data processing rules to clean the raw data</p>
             </div>
         </div>
         @await Html.PartialAsync("~/Views/DataProcessingRules/_ListProcessingRules.cshtml", ctx.DataProcessingRule.ToList());
@@ -114,7 +151,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 <script type="text/javascript">function storeRawFileSelection(sel) {
         $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
         fullFilePath = sel.options[sel.selectedIndex].text;

@@ -19,6 +19,13 @@ namespace DataDecipher.WebApp.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        public ActionResult ApplyRules(IEnumerable<DataProcessingRule> Rules)
+        {
+            return PartialView("_ListProcessingRules", Rules);
+        }
+
+
         // GET: DataProcessingRules
         public async Task<IActionResult> Index()
         {

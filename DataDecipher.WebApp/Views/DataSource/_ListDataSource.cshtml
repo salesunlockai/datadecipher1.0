@@ -2,9 +2,9 @@
 
 @using (Html.BeginForm())
 {
-    @foreach (var item in Model.DataSourceViewModel)
+    @*@foreach (var item in Model.DataSourceViewModel)
     {
-        @Html.RadioButtonFor(b => b.SelectedDataSource, item.Id) @item.Name
+        @Html.RadioButtonFor(b => b.SelectedDataSource, item.Id) @item.Name*@
 
         @*<div class="radio">
                 <input type="radio" name="DataSourceList" id=@Html.DisplayFor(modelItem => item.Id) value=@Html.DisplayFor(modelItem => item.Id)>
@@ -13,6 +13,6 @@
                 </label>
             </div>*@
         
-    }
+    
     <input asp-controller="Main" asp-action="DisplayRawData" class="btn btn-primary" type="submit" value="Show Raw Data" />
 }

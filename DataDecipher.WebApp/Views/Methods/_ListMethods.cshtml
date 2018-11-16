@@ -1,0 +1,45 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">Load an existing method</span>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Methods" asp-action="SelectMethod" data-ajax-begin="onLoadMethodBegin" data-ajax-complete="onLoadMethodComplete"
+              data-ajax-failure="onLoadMethodFailed" data-ajax-success="onLoadMethodSuccess"
+              data-ajax="true" data-ajax-method="POST">
+            <div class="container-fluid">
+                <div class="form-group">
+                    @for (int i=0; i<Model.AvailableMethods.Count; i++)
+                    {
+                        <div class="radio">
+                            <input name="radioMethod" value="@Model.AvailableMethods[i].Id" id="@Model.AvailableMethods[i].Id" type="radio">
+                            <label for="@Model.AvailableMethods[i].Id">
+                                @Model.AvailableMethods[i].Name
+                            </label>
+                        </div>
+                     }
+                </div>
+                 <div id="ListMethodFooter" class="col">
+                    <input class="btn btn-primary" type="submit" value="Load" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>var processingResults = $("#ListMethodFooter");
+var onLoadMethodBegin = function() {
+        processingResults.html("<span class=\"text - primary\">Loading method please wait...</span>");
+
+};
+
+var onLoadMethodComplete = function() {
+        processingResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Method Loaded Successfully<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+};
+
+var onLoadMethodSuccess = function(context) {
+
+};
+
+var onLoadMethodFailed = function(context) {
+
+};</script>
