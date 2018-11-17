@@ -1,0 +1,11 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="row>">
+    <div class="col-md-12">
+        <h6>1. Set your method</h6>
+        <br />
+    </div>
+</div>
+<div id="InitMethod" class="card-deck">
+    @await Html.PartialAsync("~/Views/Method/_NewMethod.cshtml", Model.SelectedMethod)
+    @await Html.PartialAsync("~/Views/Methods/_ListMethods.cshtml", Model)
+</div>

@@ -118,6 +118,8 @@ namespace DataDecipher.WebApp.Controllers
 
             ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
 
+            ViewBag.SelectedDataSource = dataSource;
+
             return View(dataSource);
         }
 

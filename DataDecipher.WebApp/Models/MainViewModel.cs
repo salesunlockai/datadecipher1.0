@@ -7,6 +7,8 @@ namespace DataDecipher.WebApp.Models
     {
         public string test { get; set; }
 
+        public string SelectedMethodId { get; set; }
+
         public Method SelectedMethod { get; set; }
 
         public List<Method> AvailableMethods { get; set; }

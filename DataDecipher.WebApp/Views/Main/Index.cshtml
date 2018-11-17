@@ -8,28 +8,11 @@
     <p>Use instructions below to quickly obtain insights from your data and generate reports</p>
     <br/>
     <div id="SetMethod">
-        <div class="row>">
-            <div class="col-md-12">
-                <h6>1. Set your method</h6>
-                <br />
-            </div>
-        </div>
-        <div class="card-deck">
-            @await Html.PartialAsync("~/Views/Method/_NewMethod.cshtml", Model.SelectedMethod)
-            @await Html.PartialAsync("~/Views/Methods/_ListMethods.cshtml", Model)
-        </div>
+        @await Html.PartialAsync("~/Views/Main/_SetMethod.cshtml")
     </div>
-    <br />
     <div id="SetDataSource">
-        <div class="row>">
-            <div class="col-md-12">
-                <h6>2. Set your datasource</h6>
-                <br />
-            </div>
-        </div>
-        <div class="card-deck">
-            @await Html.PartialAsync("~/Views/DataSources/_NewDataSource.cshtml", Model.SelectedDataSource)
-        </div>
+    </div>
+    <div id="DisplayDataSource">
     </div>
 </div>
 @*@using DataDecipher.WebApp.Data

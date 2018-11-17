@@ -1,0 +1,26 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">Select from your datasources</span>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Methods" asp-action="SelectSampleDS" data-ajax-method="POST">
+            <div class="container-fluid">
+                <div class="form-group">
+                    @for (int i=0; i<Model.AvailableDataSources.Count; i++)
+                     {
+                        <div class="radio">
+                            <input name="radioMethod" value="@Model.AvailableDataSources[i].Id" id="@Model.AvailableDataSources[i].Id" type="radio">
+                            <label for="@Model.AvailableDataSources[i].Id">
+                                @Model.AvailableDataSources[i].Name
+                            </label>
+                        </div>
+                     }
+                </div>
+                <div id="ListMethodFooter" class="col">
+                    <input class="btn btn-primary" type="submit" value="Load" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

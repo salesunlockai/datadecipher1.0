@@ -24,11 +24,7 @@ namespace DataDecipher.WebApp.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _user.GetUserAsync(HttpContext.User);
 
-        [HttpPost]
-        public ActionResult SelectMethod(MainViewModel main)
-        {
-            return PartialView("_ListMethods");
-        }
+       
 
         // GET: Methods
         public async Task<IActionResult> Index()

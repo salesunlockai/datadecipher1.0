@@ -47,6 +47,16 @@
     var createdsfooter = $("#CreateDSFooter");
     var onNewDSComplete = function() {
         createdsfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>New datasource created successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+        $.ajax({
+                url: '/Main/DisplayDataSource',
+                type: 'GET',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                success: function(content) {
+                    $('#DisplayDataSource').html(content);
+                },
+                error: function(e) { }
+            });
     };
 
 $("#frmDsUpload").submit(function(event) {
@@ -57,7 +67,7 @@ $("#frmDsUpload").submit(function(event) {
         var $form = $(this),
             url = $form.attr('action');
 
-
+        createdsfooter.html("<span class=\"text - primary\">Creating datasource please wait...</span>");
         var myForm = document.getElementById('frmDsUpload');
 
         var formdata = new FormData(myForm);
@@ -72,16 +82,7 @@ $("#frmDsUpload").submit(function(event) {
 
             })
 
+
+
 });
-var onNewDSBegin = function() {
-        createdsfooter.html("<span class=\"text - primary\">Creating datasource please wait...</span>");
-};
-
-
-var onNewDSSuccess = function(context) {
-
-};
-
-var onNewDSFailed = function(context) {
-
-};</script>
+</script>

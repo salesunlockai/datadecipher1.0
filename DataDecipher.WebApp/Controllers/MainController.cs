@@ -7,10 +7,15 @@ using DataDecipher.WebApp.Models;
 using DataDecipher.WebApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.File;
+using Microsoft.Extensions.Configuration;
+
+
 
 
 using System.IO;
-using RestSharp;
+//using RestSharp;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,37 +25,76 @@ namespace DataDecipher.WebApp.Controllers
     {
         private ApplicationDbContext _context;
         private UserManager<ApplicationUser> user;
+        private readonly IConfiguration _configuration;
 
-        public MainController(ApplicationDbContext ctx, UserManager<ApplicationUser> usr)
+
+        public MainController(ApplicationDbContext ctx, UserManager<ApplicationUser> usr, IConfiguration cfg)
         {
             _context = ctx;
             user = usr;
+            _configuration = cfg;
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => user.GetUserAsync(HttpContext.User);
-
 
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
-            //List<DataSource> dataSources = new List<DataSource>();
-            //dataSources.Add(new DataSource { Id="1", Name = "test", Description = "sample test data", Uri="TestData/test.txt", Type=DataSourceType.Text });
-            //dataSources.Add(new DataSource { Id = "2", Name = "Gc2", Description = "sample test data", Uri = "TestData/GC2.dat", Type = DataSourceType.DAT });
-            //dataSources.Add(new DataSource { Id = "3", Name = "LL_Spot_data", Description = "sample test data", Uri = "TestData/LL_SPOT_DATA.csv", Type = DataSourceType.CSV });
-            //MainViewModel pass = new MainViewModel { DataSourceViewModel = dataSources };
-            //return View(pass);
             MainViewModel main = new MainViewModel();
-           
+
             var sharedMethods = _context.SharedMethods.Where(x => x.UserId == GetCurrentUserAsync().Result.Id);
             string sharedMethodsIds = String.Join(',', sharedMethods.Select(x => x.MethodId).ToArray());
             var methodList = await _context.Methods.Include(y => y.SharedUsers).Include(y => y.CreatedBy).Where(x => x.CreatedBy.Id == GetCurrentUserAsync().Result.Id || sharedMethodsIds.Contains(x.Id)).ToListAsync();
             main.AvailableMethods = methodList;
+
+            return View(main);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SelectMethod(MainViewModel main)
+        {
+            main.SelectedMethod = _context.Methods.Where(x => x.Id == main.SelectedMethodId).First();
+
 
             var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
             var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
             var connectorIds = String.Join(',', connectors.ToArray());
             ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
 
-            return View(main);
+            main.AvailableDataSources = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
+            main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
+
+           
+            return PartialView("_SetDataSource", main);
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateNewMethod(Method method)
+        {
+            if (ModelState.IsValid)
+            {
+                method.CreatedBy = GetCurrentUserAsync().Result;
+                method.CreatedDate = System.DateTime.Now;
+                method.LastModifiedDate = System.DateTime.Now;
+                method.Status = "Draft";
+                _context.Methods.Add(method);
+                await _context.SaveChangesAsync();
+
+            }
+
+            MainViewModel main = new MainViewModel();
+            main.SelectedMethod = method;
+
+            var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
+            var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
+            var connectorIds = String.Join(',', connectors.ToArray());
+            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
+
+            main.AvailableDataSources = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
+            main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
+
+
+            return PartialView("_SetDataSource", main);
         }
 
         [HttpPost]
@@ -106,6 +150,38 @@ namespace DataDecipher.WebApp.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult DisplayDataSource()
+        {
+            DataSource dataSource = ViewBag.SelectedDataSource;
+          
+            var model1 = new RawData
+            {
+                fileName = "sample.csv",
+                filePath = @"\Users\deepmalagupta\Projects\DataDecipher1.0\DataDecipher.WebApp\TestData\Raw\"
+            };
+           
+           /* CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+
+            cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(model1.fileName);
+            cloudFile.DownloadToFileAsync(@"/Users/deepmalagupta/sample.csv",FileMode.Create);*/
+
+            model1.rawData = model1.GetRawData(@"/Users/deepmalagupta/sample.csv");
+
+            return PartialView("_RawData", model1);
+
+        }
+
         [HttpPost]
         public IActionResult DisplayParsedCsvFile(string inputSelectedFile, string columns, string delimiter)
         {
@@ -130,16 +206,16 @@ namespace DataDecipher.WebApp.Controllers
 
 
                 //REST Call
-                var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
-                var request = new RestRequest();
-                request.Method = RestSharp.Method.POST;
-                request.JsonSerializer.ContentType = "multipart/form-data";
-                request.Parameters.Clear();
-                request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
-                request.AddParameter("ParsingRules", parsingRules);
-                IRestResponse response = client.Execute(request);
-                model1.parsedData = response.Content; // raw content as string
-                model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
+                //var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
+                //var request = new RestRequest();
+                //request.Method = RestSharp.Method.POST;
+                //request.JsonSerializer.ContentType = "multipart/form-data";
+                //request.Parameters.Clear();
+                //request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+                //request.AddParameter("ParsingRules", parsingRules);
+                //IRestResponse response = client.Execute(request);
+                //model1.parsedData = response.Content; // raw content as string
+                //model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
                 return PartialView("_ParsedData", model1);
             }
             else return null;
@@ -186,17 +262,17 @@ namespace DataDecipher.WebApp.Controllers
             }
             parsingRules = parsingRules + "delimiter\":\"" + delimiter + "\"}}";
 
-            //REST Call
-            var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/TXT");
-            var request = new RestRequest();
-            request.Method = RestSharp.Method.POST;
-            request.JsonSerializer.ContentType = "multipart/form-data";
-            request.Parameters.Clear();
-            request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
-            request.AddParameter("ParsingRules", parsingRules);
-            IRestResponse response = client.Execute(request);
-            model1.parsedData = response.Content; // raw content as string
-            model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
+            ////REST Call
+            //var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/TXT");
+            //var request = new RestRequest();
+            //request.Method = RestSharp.Method.POST;
+            //request.JsonSerializer.ContentType = "multipart/form-data";
+            //request.Parameters.Clear();
+            //request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+            //request.AddParameter("ParsingRules", parsingRules);
+            //IRestResponse response = client.Execute(request);
+            //model1.parsedData = response.Content; // raw content as string
+            //model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
             return PartialView("_ParsedData", model1);
         }
 
@@ -226,17 +302,17 @@ namespace DataDecipher.WebApp.Controllers
                 else parsingRules = parsingRules + listTableFields[i] + "\"]}}";
             }
 
-            //REST Call
-            var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/XML");
-            var request = new RestRequest();
-            request.Method = RestSharp.Method.POST;
-            request.JsonSerializer.ContentType = "multipart/form-data";
-            request.Parameters.Clear();
-            request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
-            request.AddParameter("ParsingRules", parsingRules);
-            IRestResponse response = client.Execute(request);
-            model1.parsedData = response.Content; // raw content as string
-            model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, ",");
+            ////REST Call
+            //var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/XML");
+            //var request = new RestRequest();
+            //request.Method = RestSharp.Method.POST;
+            //request.JsonSerializer.ContentType = "multipart/form-data";
+            //request.Parameters.Clear();
+            //request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+            //request.AddParameter("ParsingRules", parsingRules);
+            //IRestResponse response = client.Execute(request);
+            //model1.parsedData = response.Content; // raw content as string
+            //model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, ",");
             return PartialView("_ParsedData", model1);
         }
     }
