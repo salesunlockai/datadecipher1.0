@@ -6,7 +6,7 @@
     </div>
 </div>
 <div class="card-deck">
-    @await Html.PartialAsync("~/Views/DataSources/_NewDataSource.cshtml", Model.SelectedDataSource)
+    @await Html.PartialAsync("~/Views/DataSources/_NewDataSource.cshtml", Model)
     @await Html.PartialAsync("~/Views/DataSources/_ListDataSources.cshtml", Model)
     @await Html.PartialAsync("~/Views/SampleDataSources/_ListDataSources.cshtml", Model)
 </div>

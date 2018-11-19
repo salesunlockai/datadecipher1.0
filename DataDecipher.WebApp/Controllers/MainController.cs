@@ -10,8 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.File;
 using Microsoft.Extensions.Configuration;
-
-
+using Microsoft.AspNetCore.Http;
 
 
 using System.IO;
@@ -62,7 +61,7 @@ namespace DataDecipher.WebApp.Controllers
 
             main.AvailableDataSources = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
             main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
-
+            main.SelectedDataSource = new DataSource();
            
             return PartialView("_SetDataSource", main);
 
@@ -93,8 +92,126 @@ namespace DataDecipher.WebApp.Controllers
             main.AvailableDataSources = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
             main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
 
+            main.SelectedDataSource = new DataSource();
 
             return PartialView("_SetDataSource", main);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SelectDataSource(MainViewModel main)
+        {
+            main.SelectedDataSourceName = main.SelectedDataSourceName.Split('/').Last(); 
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+
+            await cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(main.SelectedDataSourceName);
+
+            MemoryStream stream = new MemoryStream();
+
+            await cloudFile.DownloadToStreamAsync(stream);
+
+            stream.Position = 0;
+
+            StreamReader reader = new StreamReader(stream);
+
+            main.RawData = reader.ReadToEnd();
+
+            return PartialView("_DisplayDataSource", main);
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SelectSampleDataSource(MainViewModel main)
+        {
+            
+            main.SelectedSampleDataSourceName = main.SelectedSampleDataSourceName.Split('/').Last();
+
+            main.SelectedDataSourceName = main.SelectedSampleDataSourceName;
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference("samples");
+
+            await cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(main.SelectedDataSourceName);
+
+            MemoryStream stream = new MemoryStream();
+
+            await cloudFile.DownloadToStreamAsync(stream);
+
+            stream.Position = 0;
+
+            StreamReader reader = new StreamReader(stream);
+
+            main.RawData = reader.ReadToEnd();
+
+
+            return PartialView("_DisplayDataSource", main);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateNewDataSource(MainViewModel main, IFormFile DataFile)
+        {
+            DataSource dataSource = main.SelectedDataSource;
+            dataSource.DataFile = DataFile;
+
+            if (dataSource == null ||
+                dataSource.DataFile == null || dataSource.DataFile.Length == 0)
+                return Content("file not selected");
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+
+            // Create a CloudFileClient object for credentialed access to Azure Files.
+            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+
+            // Get a reference to the file share we created previously.
+            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+            await cloudFileShare.CreateIfNotExistsAsync();
+
+            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+
+          
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(dataSource.DataFile.FileName);
+            await cloudFile.DeleteIfExistsAsync();
+            using (var stream = new MemoryStream())
+            {
+                await dataSource.DataFile.CopyToAsync(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                await cloudFile.UploadFromStreamAsync(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                StreamReader reader = new StreamReader(stream);
+                main.RawData = reader.ReadToEnd();
+                main.SelectedDataSourceName = dataSource.DataFile.FileName;
+
+            }
+
+            dataSource.Uri = cloudFile.Uri.ToString();
+            dataSource.CreatedBy = GetCurrentUserAsync().Result;
+            dataSource.CreatedDate = System.DateTime.Now;
+
+            _context.Add(dataSource);
+
+            await _context.SaveChangesAsync();
+          
+            return PartialView("_DisplayDataSource", main);
+
         }
 
         [HttpPost]

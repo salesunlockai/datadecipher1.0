@@ -4,23 +4,44 @@
         <span class="text-primary">Select from your datasources</span>
     </div>
     <div class="card-body">
-        <form asp-controller="Methods" asp-action="SelectSampleDS" data-ajax-method="POST">
+        <form asp-controller="Main" asp-action="SelectDataSource" data-ajax-begin="onSelectDSBegin" data-ajax-complete="onSelectDSComplete"
+              data-ajax-failure="onSelectDSFailed" data-ajax-success="onSelectDSSuccess"
+              data-ajax="true" data-ajax-method="POST">
             <div class="container-fluid">
                 <div class="form-group">
-                    @for (int i=0; i<Model.AvailableDataSources.Count; i++)
-                     {
-                        <div class="radio">
-                            <input name="radioMethod" value="@Model.AvailableDataSources[i].Id" id="@Model.AvailableDataSources[i].Id" type="radio">
-                            <label for="@Model.AvailableDataSources[i].Id">
+                    @for (int i = 0; i < Model.AvailableDataSources.Count; i++)
+                    {
+                        <div>
+                            @Html.RadioButtonFor(m => m.SelectedDataSourceName, @Model.AvailableDataSources[i].Uri)
+                            <label for="@Model.AvailableDataSources[i].Name">
                                 @Model.AvailableDataSources[i].Name
                             </label>
                         </div>
-                     }
+                    }
                 </div>
-                <div id="ListMethodFooter" class="col">
+                <div id="ListDSFooter" class="col">
                     <input class="btn btn-primary" type="submit" value="Load" />
                 </div>
             </div>
         </form>
     </div>
 </div>
+<script>var loadDSFooter = $("#ListDSFooter");
+
+var onSelectDSBegin = function() {
+        loadDSFooter.html("<span class=\"text-primary\">Loading datasource please wait...</span>");
+};
+
+
+var onSelectDSComplete = function(data, status) {
+        loadDSFooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Datasource loaded successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+        $('#DisplayDataSource').html(data.responseText);
+};
+
+var onSelectDSSuccess = function(context) {
+
+};
+
+var onSelectDSFailed = function(context) {
+
+};</script>

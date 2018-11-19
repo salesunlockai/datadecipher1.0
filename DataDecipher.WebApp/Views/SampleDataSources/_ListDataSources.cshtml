@@ -4,42 +4,44 @@
         <span class="text-primary">Try from sample datasources</span>
     </div>
     <div class="card-body">
-        <form id="frmLstSampleDS" asp-controller="Methods" asp-action="SelectSampleDS" data-ajax-method="POST">
+        <form asp-controller="Main" asp-action="SelectSampleDataSource" data-ajax-begin="onSelectSampleDSBegin" data-ajax-complete="onSelectSampleDSComplete"
+              data-ajax-failure="onSelectSampleDSFailed" data-ajax-success="onSelectSampleDSSuccess"
+              data-ajax="true" data-ajax-method="POST">
             <div class="container-fluid">
                 <div class="form-group">
                     @for (int i = 0; i < Model.AvailableSampleDataSources.Count; i++)
                     {
-                        <div class="radio">
-                            <input name="radioMethod" value="@Model.AvailableSampleDataSources[i].Id" id="@Model.AvailableSampleDataSources[i].Id" type="radio">
-                            <label for="@Model.AvailableSampleDataSources[i].Id">
+                        <div>
+                            @Html.RadioButtonFor(m => m.SelectedSampleDataSourceName, @Model.AvailableSampleDataSources[i].Uri)
+                            <label for="@Model.AvailableSampleDataSources[i].Name">
                                 @Model.AvailableSampleDataSources[i].Name
                             </label>
                         </div>
                     }
                 </div>
-                <div id="ListMethodFooter" class="col">
+                <div id="ListSampleDSFooter" class="col">
                     <input class="btn btn-primary" type="submit" value="Load" />
                 </div>
             </div>
         </form>
     </div>
 </div>
-<script>
+<script>var loadSampleDSFooter = $("#ListSampleDSFooter");
 
-$("#frmLstSampleDS").submit(function(event) {
+var onSelectSampleDSBegin = function() {
+        loadSampleDSFooter.html("<span class=\"text-primary\">Loading sample datasource please wait...</span>");
+};
 
-        /* stop form from submitting normally */
-        event.preventDefault();
 
-        $.ajax({
-            url: '/Main/DisplayDataSource',
-            type: 'GET',
-            datatype: 'text',
-            contentType: 'application/x-www-form-urlencoded',
-            success: function(content) {
-                $('#DisplayDataSource').html(content);
-            },
-            error: function(e) { }
-        })
-    });
-</script>
+var onSelectSampleDSComplete = function(data, status) {
+        loadSampleDSFooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Sample datasource loaded successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+        $('#DisplayDataSource').html(data.responseText);
+};
+
+var onSelectSampleDSSuccess = function(context) {
+
+};
+
+var onSelectSampleDSFailed = function(context) {
+
+};</script>
