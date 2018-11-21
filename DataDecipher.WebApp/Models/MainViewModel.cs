@@ -5,13 +5,13 @@ namespace DataDecipher.WebApp.Models
 {
     public class MainViewModel
     {
-        public string test { get; set; }
-
+    
         public string SelectedMethodId { get; set; }
 
         public Method SelectedMethod { get; set; }
 
         public List<Method> AvailableMethods { get; set; }
+
 
         public string SelectedDataSourceName { get; set; }
 
@@ -26,6 +26,11 @@ namespace DataDecipher.WebApp.Models
         public List<SampleDataSource> AvailableSampleDataSources { get; set; }
 
         public string RawData { get; set; }
+
+
+        public DataProcessingRule SelectedDataProcessingRule { get; set; }
+
+        public List<DataProcessingRule> AvailableDataProcessingRules { get; set; }
 
 
     }

@@ -1,37 +1,45 @@
-﻿@model IEnumerable<DataDecipher.WebApp.Models.DataProcessingRule>
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">Apply existing rules</span>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <form asp-controller="Main" asp-action="ApplyRules" data-ajax-begin="onRuleBegin" data-ajax-complete="onRuleComplete"
+                  data-ajax-failure="onRuleFailed" data-ajax-success="onRuleSuccess"
+                  data-ajax="true" data-ajax-method="POST">
+                <div class="container-fluid">
+                    <div class="form-group">
+                       @for (var i = 0; i < Model.AvailableDataProcessingRules.Count; i++)
+                       { 
+                            <div class="checkbox">
+                                <input asp-for="@Model.AvailableDataProcessingRules[i].IsSelected" id="@Model.AvailableDataProcessingRules[i].Id" type="checkbox">
+                                <label for="@Model.AvailableDataProcessingRules[i].Id">
+                                    @Model.AvailableDataProcessingRules[i].Name
+                                </label>
+                                <input asp-for="@Model.AvailableDataProcessingRules[i].Id" type="hidden" />
+                            </div>
 
-<form asp-controller="DataProcessingRules" asp-action="ApplyRules" data-ajax-begin="onRuleBegin" data-ajax-complete="onRuleComplete"
-      data-ajax-failure="onRuleFailed" data-ajax-success="onRuleSuccess"
-      data-ajax="true" data-ajax-method="POST">
-    <div class="container-fluid">
-        <div class="form-group">
-            @foreach (var item in Model)
-              {
-        <div class="checkbox">
-            <input asp-for="@item.IsSelected" id="@item.Id" type="checkbox">
-            <label for="@item.Id">
-                @item.Name
-            </label>
-            <input asp-for="@item.Id" type="hidden" />
-        </div>
-
-}
-        </div>
-        <div class="row>">
-            <div id="ProcessingResults" class="col">
-
+                        }
+                    </div>
+                    <div id="ProcessingResults" class="col">
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Apply" />
+                </div>
+            </form>
             </div>
         </div>
-        <input class="btn btn-primary" type="submit" value="Apply" />
     </div>
-</form>
-<script>var processingResults = $("#ProcessingResults");
+<script>
+
+var processingResults = $("#ProcessingResults");
+    
 var onRuleBegin = function() {
-        processingResults.html("");
+                    processingResults.html("");
 };
 
 var onRuleComplete = function() {
-        processingResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Rules applied successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+                    processingResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Rules applied successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
 };
 
 var onRuleSuccess = function(context) {
@@ -40,5 +48,7 @@ var onRuleSuccess = function(context) {
 
 var onRuleFailed = function(context) {
 
-};</script>
+};
+    
+</script>
 

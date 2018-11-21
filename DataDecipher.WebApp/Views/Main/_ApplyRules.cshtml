@@ -1,0 +1,11 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="row>">
+    <div class="col-md-12">
+        <h6>4. Apply Rules</h6>
+        <br />
+    </div>
+</div>
+<div id="InitMethod" class="card-deck">
+    @await Html.PartialAsync("~/Views/DataProcessingRules/_NewProcessingRule.cshtml", Model)
+    @await Html.PartialAsync("~/Views/DataProcessingRules/_ListProcessingRules.cshtml", Model)
+</div>

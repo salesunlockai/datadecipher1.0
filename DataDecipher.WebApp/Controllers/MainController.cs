@@ -100,7 +100,8 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> SelectDataSource(MainViewModel main)
         {
-            main.SelectedDataSourceName = main.SelectedDataSourceName.Split('/').Last(); 
+
+            string fileName =  main.SelectedDataSourceName.Split('/').Last(); 
 
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
@@ -114,7 +115,7 @@ namespace DataDecipher.WebApp.Controllers
 
             CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
 
-            CloudFile cloudFile = cloudFileDirectory.GetFileReference(main.SelectedDataSourceName);
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(fileName);
 
             MemoryStream stream = new MemoryStream();
 
@@ -133,10 +134,9 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> SelectSampleDataSource(MainViewModel main)
         {
-            
-            main.SelectedSampleDataSourceName = main.SelectedSampleDataSourceName.Split('/').Last();
-
             main.SelectedDataSourceName = main.SelectedSampleDataSourceName;
+
+            string fileName =  main.SelectedDataSourceName.Split('/').Last(); 
 
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
@@ -150,7 +150,7 @@ namespace DataDecipher.WebApp.Controllers
 
             CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
 
-            CloudFile cloudFile = cloudFileDirectory.GetFileReference(main.SelectedDataSourceName);
+            CloudFile cloudFile = cloudFileDirectory.GetFileReference(fileName);
 
             MemoryStream stream = new MemoryStream();
 
@@ -209,10 +209,44 @@ namespace DataDecipher.WebApp.Controllers
             _context.Add(dataSource);
 
             await _context.SaveChangesAsync();
+
+            main.SelectedDataSourceName = cloudFile.Uri.ToString();
           
             return PartialView("_DisplayDataSource", main);
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> LinkDataSourceToMethod(MainViewModel main)
+        {
+            Method method = _context.Methods.Where(sim => sim.Id == main.SelectedMethod.Id).First();
+            DataSource dataSource = _context.DataSources.Where(arg => arg.Uri == main.SelectedDataSourceName).First();
+            _context.MethodDataSources.Add(new MethodDataSource { Method = method, Datafile = dataSource});
+            await _context.SaveChangesAsync();
+
+            main.SelectedDataProcessingRule = new DataProcessingRule();
+            main.AvailableDataProcessingRules = _context.DataProcessingRule.ToList();
+
+            return PartialView("_ApplyRules", main);
+        }
+
+
+        [HttpPost]
+        public ActionResult ApplyRules(MainViewModel main)
+        {
+            
+            return PartialView("_DisplayDataSource", main);
+        }
+
+
+        [HttpPost]
+        public ActionResult CreateAndApplyRule(MainViewModel main)
+        {
+            
+            return PartialView("_DisplayDataSource", main);
+        }
+
+
 
         [HttpPost]
         public IActionResult DisplayParsingViewTxtDat(string filePath)

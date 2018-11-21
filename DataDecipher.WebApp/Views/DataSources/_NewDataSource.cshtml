@@ -5,6 +5,7 @@
     </div>
     <div class="card-body">
         <form id="frmDsUpload" asp-controller="Main" asp-action="CreateNewDataSource" method="Post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="@Model.SelectedMethod.Id"/>
             <div class="row>">
                 <div class="col">
                     <div class="form-group">
