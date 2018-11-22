@@ -20,6 +20,7 @@
                 <div class="container-fluid">
                     <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
                     <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
+                    <input type="hidden" asp-for="@Model.RawData" />
                     <div id="editor">
                         <p>
                             @Model.RawData

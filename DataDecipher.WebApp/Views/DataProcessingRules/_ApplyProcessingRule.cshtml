@@ -1,0 +1,50 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">Apply processing rule</span>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <form asp-controller="Main" asp-action="ApplyRule" data-ajax-begin="onApplyRuleBegin" data-ajax-complete="onApplyRuleComplete"
+                  data-ajax-failure="onApplyRuleFailed" data-ajax-success="onApplyRuleSuccess"
+                  data-ajax="true" data-ajax-method="POST">
+                <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
+                <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
+                <input type="hidden" asp-for="@Model.RawData" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedDataProcessingRule.MatchCondition" class="badge badge-default-noborder"></label>
+                    <input asp-for="@Model.SelectedDataProcessingRule.MatchCondition" placeholder="Specify your match condition here" class="form-control" />
+                    <span asp-validation-for="@Model.SelectedDataProcessingRule.MatchCondition" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" class="badge badge-default-noborder"></label>
+                    <input asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" placeholder="Mention the phrase that will replace match condition" class="form-control" />
+                </div>
+                <div id="ApplyRuleResults" class="col">
+                    <input class="btn btn-primary" type="submit" value="Apply" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+var ApplyRuleResults = $("#ApplyRuleResults");
+
+var onApplyRuleBegin = function() {
+        ApplyRuleResults.html("<span class=\"text-primary\">Applying rule please wait...</span>");
+};
+
+var onApplyRuleComplete = function(data, status) {
+        ApplyRuleResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Rule(s) applied successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+        $('#DisplayProcessedData').html(data.responseText);
+};
+
+var onApplyRuleSuccess = function(context) {
+
+};
+
+var onApplyRuleFailed = function(context) {
+
+};</script>

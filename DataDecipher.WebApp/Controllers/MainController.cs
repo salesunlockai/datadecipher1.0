@@ -234,18 +234,34 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public ActionResult ApplyRules(MainViewModel main)
         {
-            
-            return PartialView("_DisplayDataSource", main);
+            List<DataProcessingRule> rules= main.AvailableDataProcessingRules.Where(sim => sim.IsSelected == true).ToList();
+
+            foreach(DataProcessingRule r in rules)
+            {
+               DataProcessingRule rule = _context.DataProcessingRule.Where(sim => sim.Id == r.Id).First(); 
+               main.ProcessedData = main.RawData.Replace(rule.MatchCondition, rule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            return PartialView("_DisplayProcessedData", main);
         }
 
 
         [HttpPost]
         public ActionResult CreateAndApplyRule(MainViewModel main)
         {
-            
-            return PartialView("_DisplayDataSource", main);
+            main.ProcessedData = main.RawData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+            _context.DataProcessingRule.Add(main.SelectedDataProcessingRule);
+            _context.SaveChanges();
+            return PartialView("_DisplayProcessedData", main);
         }
 
+        [HttpPost]
+        public ActionResult ApplyRule(MainViewModel main)
+        {
+            main.ProcessedData = main.RawData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+           
+            return PartialView("_DisplayProcessedData", main);
+        }
 
 
         [HttpPost]

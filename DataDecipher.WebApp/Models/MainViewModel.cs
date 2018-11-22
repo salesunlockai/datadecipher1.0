@@ -32,6 +32,8 @@ namespace DataDecipher.WebApp.Models
 
         public List<DataProcessingRule> AvailableDataProcessingRules { get; set; }
 
+        public string ProcessedData { get; set; }
+
 
     }
 }
