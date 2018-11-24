@@ -5,15 +5,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DataDecipher.WebApp.Models;
+using DataDecipher.WebApp.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataDecipher.WebApp.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller
     {
+        private UserManager<ApplicationUser> user;
+       
+        public HomeController(UserManager<ApplicationUser> usr)
+        {
+            user = usr;
+       
+        }
+        private Task<ApplicationUser> GetCurrentUserAsync() => user.GetUserAsync(HttpContext.User);
+       
         public IActionResult Index()
         {
+            ApplicationUser usr = GetCurrentUserAsync().Result;
+
+            if(usr != null)
+            {
+                return RedirectToAction("Index", "Main");
+            }
+
             return View();
         }
 

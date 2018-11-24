@@ -51,18 +51,26 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> SelectMethod(MainViewModel main)
         {
-            main.SelectedMethod = _context.Methods.Where(x => x.Id == main.SelectedMethodId).First();
+            main.SelectedMethod = _context.Methods.Include(y=>y.LinkedDataSources).Where(x => x.Id == main.SelectedMethodId).First();
 
+            if (main.SelectedMethod.LinkedDataSources.Count == 0)
+            {
+                var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
+                var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
+                var connectorIds = String.Join(',', connectors.ToArray());
+                ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
 
-            var plan = _context.Organizations.Where(y => y.Id == GetCurrentUserAsync().Result.OrganizationId).Select(z => z.SelectedPlanId);
-            var connectors = _context.PlanDataConnectors.Where(y => y.PlanId == plan.First()).Select(z => z.DataSourceConnectorId);
-            var connectorIds = String.Join(',', connectors.ToArray());
-            ViewBag.AvailableDataConnectors = _context.DataSourceConnectors.Where(y => connectorIds.Contains(y.Id)).ToList();
+                main.AvailableDataSources = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
+                main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
 
-            main.AvailableDataSources = await _context.DataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
-            main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
-            main.SelectedDataSource = new DataSource();
-           
+                main.SelectedDataSource = new DataSource();
+            }
+            else
+            {
+                main.SelectedDataSource = _context.MethodDataSources.Include(y => y.Datafile).Where(x => x.Id == main.SelectedMethod.LinkedDataSources.First().Id).Select(z=>z.Datafile).First();
+                main.SelectedDataSourceName = main.SelectedDataSource.Uri;
+            }
+
             return PartialView("_SetDataSource", main);
 
         }
@@ -219,10 +227,14 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> LinkDataSourceToMethod(MainViewModel main)
         {
-            Method method = _context.Methods.Where(sim => sim.Id == main.SelectedMethod.Id).First();
+            Method method = _context.Methods.Include(x=>x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
             DataSource dataSource = _context.DataSources.Where(arg => arg.Uri == main.SelectedDataSourceName).First();
-            _context.MethodDataSources.Add(new MethodDataSource { Method = method, Datafile = dataSource});
-            await _context.SaveChangesAsync();
+
+            if (_context.MethodDataSources.Where(x => (x.Method.Id == method.Id) && (x.Datafile.Id == dataSource.Id)).Count() == 0)
+            {
+                _context.MethodDataSources.Add(new MethodDataSource { Method = method, Datafile = dataSource });
+                await _context.SaveChangesAsync();
+            }
 
             main.SelectedDataProcessingRule = new DataProcessingRule();
             main.AvailableDataProcessingRules = _context.DataProcessingRule.ToList();

@@ -1,0 +1,47 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">Selected datasource</span>
+    </div>
+    <div class="card-body">
+        <form id="frmSelectedDS">
+            <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
+            <input type="hidden" asp-for="@Model.SelectedDataSourceName"/>
+            <div class="row>">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="@Model.SelectedDataSource.Name" class="badge badge-default-noborder"></label>
+                        <input type="text" readonly asp-for="@Model.SelectedDataSource.Name" placeholder="Your data source name" class="form-control" />
+                        <span asp-validation-for="@Model.SelectedDataSource.Name" class="badge badge-danger-noborder"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row>">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="@Model.SelectedDataSource.Description" class="badge badge-default-noborder"></label>
+                        <textarea readonly asp-for="@Model.SelectedDataSource.Description" placeholder="Little bit more about your data source goes here" class="form-control" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="SelectedDSFooter">
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+var mySelectedDSForm = document.getElementById('frmSelectedDS');
+
+var formdata = new FormData(mySelectedDSForm);
+
+$.ajax({
+        url: '@Url.Action("SelectDataSource", "Main")',
+        type: 'POST',
+        data: formdata,
+        processData: false,
+        contentType: false,
+        complete: function(data,status) {
+        $('#DisplayDataSource').html(data.responseText);
+    }
+})
+</script>
