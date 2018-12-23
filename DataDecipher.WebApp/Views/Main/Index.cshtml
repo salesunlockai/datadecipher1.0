@@ -1,4 +1,4 @@
-﻿@model DataDecipher.WebApp.Models.MainViewModel
+@model DataDecipher.WebApp.Models.MainViewModel
 @{
     ViewData["Title"] = "Main Page";
     Layout = "_MainLayout";
@@ -140,8 +140,14 @@
             </div>
         </div>
     </div>
+<<<<<<< Updated upstream
 </div>*@
 <script type="text/javascript">function storeRawFileSelection(sel) {
+=======
+</div>
+<script type="text/javascript">
+function storeRawFileSelection(sel) {
+>>>>>>> Stashed changes
         $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
         fullFilePath = sel.options[sel.selectedIndex].text;
         fileExtension = fullFilePath.replace(/^.*\./, '');
@@ -208,17 +214,21 @@ $(document).ready(function() {
 
 function updateSourceFileList() {
         var sourceFolderPath = document.getElementById("sourceFolderPath").value;
-        var inputFilelist = document.getElementById("uploadSourceFiles");
-        var files = inputFilelist.files;
+        @*var inputFilelist = document.getElementById("uploadSourceFiles");*@
+        var inputFiles = document.getElementById("uploadSourceFiles").files;
+        @*var sourceFolderPath = document.getElementById("uploadSourceFiles").value;
+        var r = /[^\\]*$/;
+        sourceFolderPath = sourceFolderPath.replace(r, '');*@
         var inputFilelistDropDown = document.getElementById("fileList");
         inputFilelistDropDown.options.length = 0;
-        if (inputFilelist.files.length != 0) {
+        if (inputFiles.length != 0) {
             inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Select a file", 0);
 
             // loop through files
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option(sourceFolderPath + file.name, i + 1);
+            for (var i = 0; i < inputFiles.length; i++) {
+                var file = inputFiles[i].name;
+                @*var filePathName = inputFiles[i].webkitRelativePath;*@
+                inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option(sourceFolderPath + file, i + 1);
             }
         }
         else {
