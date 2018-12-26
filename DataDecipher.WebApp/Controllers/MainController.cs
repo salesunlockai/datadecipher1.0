@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using DataDecipher.WebApp.Models;
 using DataDecipher.WebApp.Data;
@@ -12,6 +13,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using RestSharp;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -73,7 +75,7 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewMethod(Method method)
+        public async Task<ActionResult> CreateNewMethod(Models.Method method)
         {
             if (ModelState.IsValid)
             {
@@ -224,7 +226,7 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> LinkDataSourceToMethod(MainViewModel main)
         {
-            Method method = _context.Methods.Include(x=>x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
+            Models.Method method = _context.Methods.Include(x=>x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
             DataSource dataSource = _context.DataSources.Where(arg => arg.Uri == main.SelectedDataSourceName).First();
 
             if (_context.MethodDataSources.Where(x => (x.Method.Id == method.Id) && (x.Datafile.Id == dataSource.Id)).Count() == 0)
@@ -382,16 +384,16 @@ namespace DataDecipher.WebApp.Controllers
 
 
                 //REST Call
-                //var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
-                //var request = new RestRequest();
-                //request.Method = RestSharp.Method.POST;
-                //request.JsonSerializer.ContentType = "multipart/form-data";
-                //request.Parameters.Clear();
-                //request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
-                //request.AddParameter("ParsingRules", parsingRules);
-                //IRestResponse response = client.Execute(request);
-                //model1.parsedData = response.Content; // raw content as string
-                //model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, delimiter);
+                var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
+                var request = new RestRequest();
+                request.Method = RestSharp.Method.POST;
+                request.JsonSerializer.ContentType = "multipart/form-data";
+                request.Parameters.Clear();
+                request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+                request.AddParameter("ParsingRules", parsingRules);
+                IRestResponse response = client.Execute(request);
+                model1.parsedData = response.Content; // raw content as string
+                model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
                 return PartialView("_ParsedData", model1);
             }
             else return null;
@@ -497,6 +499,39 @@ namespace DataDecipher.WebApp.Controllers
             if (System.IO.File.Exists(path))
                 return System.IO.File.ReadAllText(path);
             return null;
+        }
+
+        private DataTable GetParsedDataTable(string content, string delimiter)
+        {
+            DataTable dtCsv = new DataTable();
+
+            string[] rows = content.Split('\n'); //split full file text into rows  
+            for (int i = 0; i < rows.Count() - 1; i++)
+            {
+                if (!string.IsNullOrEmpty(rows[i]) || !string.IsNullOrWhiteSpace(rows[i])) 
+                { 
+                    string[] rowValues = rows[i].Split(delimiter); //split each row with comma to get individual values  
+                    {
+                        if (i == 0)
+                        {
+                            for (int j = 0; j < rowValues.Count(); j++)
+                            {
+                                dtCsv.Columns.Add(rowValues[j]); //add headers  
+                            }
+                        }
+                        else
+                        {
+                            DataRow dr = dtCsv.NewRow();
+                            for (int k = 0; k < dtCsv.Columns.Count; k++)
+                            {
+                                dr[k] = rowValues[k].ToString();
+                            }
+                            dtCsv.Rows.Add(dr); //add other rows  
+                        }
+                    }
+                }
+            }
+            return dtCsv; //JsonConvert.DeserializeObject<ResponseModelType>(response);
         }
     }
 }
