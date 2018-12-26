@@ -84,7 +84,7 @@ $(document).ready(function() {
             type: 'POST',
             datatype: 'text',
             contentType: 'application/x-www-form-urlencoded',
-            data: { inputSelectedFile: '@Model.filePath', recordMarkerStartText: $('#recordStart').val(), recordMarkerEndText: $('#recordEnd').val(), tableMarkerStartText: $('#tableStart').val(), tableMarkerEndText: $('#tableEnd').val(), headerMarkerStartText: $('#headerStart').val(), headerMarkerEndText: $('#headerEnd').val(), headerFieldsSelection: $('#headerFields').val(), tableFieldsSelection: $('#tableFields').val(), delimiter: e.options[e.selectedIndex].value },
+            data: { inputSelectedFile: '@Model.FilePath', recordMarkerStartText: $('#recordStart').val(), recordMarkerEndText: $('#recordEnd').val(), tableMarkerStartText: $('#tableStart').val(), tableMarkerEndText: $('#tableEnd').val(), headerMarkerStartText: $('#headerStart').val(), headerMarkerEndText: $('#headerEnd').val(), headerFieldsSelection: $('#headerFields').val(), tableFieldsSelection: $('#tableFields').val(), delimiter: e.options[e.selectedIndex].value },
             success: function(content) {
                 $('#divParsedDataContainer').html(content);
             },

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DataDecipher.WebApp.Models;
@@ -11,10 +12,6 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
-
-
-using System.IO;
-//using RestSharp;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -281,10 +278,10 @@ namespace DataDecipher.WebApp.Controllers
         {
             var model1 = new RawData
             {
-                fileName = Path.GetFileName(filePath),
-                filePath = filePath
+                FileName = Path.GetFileName(filePath),
+                FilePath = filePath
             };
-            model1.rawData = model1.GetRawData(model1.filePath);
+            model1.RawDataContent = GetRawData(model1.FilePath);
 
             return PartialView("_ParsingRulesTxtDat", model1);
         }
@@ -294,10 +291,10 @@ namespace DataDecipher.WebApp.Controllers
         {
             var model1 = new RawData
             {
-                fileName = Path.GetFileName(filePath),
-                filePath = filePath
+                FileName = Path.GetFileName(filePath),
+                FilePath = filePath
             };
-            model1.rawData = model1.GetRawData(model1.filePath);
+            model1.RawDataContent = GetRawData(model1.FilePath);
 
             return PartialView("_ParsingRulesCsv", model1);
         }
@@ -307,10 +304,10 @@ namespace DataDecipher.WebApp.Controllers
         {
             var model1 = new RawData
             {
-                fileName = Path.GetFileName(filePath),
-                filePath = filePath
+                FileName = Path.GetFileName(filePath),
+                FilePath = filePath
             };
-            model1.rawData = model1.GetRawData(model1.filePath);
+            model1.RawDataContent = GetRawData(model1.FilePath);
 
             return PartialView("_ParsingRulesXml", model1);
         }
@@ -320,10 +317,10 @@ namespace DataDecipher.WebApp.Controllers
         {
             var model1 = new RawData
             {
-                fileName = Path.GetFileName(inputSelectedFile),
-                filePath = inputSelectedFile
+                FileName = Path.GetFileName(inputSelectedFile),
+                FilePath = inputSelectedFile
             };
-            model1.rawData = model1.GetRawData(model1.filePath);
+            model1.RawDataContent = GetRawData(model1.FilePath);
 
             return PartialView("_RawData", model1);
 
@@ -336,8 +333,8 @@ namespace DataDecipher.WebApp.Controllers
           
             var model1 = new RawData
             {
-                fileName = "sample.csv",
-                filePath = @"\Users\deepmalagupta\Projects\DataDecipher1.0\DataDecipher.WebApp\TestData\Raw\"
+                FileName = "sample.csv",
+                FilePath = @"\Users\deepmalagupta\Projects\DataDecipher1.0\DataDecipher.WebApp\TestData\Raw\"
             };
            
            /* CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
@@ -355,7 +352,7 @@ namespace DataDecipher.WebApp.Controllers
             CloudFile cloudFile = cloudFileDirectory.GetFileReference(model1.fileName);
             cloudFile.DownloadToFileAsync(@"/Users/deepmalagupta/sample.csv",FileMode.Create);*/
 
-            model1.rawData = model1.GetRawData(@"/Users/deepmalagupta/sample.csv");
+            model1.RawDataContent = GetRawData(@"/Users/deepmalagupta/sample.csv");
 
             return PartialView("_RawData", model1);
 
@@ -493,6 +490,13 @@ namespace DataDecipher.WebApp.Controllers
             //model1.parsedData = response.Content; // raw content as string
             //model1.parsedDataTable = model1.GetParsedDataTable(model1.parsedData, ",");
             return PartialView("_ParsedData", model1);
+        }
+
+        private string GetRawData(string path)
+        {
+            if (System.IO.File.Exists(path))
+                return System.IO.File.ReadAllText(path);
+            return null;
         }
     }
 }

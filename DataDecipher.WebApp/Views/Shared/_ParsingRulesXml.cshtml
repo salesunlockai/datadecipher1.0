@@ -37,7 +37,7 @@ $(document).ready(function() {
             type: 'POST',
             datatype: 'text',
             contentType: 'application/x-www-form-urlencoded',
-            data: { inputSelectedFile: '@Model.filePath', parentTag: $('#parentTag').val(), headerFields: $('#headerFields').val(), tableFields: $('#tableFields').val()},
+            data: { inputSelectedFile: '@Model.FilePath', parentTag: $('#parentTag').val(), headerFields: $('#headerFields').val(), tableFields: $('#tableFields').val()},
             success: function(content) {
                 $('#divParsedDataContainer').html(content);
             },

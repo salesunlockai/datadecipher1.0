@@ -30,7 +30,7 @@ $(document).ready(function() {
             type: 'POST',
             datatype: 'text',
             contentType: 'application/x-www-form-urlencoded',
-            data: { inputSelectedFile: '@Model.filePath', columns: $('#columnList').val(), delimiter: e.options[e.selectedIndex].value},
+            data: { inputSelectedFile: '@Model.FilePath', columns: $('#columnList').val(), delimiter: e.options[e.selectedIndex].value},
             success: function(content) {
                 $('#divParsedDataContainer').html(content);
             },
