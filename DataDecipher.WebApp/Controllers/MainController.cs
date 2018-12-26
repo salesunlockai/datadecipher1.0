@@ -241,6 +241,40 @@ namespace DataDecipher.WebApp.Controllers
             return PartialView("_ApplyRules", main);
         }
 
+        //This Method is called first time to load the Parser Configuration views. It displays two views, one with create and/or save new parser configuration, 
+        //and another view to list the existing parser configurations of a particular type i.e. csv, xml, txt, etc. 
+        //[HttpPost]
+        //public async Task<IActionResult> DisplayParserConfiguration(MainViewModel main)
+        //{
+        //    Models.Method method = _context.Methods.Include(x => x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
+        //    DataSource dataSource = _context.DataSources.Where(arg => arg.Uri == main.SelectedDataSourceName).First();
+
+        //    if (_context.MethodDataSources.Where(x => (x.Method.Id == method.Id) && (x.Datafile.Id == dataSource.Id)).Count() == 0)
+        //    {
+        //        _context.MethodDataSources.Add(new MethodDataSource { Method = method, Datafile = dataSource });
+        //        await _context.SaveChangesAsync();
+        //    }
+
+        //    main.SelectedDataProcessingRule = new DataProcessingRule();
+        //    main.AvailableDataProcessingRules = _context.DataProcessingRule.ToList();
+
+        //    return PartialView("_ApplyRules", main);
+        //}
+
+        ////This method is used to create a new parser in case user enters 
+        //[HttpPost]
+        //public async Task<IActionResult> CreateNewCsvParser(MainViewModel main)
+        //{
+        //    ParserCsvFile parserCsvFile = new ParserCsvFile();
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.ParserCsvFiles.Add(parserCsvFile);
+        //        await _context.SaveChangesAsync();
+
+        //    }
+        //    return PartialView("_ParsedData", new ParsedData());
+        //}
+
 
         [HttpPost]
         public ActionResult ApplyRules(MainViewModel main)

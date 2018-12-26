@@ -1,86 +1,102 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="#">
-                    Data Decipher
-                </a>
-            </li>
-            <li class="sidebar-brand">
-                Main functions
-            </li>
-            <li class="active">
-                <a asp-controller="Main" asp-action="Index">Home</a>
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+            <a href="#">
+                Data Decipher
+            </a>
+        </li>
+        <li class="sidebar-brand">
+            Main functions
+        </li>
+        <li class="active">
+            <a asp-controller="Main" asp-action="Index">Home</a>
+        </li>
+        <li>
+            <a asp-controller="Methods" asp-action="Index">Method</a>
+        </li>
+        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded || (await AuthorizationService.AuthorizeAsync(User, "RequireSuperUserRole")).Succeeded)
+        {
+            <li>
+                <a asp-controller="DataSources" asp-action="Index">Data Source</a>
             </li>
             <li>
-                <a asp-controller="Methods" asp-action="Index">Method</a>
+                <a asp-controller="DataProcessingRules" asp-action="Index">Processing Rules</a>
             </li>
-            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded || (await AuthorizationService.AuthorizeAsync(User, "RequireSuperUserRole")).Succeeded)
-    {
-        <li>
-            <a asp-controller="DataSources" asp-action="Index">Data Source</a>
-        </li>
-        <li>
-            <a asp-controller="DataProcessingRules" asp-action="Index">Processing Rules</a>
-        </li>
-        <li>
-            <a href="#" onclick="ToggleParserCollapse()">Parser</a>
-            <ul id="collapseParsers" style="list-style: none; display:none;">
-                <li>
-                    <a asp-controller="ParserDatFiles" asp-action="Index">DAT</a>
-                </li>
-                <li>
-                    <a asp-controller="ParserTxtFiles" asp-action="Index">TXT</a>
-                </li>
-                <li>
-                    <a asp-controller="ParserCsvFile" asp-action="Index">CSV</a>
-                </li>
-                <li>
-                    <a asp-controller="ParserXmlFiles" asp-action="Index">XML</a>
-                </li>
-                <li>
-                    <a asp-controller="ParserJsonFiles" asp-action="Index">JSON</a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <a href="#" onclick="TogglePublishCollapse()">Publish</a>
-            <ul id="collapsePublish" style="list-style: none; display:none;">
-                <li>
-                    <a asp-controller="ConfigureFileServer" asp-action="Index">File Server</a>
-                </li>
-                <li>
-                    <a asp-controller="ConfigureMSSqlServer" asp-action="Index">MSSQL Server</a>
-                </li>
-            </ul>
-        </li>
-}
-            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
-    {
-        <li class="sidebar-brand">
-            Administrator functions
-        </li>
-        <li>
-            <a asp-controller="DataSourceConnectors" asp-action="Index">Data Connectors</a>
-        </li>
-        <li>
-            <a asp-controller="Plan" asp-action="Index">Plan</a>
-        </li>
-        <li>
-            <a asp-controller="Organization" asp-action="Index">Organization</a>
-        </li>
-        <li>
-            <a asp-controller="ApplicationRoles" asp-action="Index">Application Roles</a>
-        </li>
-        <li>
-            <a asp-controller="ApplicationUser" asp-action="Index">Application Users</a>
-        </li>
-        <li>
-            <a asp-controller="SampleDataSources" asp-action="Index">Sample Datasets</a>
-        </li>
-}
-        </ul>
-    </div>
+            <li>
+                <a href="#" onclick="ToggleParserCollapse()">Parser</a>
+                <ul id="collapseParsers" style="list-style: none; display:none;">
+                    <li>
+                        <a asp-controller="ParserDatFiles" asp-action="Index">DAT</a>
+                    </li>
+                    <li>
+                        <a asp-controller="ParserTxtFiles" asp-action="Index">TXT</a>
+                    </li>
+                    <li>
+                        <a asp-controller="ParserCsvFile" asp-action="Index">CSV</a>
+                    </li>
+                    <li>
+                        <a asp-controller="ParserXmlFiles" asp-action="Index">XML</a>
+                    </li>
+                    <li>
+                        <a asp-controller="ParserJsonFiles" asp-action="Index">JSON</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" onclick="TogglePublishCollapse()">Publish</a>
+                <ul id="collapsePublish" style="list-style: none; display:none;">
+                    <li>
+                        <a asp-controller="ConfigureFileServer" asp-action="Index">File Server</a>
+                    </li>
+                    <li>
+                        <a asp-controller="ConfigureMSSqlServer" asp-action="Index">MSSQL Server</a>
+                    </li>
+                </ul>
+            </li>
+        }
+        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
+        {
+            <li class="sidebar-brand">
+                Administrator functions
+            </li>
+            <li>
+                <a asp-controller="DataSourceConnectors" asp-action="Index">Data Connectors</a>
+            </li>
+            <li>
+                <a asp-controller="Plan" asp-action="Index">Plan</a>
+            </li>
+            <li>
+                <a asp-controller="Organization" asp-action="Index">Organization</a>
+            </li>
+            <li>
+                <a asp-controller="ApplicationRoles" asp-action="Index">Application Roles</a>
+            </li>
+            <li>
+                <a asp-controller="ApplicationUser" asp-action="Index">Application Users</a>
+            </li>
+            <li>
+                <a asp-controller="SampleDataSources" asp-action="Index">Sample Datasets</a>
+            </li>
+        }
+    </ul>
+</div>
 
+<script>function ToggleParserCollapse() {
+  var x = document.getElementById('collapseParsers');
+  if (x.style.display == 'block') {
+    x.style.display = 'none';
+  } else {
+    x.style.display = 'block';
+  }
+}
 
+function TogglePublishCollapse() {
+  var x = document.getElementById('collapsePublish');
+  if (x.style.display == 'block') {
+    x.style.display = 'none';
+  } else {
+    x.style.display = 'block';
+  }
+}</script>
