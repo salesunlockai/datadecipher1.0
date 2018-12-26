@@ -1,0 +1,64 @@
+@model IEnumerable<DataDecipher.WebApp.Models.ParserCsvFile>
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@inject UserManager<DataDecipher.WebApp.Data.ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <h5> List of all the accessible CSV parsers</h5>
+    <p>The following table displays all the CSV parsers that are accessible to you. You can create, edit, delete and share the parsers using this screen</p>
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded || (await AuthorizationService.AuthorizeAsync(User, "RequireSuperUserRole")).Succeeded)
+    {
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+    }
+    <table id="myTable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Details)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Delimiter)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RequiredHeader)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Delimiter)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequiredHeader)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

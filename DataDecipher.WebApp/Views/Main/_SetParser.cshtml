@@ -1,0 +1,11 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="row>">
+    <div class="col-md-12">
+        <h6>4. Set your parser configuration for the CSV file</h6>
+        <br />
+    </div>
+</div>
+<div id="InitMethod" class="card-deck">
+    @await Html.PartialAsync("~/Views/ParserCsvFile/_NewParserCsvFile.cshtml", Model.SelectedParser)
+    @await Html.PartialAsync("~/Views/ParserCsvFile/_ListParserCsvFiles.cshtml", Model)
+</div>

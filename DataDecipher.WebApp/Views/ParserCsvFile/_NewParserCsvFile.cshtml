@@ -1,0 +1,87 @@
+﻿@model DataDecipher.WebApp.Models.ParserCsvFile
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">Create a new CSV parser</span>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Main" asp-action="CreateNewCsvParser" data-ajax-begin="onBegin" data-ajax-complete="onComplete"
+              data-ajax-failure="onFailed" data-ajax-success="onSuccess"
+              data-ajax="true" data-ajax-method="POST">
+            <div class="container-fluid">
+                <div class="row>">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Name" class="badge badge-default-noborder"></label>
+                            <input type="text" asp-for="Name" placeholder="Your parser name" class="form-control" />
+                            <span asp-validation-for="Name" class="badge badge-danger-noborder"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row>">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Details" class="badge badge-default-noborder"></label>
+                            <textarea asp-for="Details" placeholder="Little bit more about your parser goes here" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row>">
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="badge badge-default-noborder">Header Columns</label>
+                            <input type="text" asp-for="RequiredHeader" placeholder="Please provide all the required header column names separated by comma(,)" class="form-control" />
+                            <span asp-validation-for="RequiredHeader" class="badge badge-danger-noborder"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row>">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Delimiter" class="badge badge-default-noborder"></label>
+                            <select id="Delimiter" name="Delimiter" asp-for="Delimiter" >
+                                <option value=",">Comma (,)</option>
+                                <option value=";">Semicolon (;)</option>
+                                <option value=":">Colon (:)</option>
+                                <option value="|">Pipe (|)</option>
+                            </select>
+                            @*<label name="Header Columns" class="badge badge-default-noborder"></label>
+                            <input type="text" asp-for="RequiredHeader" placeholder="Please provide all the required header column names separated by comma(,)" class="form-control" />*@
+                            <span asp-validation-for="Delimiter" class="badge badge-danger-noborder"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row>">
+                    <div class="col">
+                        <div class="form-group">
+                            <input id="isCheckedSaveParser" type="checkbox" class="form-control" />*@
+                            <label class="badge badge-default-noborder">Save Parser Configuration</label>
+                            <span class="badge badge-danger-noborder"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="CreateMethodFooter">
+                    <input class="btn btn-primary" type="submit" value="Run Parser" />
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script>var createmethodfooter = $("#CreateMethodFooter");
+var onBegin = function() {
+            createmethodfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");
+};
+
+var onComplete = function(data,status) {
+            createmethodfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>New method created successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+            $('#SetDataSource').html(data.responseText);
+};
+
+var onSuccess = function(context) {
+
+};
+
+var onFailed = function(context) {
+
+};</script>
+

@@ -17,19 +17,44 @@
                 <a asp-controller="Methods" asp-action="Index">Method</a>
             </li>
             @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded || (await AuthorizationService.AuthorizeAsync(User, "RequireSuperUserRole")).Succeeded)
-            {
+    {
         <li>
             <a asp-controller="DataSources" asp-action="Index">Data Source</a>
         </li>
         <li>
             <a asp-controller="DataProcessingRules" asp-action="Index">Processing Rules</a>
         </li>
-            <li>
-                <a href="#">Parser</a>
-            </li>
-            <li>
-                <a href="#"> Report </a>
-            </li>
+        <li>
+            <a href="#" onclick="ToggleParserCollapse()">Parser</a>
+            <ul id="collapseParsers" style="list-style: none; display:none;">
+                <li>
+                    <a asp-controller="ParserDatFiles" asp-action="Index">DAT</a>
+                </li>
+                <li>
+                    <a asp-controller="ParserTxtFiles" asp-action="Index">TXT</a>
+                </li>
+                <li>
+                    <a asp-controller="ParserCsvFile" asp-action="Index">CSV</a>
+                </li>
+                <li>
+                    <a asp-controller="ParserXmlFiles" asp-action="Index">XML</a>
+                </li>
+                <li>
+                    <a asp-controller="ParserJsonFiles" asp-action="Index">JSON</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" onclick="TogglePublishCollapse()">Publish</a>
+            <ul id="collapsePublish" style="list-style: none; display:none;">
+                <li>
+                    <a asp-controller="ConfigureFileServer" asp-action="Index">File Server</a>
+                </li>
+                <li>
+                    <a asp-controller="ConfigureMSSqlServer" asp-action="Index">MSSQL Server</a>
+                </li>
+            </ul>
+        </li>
 }
             @if ((await AuthorizationService.AuthorizeAsync(User, "RequireDDAdminRole")).Succeeded)
     {
