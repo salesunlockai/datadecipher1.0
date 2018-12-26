@@ -4,7 +4,7 @@
 
 <div class="row>">
     <div class="col-md-12">
-        <h6>3. Set Instrument Data</h6>
+        <h6>3. Displaying Raw Data for file: @Model.SelectedDataSourceName</h6>
         <br />
     </div>
 </div>
@@ -14,7 +14,7 @@
             <span class="text-primary">Contents of the file: @Model.SelectedDataSourceName</span>
         </div>
         <div class="card-body">
-            <form asp-controller="Main" asp-action="LinkDataSourceToMethod" data-ajax-begin="onLinkDSBegin" data-ajax-complete="onLinkDSComplete"
+            <form asp-controller="Main" asp-action="DisplayParserConfiguration" data-ajax-begin="onLinkDSBegin" data-ajax-complete="onLinkDSComplete"
                   data-ajax-failure="onLinkDSFailed" data-ajax-success="onLinkDSSuccess"
                   data-ajax="true" data-ajax-method="POST">
                 <div class="container-fluid">

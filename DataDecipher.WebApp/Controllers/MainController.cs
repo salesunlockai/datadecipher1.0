@@ -243,37 +243,29 @@ namespace DataDecipher.WebApp.Controllers
 
         //This Method is called first time to load the Parser Configuration views. It displays two views, one with create and/or save new parser configuration, 
         //and another view to list the existing parser configurations of a particular type i.e. csv, xml, txt, etc. 
-        //[HttpPost]
-        //public async Task<IActionResult> DisplayParserConfiguration(MainViewModel main)
-        //{
-        //    Models.Method method = _context.Methods.Include(x => x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
-        //    DataSource dataSource = _context.DataSources.Where(arg => arg.Uri == main.SelectedDataSourceName).First();
+        [HttpPost]
+        public async Task<IActionResult> DisplayParserConfiguration(MainViewModel main)
+        {
+            main.SelectedParser = new ParserCsvFile();
+            main.AvailableParsers = _context.ParserCsvFiles.ToList();
 
-        //    if (_context.MethodDataSources.Where(x => (x.Method.Id == method.Id) && (x.Datafile.Id == dataSource.Id)).Count() == 0)
-        //    {
-        //        _context.MethodDataSources.Add(new MethodDataSource { Method = method, Datafile = dataSource });
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    main.SelectedDataProcessingRule = new DataProcessingRule();
-        //    main.AvailableDataProcessingRules = _context.DataProcessingRule.ToList();
-
-        //    return PartialView("_ApplyRules", main);
-        //}
+            return PartialView("_SetParser", main);
+        }
 
         ////This method is used to create a new parser in case user enters 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateNewCsvParser(MainViewModel main)
-        //{
-        //    ParserCsvFile parserCsvFile = new ParserCsvFile();
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.ParserCsvFiles.Add(parserCsvFile);
-        //        await _context.SaveChangesAsync();
+        [HttpPost]
+        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, ParserCsvFile parserCsvFile, bool isCheckedSaveParser = false)
+        {
+            main.SelectedParser = parserCsvFile;
+            if (ModelState.IsValid && isCheckedSaveParser)
+            {
+                _context.ParserCsvFiles.Add(parserCsvFile);
+                await _context.SaveChangesAsync();
+            }
 
-        //    }
-        //    return PartialView("_ParsedData", new ParsedData());
-        //}
+            main.parsedData = DisplayParsedCsvFile("TestData/Raw/Sample.csv", parserCsvFile.RequiredHeader, parserCsvFile.Delimiter.ToString());
+            return PartialView("_ShowParsedData", main);
+        }
 
 
         [HttpPost]
@@ -395,7 +387,7 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult DisplayParsedCsvFile(string inputSelectedFile, string columns, string delimiter)
+        public ParsedData DisplayParsedCsvFile(string inputSelectedFile, string columns, string delimiter)
         {
             string[] columnNames = columns.Split(',');
             if (columnNames.Length != 0)
@@ -428,7 +420,7 @@ namespace DataDecipher.WebApp.Controllers
                 IRestResponse response = client.Execute(request);
                 model1.parsedData = response.Content; // raw content as string
                 model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
-                return PartialView("_ParsedData", model1);
+                return model1;
             }
             else return null;
         }

@@ -4,7 +4,7 @@
         <span class="text-primary">Create a new CSV parser</span>
     </div>
     <div class="card-body">
-        <form asp-controller="Main" asp-action="CreateNewCsvParser" data-ajax-begin="onBegin" data-ajax-complete="onComplete"
+        <form asp-controller="Main" asp-action="RunNewCsvParser" data-ajax-begin="onBegin" data-ajax-complete="onComplete"
               data-ajax-failure="onFailed" data-ajax-success="onSuccess"
               data-ajax="true" data-ajax-method="POST">
             <div class="container-fluid">
@@ -44,8 +44,6 @@
                                 <option value=":">Colon (:)</option>
                                 <option value="|">Pipe (|)</option>
                             </select>
-                            @*<label name="Header Columns" class="badge badge-default-noborder"></label>
-                            <input type="text" asp-for="RequiredHeader" placeholder="Please provide all the required header column names separated by comma(,)" class="form-control" />*@
                             <span asp-validation-for="Delimiter" class="badge badge-danger-noborder"></span>
                         </div>
                     </div>
@@ -53,17 +51,18 @@
                 <div class="row>">
                     <div class="col">
                         <div class="form-group">
-                            <input id="isCheckedSaveParser" type="checkbox" class="form-control" />*@
+                            <input name="isCheckedSaveParser" value="true" type="checkbox" class="form-control" />
                             <label class="badge badge-default-noborder">Save Parser Configuration</label>
                             <span class="badge badge-danger-noborder"></span>
                         </div>
                     </div>
                 </div>
                 <div id="CreateMethodFooter">
-                    <input class="btn btn-primary" type="submit" value="Run Parser" />
+                    <div class="col">
+                        <input class="btn btn-primary" type="submit" value="Run Parser" />
+                    </div>
                 </div>
             </div>
-
         </form>
     </div>
 </div>

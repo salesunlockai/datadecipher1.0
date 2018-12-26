@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace DataDecipher.WebApp.Models
 {
@@ -40,6 +41,10 @@ namespace DataDecipher.WebApp.Models
         public ParserCsvFile SelectedParser { get; set; }
 
         public List<ParserCsvFile> AvailableParsers { get; set; }
+
+        //Holds the Parsed Data for the currently selected source data
+
+        public ParsedData parsedData { get; set; }
 
     }
 }
