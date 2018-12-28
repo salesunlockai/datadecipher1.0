@@ -1,7 +1,7 @@
 ﻿@model DataDecipher.WebApp.Models.ParserCsvFile
 <div class="card">
     <div class="card-header">
-        <span class="text-primary">Create a new CSV parser</span>
+        <span class="text-primary">Create a new parser configuration</span>
     </div>
     <div class="card-body">
         <form asp-controller="Main" asp-action="RunNewCsvParser" data-ajax-begin="onBegin" data-ajax-complete="onComplete"
@@ -38,7 +38,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label asp-for="Delimiter" class="badge badge-default-noborder"></label>
-                            <select id="Delimiter" name="Delimiter" asp-for="Delimiter" >
+                            <select id="Delimiter" name="Delimiter" asp-for="Delimiter">
                                 <option value=",">Comma (,)</option>
                                 <option value=";">Semicolon (;)</option>
                                 <option value=":">Colon (:)</option>
@@ -51,36 +51,38 @@
                 <div class="row>">
                     <div class="col">
                         <div class="form-group">
-                            <input name="isCheckedSaveParser" value="true" type="checkbox" class="form-control" />
-                            <label class="badge badge-default-noborder">Save Parser Configuration</label>
-                            <span class="badge badge-danger-noborder"></span>
+                            <input id="isCheckedSaveParser" name="isCheckedSaveParser" value="true" type="checkbox" />
+                            <label for="isCheckedSaveParser" class="badge badge-default-noborder">Save Parser Configuration</label>
                         </div>
                     </div>
                 </div>
-                <div id="CreateMethodFooter">
+                <div class="row>">
                     <div class="col">
                         <input class="btn btn-primary" type="submit" value="Run Parser" />
+                    </div>
+                </div>
+                <div class="row>">
+                    <div class="col">
+                        <div id="CreateParserFooter">
+                        </div>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
-<script>var createmethodfooter = $("#CreateMethodFooter");
+
+<script>
+var createparserfooter = $("#CreateParserFooter");
 var onBegin = function() {
-            createmethodfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");
-};
+            createparserfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");};
 
 var onComplete = function(data,status) {
-            createmethodfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>New method created successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-            $('#SetDataSource').html(data.responseText);
-};
+            createparserfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>New method created successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+            $('#SetParser').html(data.responseText);};
 
-var onSuccess = function(context) {
+var onSuccess = function(context) {};
 
-};
-
-var onFailed = function(context) {
-
-};</script>
+var onFailed = function(context) {};
+</script>
 

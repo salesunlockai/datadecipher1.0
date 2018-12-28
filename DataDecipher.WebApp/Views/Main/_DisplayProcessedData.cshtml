@@ -19,14 +19,14 @@
                 <div class="container-fluid">
                     <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
                     <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
-                    <div id="pdeditor">
+                    <div id="pdeditor1">
                         <p>
                             @Model.ProcessedData
                         </p>
                         <br />
                     </div>
                     <br />
-                    <div id="DisplayPDFooter">
+                    <div id="DisplayPDFooter1">
                         <input class="btn btn-primary" type="submit" value="Save" />
                     </div>
                 </div>
@@ -34,10 +34,10 @@
         </div>
     </div>
 </div>
-<script>var pdquill = new Quill('#pdeditor', {
+<script>var pdquill = new Quill('#pdeditor1', {
         theme: 'snow'
 });
-var displayPDFooter = $("#DisplayPDFooter");
+var displayPDFooter = $("#DisplayPDFooter1");
 
 var onLinkPDBegin = function(data,status) {
         displayPDFooter.html("<span class=\"text-primary\">linking processed data please wait...</span>");

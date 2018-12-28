@@ -4,7 +4,7 @@
 
 <div class="row>">
     <div class="col-md-12">
-        <h6>3. Displaying Raw Data for file: @Model.SelectedDataSourceName</h6>
+        <h6>3. Displaying Raw Data</h6>
         <br />
     </div>
 </div>
@@ -14,26 +14,32 @@
             <span class="text-primary">Contents of the file: @Model.SelectedDataSourceName</span>
         </div>
         <div class="card-body">
-            <form asp-controller="Main" asp-action="DisplayParserConfiguration" data-ajax-begin="onLinkDSBegin" data-ajax-complete="onLinkDSComplete"
-                  data-ajax-failure="onLinkDSFailed" data-ajax-success="onLinkDSSuccess"
-                  data-ajax="true" data-ajax-method="POST">
-                <div class="container-fluid">
-                    <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
-                    <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
-                    <input type="hidden" asp-for="@Model.RawData" />
-                    <div id="editor">
-                        <p>
-                            @Model.RawData
-                        </p>
+            <div class="row">
+                <form asp-controller="Main" asp-action="DisplayParserConfiguration" data-ajax-begin="onLinkDSBegin" data-ajax-complete="onLinkDSComplete"
+                      data-ajax-failure="onLinkDSFailed" data-ajax-success="onLinkDSSuccess"
+                      data-ajax="true" data-ajax-method="POST">
+                    <div class="container-fluid">
+                        <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
+                        <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
+                        <input type="hidden" asp-for="@Model.RawData" />
+                        <div id="editor">
+                            <p>
+                                @Model.RawData
+                            </p>
+                            <br />
+                        </div>
                         <br />
+                        <div>
+                            <input class="btn btn-primary" type="submit" value="Save" />
+                        </div>
                     </div>
-                    <br />
-                    <div id="DisplayDSFooter">
-                        <input class="btn btn-primary" type="submit" value="Save" />
-                    </div>
-                </div>
                 </form>
-          </div>
+            </div>
+            <div class="row>">
+                <div id="DisplayDSFooter">
+                </div>
+            </div>
+        </div>
      </div>
 </div>
 <script>var quill = new Quill('#editor', {
