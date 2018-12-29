@@ -85,7 +85,6 @@ namespace DataDecipher.WebApp.Controllers
                 method.Status = "Draft";
                 _context.Methods.Add(method);
                 await _context.SaveChangesAsync();
-
             }
 
             MainViewModel main = new MainViewModel();
@@ -134,6 +133,9 @@ namespace DataDecipher.WebApp.Controllers
 
             main.RawData = reader.ReadToEnd();
 
+            //Copied raw data to processed data in case user skips the pre-processing/cleansing step
+            main.ProcessedData = main.RawData;
+
             return PartialView("_DisplayDataSource", main);
 
         }
@@ -169,6 +171,8 @@ namespace DataDecipher.WebApp.Controllers
 
             main.RawData = reader.ReadToEnd();
 
+            //Copied raw data to processed data in case user skips the pre-processing/cleansing step
+            main.ProcessedData = main.RawData;
 
             return PartialView("_DisplayDataSource", main);
         }
@@ -206,7 +210,6 @@ namespace DataDecipher.WebApp.Controllers
                 StreamReader reader = new StreamReader(stream);
                 main.RawData = reader.ReadToEnd();
                 main.SelectedDataSourceName = dataSource.DataFile.FileName;
-
             }
 
             dataSource.Uri = cloudFile.Uri.ToString();
@@ -218,9 +221,11 @@ namespace DataDecipher.WebApp.Controllers
             await _context.SaveChangesAsync();
 
             main.SelectedDataSourceName = cloudFile.Uri.ToString();
+
+            //Copied raw data to processed data in case user skips the pre-processing/cleansing step
+            main.ProcessedData = main.RawData;
           
             return PartialView("_DisplayDataSource", main);
-
         }
 
         [HttpPost]
@@ -239,6 +244,42 @@ namespace DataDecipher.WebApp.Controllers
             main.AvailableDataProcessingRules = _context.DataProcessingRule.ToList();
 
             return PartialView("_ApplyRules", main);
+        }
+
+        /// <summary>
+        /// The following three methods are used to implement the data pre-processing functionality
+        /// </summary>
+        /// <returns>The rules.</returns>
+        /// <param name="main">Main.</param>
+        [HttpPost]
+        public ActionResult ApplyRules(MainViewModel main)
+        {
+            List<DataProcessingRule> rules= main.AvailableDataProcessingRules.Where(sim => sim.IsSelected == true).ToList();
+
+            foreach(DataProcessingRule r in rules)
+            {
+               DataProcessingRule rule = _context.DataProcessingRule.Where(sim => sim.Id == r.Id).First(); 
+               main.ProcessedData = main.ProcessedData.Replace(rule.MatchCondition, rule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            return PartialView("_DisplayProcessedData", main);
+        }
+
+        [HttpPost]
+        public ActionResult CreateAndApplyRule(MainViewModel main)
+        {
+            main.ProcessedData = main.ProcessedData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+            _context.DataProcessingRule.Add(main.SelectedDataProcessingRule);
+            _context.SaveChanges();
+            return PartialView("_DisplayProcessedData", main);
+        }
+
+        [HttpPost]
+        public ActionResult ApplyRule(MainViewModel main)
+        {
+            main.ProcessedData = main.ProcessedData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+           
+            return PartialView("_DisplayProcessedData", main);
         }
 
         //This Method is called first time to load the Parser Configuration views. It displays two views, one with create and/or save new parser configuration, 
@@ -266,40 +307,6 @@ namespace DataDecipher.WebApp.Controllers
             main.parsedData = DisplayParsedCsvFile("TestData/Raw/Sample.csv", parserCsvFile.RequiredHeader, parserCsvFile.Delimiter.ToString());
             return PartialView("_ShowParsedData", main);
         }
-
-
-        [HttpPost]
-        public ActionResult ApplyRules(MainViewModel main)
-        {
-            List<DataProcessingRule> rules= main.AvailableDataProcessingRules.Where(sim => sim.IsSelected == true).ToList();
-
-            foreach(DataProcessingRule r in rules)
-            {
-               DataProcessingRule rule = _context.DataProcessingRule.Where(sim => sim.Id == r.Id).First(); 
-               main.ProcessedData = main.RawData.Replace(rule.MatchCondition, rule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
-            }
-
-            return PartialView("_DisplayProcessedData", main);
-        }
-
-
-        [HttpPost]
-        public ActionResult CreateAndApplyRule(MainViewModel main)
-        {
-            main.ProcessedData = main.RawData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
-            _context.DataProcessingRule.Add(main.SelectedDataProcessingRule);
-            _context.SaveChanges();
-            return PartialView("_DisplayProcessedData", main);
-        }
-
-        [HttpPost]
-        public ActionResult ApplyRule(MainViewModel main)
-        {
-            main.ProcessedData = main.RawData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
-           
-            return PartialView("_DisplayProcessedData", main);
-        }
-
 
         [HttpPost]
         public IActionResult DisplayParsingViewTxtDat(string filePath)

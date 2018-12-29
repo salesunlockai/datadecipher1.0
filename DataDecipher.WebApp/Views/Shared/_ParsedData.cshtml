@@ -24,14 +24,19 @@
     </table>
 </div>
 <br />
-<label for="outputFileName">Output Filename: </label>
-<div class="input-group form-group-no-border input-lg">
-    <span class="input-group-addon">
-        <i class="now-ui-icons text_caps-small"></i>
-    </span>
-    <input type="text" id="inputFileNameToSaveAs" name="outputFileName" placeholder="Please enter the folder path" class="form-control" />
+
+<div class="form-group">
+    <div class="row">
+        <input type="button" id="btnSaveAsFile" onclick="saveTextAsFile()" value="Download parsed data" class="btn btn-primary btn-round" />
+    </div>
+    <div class="row">
+        <label for="outputFileName" class="badge badge-default-noborder">
+            Save As Filename:
+        </label>
+        <input type="text" id="inputFileNameToSaveAs" name="outputFileName" placeholder="File Name" class="form-control" value="ParsedData.csv"/>
+    </div>
 </div>
-<input type="button" id="btnSaveAsFile" onclick="saveTextAsFile()" value="Download parsed data" class="btn btn-primary btn-round" />
+
 
 <script type="text/javascript">
 function saveTextAsFile()

@@ -28,7 +28,7 @@ namespace DataDecipher.WebApp.Models
 
         public string RawData { get; set; }
 
-
+        //Here are all the properties required for a Data Processing/Cleansing
         public DataProcessingRule SelectedDataProcessingRule { get; set; }
 
         public List<DataProcessingRule> AvailableDataProcessingRules { get; set; }

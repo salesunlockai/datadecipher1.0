@@ -1,12 +1,12 @@
 ﻿@model DataDecipher.WebApp.Models.MainViewModel
 <div class="row>">
     <div class="col-md-8">
-        <h6>4. Apply Rules (Optional <a href="#">Skip</a>)</h6>
+        <h6>Perform Data Pre-processing / Creare Cleansing Rules (Optional) <a href="#SetParser"> Skip</a></h6>
         <br />
     </div>
 </div>
 <div id="InitMethod" class="card-deck">
     @await Html.PartialAsync("~/Views/DataProcessingRules/_ApplyProcessingRule.cshtml", Model)
     @await Html.PartialAsync("~/Views/DataProcessingRules/_NewProcessingRule.cshtml", Model)
-    @await Html.PartialAsync("~/Views/DataProcessingRules/_ListProcessingRules.cshtml", Model)
+    @*@await Html.PartialAsync("~/Views/DataProcessingRules/_ListProcessingRules.cshtml", Model)*@
 </div>

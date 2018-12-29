@@ -20,7 +20,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label asp-for="@Model.SelectedDataSource.Description" class="badge badge-default-noborder"></label>
-                        <textarea readonly asp-for="@Model.SelectedDataSource.Description" placeholder="Little bit more about your data source goes here" class="form-control" rows="5"></textarea>
+                        <textarea readonly asp-for="@Model.SelectedDataSource.Description" placeholder="Little bit more about your data source goes here" class="form-control" rows="5">@Model.SelectedDataSource.Description</textarea>
                     </div>
                 </div>
             </div>

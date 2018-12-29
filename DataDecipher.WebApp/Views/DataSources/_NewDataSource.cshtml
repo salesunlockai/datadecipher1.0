@@ -5,41 +5,29 @@
     </div>
     <div class="card-body">
         <form id="frmDsUpload" asp-controller="Main" asp-action="CreateNewDataSource" method="Post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="@Model.SelectedMethod.Id"/>
-            <div class="row>">
-                <div class="col">
-                    <div class="form-group">
-                        <label asp-for="@Model.SelectedDataSource.Name" class="badge badge-default-noborder"></label>
-                        <input type="text" asp-for="@Model.SelectedDataSource.Name" placeholder="Your data source name" class="form-control" />
-                        <span asp-validation-for="@Model.SelectedDataSource.Name" class="badge badge-danger-noborder"></span>
-                    </div>
+            <div class="container-fluid">
+                <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedDataSource.Name" class="badge badge-default-noborder"></label>
+                    <input type="text" asp-for="@Model.SelectedDataSource.Name" placeholder="Your data source name" class="form-control" />
+                    <span asp-validation-for="@Model.SelectedDataSource.Name" class="badge badge-danger-noborder"></span>
                 </div>
-            </div>
-            <div class="row>">
-                <div class="col">
-                    <div class="form-group">
-                        <label asp-for="@Model.SelectedDataSource.Description" class="badge badge-default-noborder"></label>
-                        <textarea asp-for="@Model.SelectedDataSource.Description" placeholder="Little bit more about your data source goes here" class="form-control" rows="5"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedDataSource.Description" class="badge badge-default-noborder"></label>
+                    <textarea asp-for="@Model.SelectedDataSource.Description" placeholder="Little bit more about your data source goes here" class="form-control" rows="5"></textarea>
                 </div>
-            </div>
-            <div class="row>">
-                <div class="col">
-                    <div class="form-group">
-                        <input class="file btn-primary btn-simple" type="file" name="DataFile" />
-                    </div>
+                <div class="form-group">
+                    <input class="file btn-primary btn-simple" type="file" name="DataFile" />
                 </div>
-            </div>
-            <div class="row>">
-                <div class="col">
-                    <div class="form-group">
-                        <label asp-for="@Model.SelectedDataSource.TypeId" class="badge badge-default-noborder"></label>
-                        @Html.DropDownListFor(s => s.SelectedDataSource.TypeId, new SelectList(ViewBag.AvailableDataConnectors, "Id", "Name"), "", new { @class = "form-control" })
-                    </div>
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedDataSource.TypeId" class="badge badge-default-noborder"></label>
+                    @Html.DropDownListFor(s => s.SelectedDataSource.TypeId, new SelectList(ViewBag.AvailableDataConnectors, "Id", "Name"), "", new { @class = "form-control" })
                 </div>
-            </div>
-            <div id="CreateDSFooter">
-                <input class="btn btn-primary" type="submit" value="Create" />
+                <div class="form-group">
+                    <input class="btn btn-primary" type="submit" value="Create" />
+                </div>
+                <div id="CreateDSFooter">
+                </div>
             </div>
         </form>
     </div>

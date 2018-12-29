@@ -1,34 +1,41 @@
 ﻿@model DataDecipher.WebApp.Models.MainViewModel
+
 <div class="card">
     <div class="card-header">
         <span class="text-primary">Load an existing method</span>
     </div>
     <div class="card-body">
         <form asp-controller="Main" asp-action="SelectMethod" data-ajax-begin="onLoadMethodBegin" data-ajax-complete="onLoadMethodComplete"
-                  data-ajax-failure="onLoadMethodFailed" data-ajax-success="onLoadMethodSuccess"
-                  data-ajax="true" data-ajax-method="POST">
+              data-ajax-failure="onLoadMethodFailed" data-ajax-success="onLoadMethodSuccess"
+              data-ajax="true" data-ajax-method="POST">
             <div class="container-fluid">
                 <div class="form-group">
                     @for (int i = 0; i < Model.AvailableMethods.Count; i++)
                     {
-                    <div>
-                        @Html.RadioButtonFor(m => m.SelectedMethodId, @Model.AvailableMethods[i].Id)
-                        <label for="@Model.AvailableMethods[i].Id">
-                            @Model.AvailableMethods[i].Name
-                        </label>
-                    </div>
-                    }
+                        <div>
+                            <label for="@Model.AvailableMethods[i].Id" title=@Model.AvailableMethods[i].Description>
+                                @Html.RadioButtonFor(m => m.SelectedMethodId, @Model.AvailableMethods[i].Id)
+                                @Model.AvailableMethods[i].Name
+                            </label>
+                        </div>
+                     }
                 </div>
                 <div class="form-group">
-                    <input class="btn btn-primary" type="submit" value="Load" />
+                    <div class="form-group">
+                        <input id="btnDataSOurceLoad" class="btn btn-primary" type="submit" value="Load" />
+                    </div>
                 </div>
-                <div id="ListMethodFooter">
+                <div class="form-group">
+                    <div id="ListMethodFooter">
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
-<script>var loadMethodFooter = $("#ListMethodFooter");
+
+<script>
+var loadMethodFooter = $("#ListMethodFooter");
 
 var onLoadMethodBegin = function() {
         loadMethodFooter.html("<span class=\"text-primary\">Loading method please wait...</span>");
@@ -46,4 +53,6 @@ var onLoadMethodSuccess = function(context) {
 
 var onLoadMethodFailed = function(context) {
 
-};</script>
+};
+</script>
+
