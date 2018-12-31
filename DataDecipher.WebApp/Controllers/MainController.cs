@@ -282,8 +282,7 @@ namespace DataDecipher.WebApp.Controllers
             return PartialView("_DisplayProcessedData", main);
         }
 
-        //This Method is called first time to load the Parser Configuration views. It displays two views, one with create and/or save new parser configuration, 
-        //and another view to list the existing parser configurations of a particular type i.e. csv, xml, txt, etc. 
+        //This Method is called first time to load the Parser Configuration views. 
         [HttpPost]
         public async Task<IActionResult> DisplayParserConfiguration(MainViewModel main)
         {
@@ -405,14 +404,14 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public ParsedData DisplayParsedCsvFile(string inputSelectedFile, string columns, string delimiter)
+        public ParsedData DisplayParsedCsvFile(string inputSelectedFileData, string columns, string delimiter)
         {
             string[] columnNames = columns.Split(',');
             if (columnNames.Length != 0)
             {
                 var model1 = new ParsedData
                 {
-                    //filePath = inputSelectedFile,
+                    //filePath = @"TestData/Raw/Sample.csv",
                     //fileName = Path.GetFileName(inputSelectedFile)
                 };
 
@@ -433,8 +432,10 @@ namespace DataDecipher.WebApp.Controllers
                 request.Method = RestSharp.Method.POST;
                 request.JsonSerializer.ContentType = "multipart/form-data";
                 request.Parameters.Clear();
+                //string inputSelectedFile = "TestData/Raw/Sample.csv";
+                //System.IO.File.WriteAllText(inputSelectedFile, inputSelectedFileData);
                 //request.AddFile("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
-                request.AddParameter("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
+                request.AddFile("ParsingFile", "TestData/Raw/Sample.csv"); // adds to POST or URL querystring based on Method
                 request.AddParameter("ParsingRules", parsingRules);
                 IRestResponse response = client.Execute(request);
                 model1.parsedData = response.Content; // raw content as string

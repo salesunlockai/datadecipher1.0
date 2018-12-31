@@ -1,7 +1,7 @@
 ﻿@model DataDecipher.WebApp.Models.ParsedData
 @using System.Data;
 <div style="overflow: auto; width:1200px; height:600px">
-    <table border="1" cellpadding="5">
+    <table id="ParsedDataTable" border="1" cellpadding="5">
         <thead>
             <tr>
                 @foreach (DataColumn col in Model.parsedDataTable.Columns)
@@ -27,34 +27,67 @@
 
 <div class="form-group">
     <div class="row">
-        <input type="button" id="btnSaveAsFile" onclick="saveTextAsFile()" value="Download parsed data" class="btn btn-primary btn-round" />
+        <div class="col">
+            <input type="button" id="btnSaveAsFile" onclick="saveTextAsFile()" value="Download parsed data" class="btn btn-primary btn-round" />
+        </div>
     </div>
     <div class="row">
-        <label for="outputFileName" class="badge badge-default-noborder">
-            Save As Filename:
-        </label>
-        <input type="text" id="inputFileNameToSaveAs" name="outputFileName" placeholder="File Name" class="form-control" value="ParsedData.csv"/>
+        <div class="col">
+            <label for="outputFileName" class="badge badge-default-noborder">Output Filename (Save as):</label>
+            <input type="text" id="inputFileNameToSaveAs" name="outputFileName" placeholder="File Name" class="form-control" value="ParsedData.csv"/>
+        </div>
     </div>
 </div>
 
 
 <script type="text/javascript">
-function saveTextAsFile()
-{
-    var textToSave = '@Model.parsedData';
-    var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
-    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+function saveTextAsFile() {
     var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+    var html = document.getElementById("ParsedDataTable").outerHTML;
+    export_table_to_csv(html, fileNameToSaveAs);
+}
 
-    var downloadLink = document.createElement("a");
-    downloadLink.download = fileNameToSaveAs;
-    downloadLink.innerHTML = "Download File";
-    downloadLink.href = textToSaveAsURL;
-    downloadLink.onclick = destroyClickedElement;
+function download_csv(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV FILE
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // We have to create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Make sure that the link is not displayed
     downloadLink.style.display = "none";
+
+    // Add the link to your DOM
     document.body.appendChild(downloadLink);
 
+    // Lanzamos
     downloadLink.click();
+}
+
+function export_table_to_csv(html, filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("table tr");
+    
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (var j = 0; j < cols.length; j++) 
+            row.push(cols[j].innerText);
+        
+        csv.push(row.join(","));        
+    }
+
+    // Download CSV
+    download_csv(csv.join("\n"), filename);
 }
 
 function destroyClickedElement(event)
