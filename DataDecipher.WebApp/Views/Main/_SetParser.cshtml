@@ -6,6 +6,101 @@
     </div>
 </div>
 <div class="card-deck">
-    @await Html.PartialAsync("~/Views/ParserCsvFile/_NewParserCsvFile.cshtml", Model.SelectedParser)
-    @await Html.PartialAsync("~/Views/ParserCsvFile/_ListParserCsvFiles.cshtml", Model)
+    <div class="card">
+        <div class="card-header">
+            <span class="text-primary">
+                Load an existing CSV Parser
+                <select id="ShowingExistingParsers" class="drop-down">
+                    <option selected disabled="disabled">-- Select a parser --</option>
+                    @for (int i = 0; i < Model.AvailableParsers.Count; i++)
+                    {
+                        <option for="@Model.AvailableParsers[i].ID">
+                            @Model.AvailableParsers[i].Name
+                        </option>
+                    }
+                </select>
+            </span>
+            <input type="text" id="SelectedDataSourceNameInSetParser" hidden value=@Model.SelectedDataSourceName />
+            <input type="text" id="ProcessedDataInSetParser" hidden value=@Model.ProcessedData />
+        </div>
+        <div class="card-body" id="SelectedParserConfiguration">
+            @await Html.PartialAsync("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", Model)
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+@*$(document).ready(function(){
+    $(".dropdown").on("show.bs.dropdown", function(e){
+        var linkText = $(e.relatedTarget).text(); // Get the link text
+        alert("Click on OK button to view the dropdown menu for - " + linkText);
+    });
+});*@
+
+document.getElementById("ShowingExistingParsers").onchange=function(){
+    @*$('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);*@
+    selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
+    processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;
+    selectedParserName = this.options[this.selectedIndex].text;
+    $.ajax({
+                url: '/Main/LoadSelectedCsvParser',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { SelectedParser: selectedParserName, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
+                success: function(content) {
+                    $('#SelectedParserConfiguration').html(content);
+                },
+                error: function(e) { }
+            });
+
+    @*selectedDataFileName = $('#inputSelectedFile').val;
+
+    fileExtension = $('#inputSelectedFile').val.replace(/^.*\./, '');
+    alert(selectedParserName + " for filename " + fileExtension);*@
+    @*switch (fileExtension) {
+        case 'txt': case 'dat':
+            $.ajax({
+                url: '/Main/LoadSelectedTxtParser',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { SelectecParser: selectedParserName },
+                success: function(content) {
+                    $('#SelectedParserConfiguration').html(content);
+                },
+                error: function(e) { }
+            });
+            break;
+        case 'csv':
+            $.ajax({
+                url: '/Main/LoadSelectedCsvParser',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { SelectecParser: selectedParserName },
+                success: function(content) {
+                    $('#SelectedParserConfiguration').html(content);
+                },
+                error: function(e) { }
+            });
+            break;
+        case 'xml':
+            $.ajax({
+                url: '/Main/LoadSelectedXmlParser',
+                type: 'POST',
+                datatype: 'text',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { SelectecParser: selectedParserName },
+                success: function(content) {
+                    $('#SelectedParserConfiguration').html(content);
+                },
+                error: function(e) { }
+            });
+            break;
+        default:
+            x.innerhtml = 'none';
+    }*@
+}
+
+</script>

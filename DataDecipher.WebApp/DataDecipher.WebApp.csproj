@@ -164,7 +164,6 @@
     <Content Remove="Views\ParserCsvFile\Edit.cshtml" />
     <Content Remove="Views\ParserCsvFile\Index.cshtml" />
     <Content Remove="Views\ParserCsvFile\_ListParserCsvFiles.cshtml" />
-    <Content Remove="Views\ParserCsvFile\_NewParserCsvFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -276,6 +275,5 @@
     <None Include="Views\ParserCsvFile\Edit.cshtml" />
     <None Include="Views\ParserCsvFile\Index.cshtml" />
     <None Include="Views\ParserCsvFile\_ListParserCsvFiles.cshtml" />
-    <None Include="Views\ParserCsvFile\_NewParserCsvFile.cshtml" />
   </ItemGroup>
 </Project>

@@ -145,7 +145,7 @@
 <<<<<<< Updated upstream
 </div>*@
 
-<script type="text/javascript">function storeRawFileSelection(sel) {
+@*<script type="text/javascript">function storeRawFileSelection(sel) {
 =======
 </div>
 <script type="text/javascript">
@@ -217,11 +217,11 @@ $(document).ready(function() {
 
 function updateSourceFileList() {
         var sourceFolderPath = document.getElementById("sourceFolderPath").value;
-        @*var inputFilelist = document.getElementById("uploadSourceFiles");*@
+        var inputFilelist = document.getElementById("uploadSourceFiles");
         var inputFiles = document.getElementById("uploadSourceFiles").files;
-        @*var sourceFolderPath = document.getElementById("uploadSourceFiles").value;
+        var sourceFolderPath = document.getElementById("uploadSourceFiles").value;
         var r = /[^\\]*$/;
-        sourceFolderPath = sourceFolderPath.replace(r, '');*@
+        sourceFolderPath = sourceFolderPath.replace(r, '');
         var inputFilelistDropDown = document.getElementById("fileList");
         inputFilelistDropDown.options.length = 0;
         if (inputFiles.length != 0) {
@@ -230,11 +230,11 @@ function updateSourceFileList() {
             // loop through files
             for (var i = 0; i < inputFiles.length; i++) {
                 var file = inputFiles[i].name;
-                @*var filePathName = inputFiles[i].webkitRelativePath;*@
+                var filePathName = inputFiles[i].webkitRelativePath;
                 inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option(sourceFolderPath + file, i + 1);
             }
         }
         else {
             inputFilelistDropDown.options[inputFilelistDropDown.options.length] = new Option("Please provide an input data source", 0);
         }
-}</script>
+}</script>*@

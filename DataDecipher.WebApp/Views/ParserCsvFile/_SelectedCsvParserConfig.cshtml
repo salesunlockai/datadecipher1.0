@@ -1,0 +1,82 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+
+<form asp-controller="Main" asp-action="RunNewCsvParser" data-ajax-begin="onBegin" data-ajax-complete="onComplete"
+      data-ajax-failure="onFailed" data-ajax-success="onSuccess"
+      data-ajax="true" data-ajax-method="POST">
+    <div class="container-fluid">
+        <div class="row>">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedParser.Name" class="badge badge-default-noborder"></label>
+                    <input type="text" asp-for="@Model.SelectedParser.Name" placeholder="Your parser name" class="form-control" />
+                    <span asp-validation-for="@Model.SelectedParser.Name" class="badge badge-danger-noborder"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedParser.Details" class="badge badge-default-noborder"></label>
+                    <textarea asp-for="@Model.SelectedParser.Details" placeholder="Little bit more about your parser goes here" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col">
+                <div class="form-group">
+                    <label class="badge badge-default-noborder">Header Columns</label>
+                    <input type="text" asp-for="@Model.SelectedParser.RequiredHeader" placeholder="Please provide all the required header column names separated by comma(,)" class="form-control" />
+                    <span asp-validation-for="@Model.SelectedParser.RequiredHeader" class="badge badge-danger-noborder"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="@Model.SelectedParser.Delimiter" class="badge badge-default-noborder"></label>
+                    <select id="Delimiter" name="Delimiter" asp-for="@Model.SelectedParser.Delimiter">
+                        <option value=",">Comma (,)</option>
+                        <option value=";">Semicolon (;)</option>
+                        <option value=":">Colon (:)</option>
+                        <option value="|">Pipe (|)</option>
+                    </select>
+                    <span asp-validation-for="@Model.SelectedParser.Delimiter" class="badge badge-danger-noborder"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col">
+                <div class="form-group">
+                    <input id="isCheckedSaveParser" name="isCheckedSaveParser" value="true" type="checkbox" />
+                    <label for="isCheckedSaveParser" class="badge badge-default-noborder">Save Parser Configuration</label>
+                    <input type="text" name="ProcessedDataInSelectCsvParserConfig" hidden value=@Model.ProcessedData />
+                </div>
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col">
+                <input class="btn btn-primary" type="submit" value="Run Parser" />
+            </div>
+        </div>
+        <div class="row>">
+            <div class="col">
+                <div id="CreateParserFooter">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+var createparserfooter = $("#CreateParserFooter");
+var onBegin = function() {
+            createparserfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");};
+
+var onComplete = function(data,status) {
+            createparserfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>A new parsing job started.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+            $('#SetParser').html(data.responseText);};
+
+var onSuccess = function(context) {};
+
+var onFailed = function(context) {};
+</script>

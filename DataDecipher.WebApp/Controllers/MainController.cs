@@ -293,18 +293,29 @@ namespace DataDecipher.WebApp.Controllers
             return PartialView("_SetParser", main);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> LoadSelectedCsvParser(string SelectedParser, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
+        {
+            main.ProcessedData = ProcessedDataInSetParser;
+            main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
+            main.SelectedParser = _context.ParserCsvFiles.Where(parser => parser.Name == SelectedParser).First();
+            return PartialView("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", main);
+        }
+
+
         ////This method is used to create a new parser in case user enters 
         [HttpPost]
-        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, ParserCsvFile parserCsvFile, bool isCheckedSaveParser = false)
+        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, ParserCsvFile parserCsvFile, string ProcessedDataInSelectCsvParserConfig, bool isCheckedSaveParser = false)
         {
-            main.SelectedParser = parserCsvFile;
+            main.ProcessedData = ProcessedDataInSelectCsvParserConfig;
+            main.SelectedParser.Delimiter = parserCsvFile.Delimiter;
             if (ModelState.IsValid && isCheckedSaveParser)
             {
-                _context.ParserCsvFiles.Add(parserCsvFile);
+                _context.ParserCsvFiles.Add(main.SelectedParser);
                 await _context.SaveChangesAsync();
             }
 
-            main.parsedData = DisplayParsedCsvFile("TestData/Raw/Sample.csv", parserCsvFile.RequiredHeader, parserCsvFile.Delimiter.ToString());
+            main.parsedData = DisplayParsedCsvFile(main.ProcessedData, main.SelectedParser.RequiredHeader, main.SelectedParser.Delimiter.ToString());
             return PartialView("_ShowParsedData", main);
         }
 
@@ -401,8 +412,8 @@ namespace DataDecipher.WebApp.Controllers
             {
                 var model1 = new ParsedData
                 {
-                    filePath = inputSelectedFile,
-                    fileName = Path.GetFileName(inputSelectedFile)
+                    //filePath = inputSelectedFile,
+                    //fileName = Path.GetFileName(inputSelectedFile)
                 };
 
                 //string parsingRules = "{\"funcInput\":{\"attribute_list\" : [\"Testfile\",\"SampleName\",\"ExtCal.Average\",\"iCapOES\"],\"delimiter\" : \";\"  }}";
@@ -422,7 +433,8 @@ namespace DataDecipher.WebApp.Controllers
                 request.Method = RestSharp.Method.POST;
                 request.JsonSerializer.ContentType = "multipart/form-data";
                 request.Parameters.Clear();
-                request.AddFile("ParsingFile", model1.filePath); // adds to POST or URL querystring based on Method
+                //request.AddFile("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
+                request.AddParameter("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
                 request.AddParameter("ParsingRules", parsingRules);
                 IRestResponse response = client.Execute(request);
                 model1.parsedData = response.Content; // raw content as string
