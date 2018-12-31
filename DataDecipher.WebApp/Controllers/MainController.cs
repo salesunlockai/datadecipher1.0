@@ -231,7 +231,7 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> LinkDataSourceToMethod(MainViewModel main)
         {
-            Models.Method method = _context.Methods.Include(x=>x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
+            Models.Method method = _context.Methods.Include(x => x.LinkedDataSources).Where(sim => sim.Id == main.SelectedMethod.Id).First();
             DataSource dataSource = _context.DataSources.Where(arg => arg.Uri == main.SelectedDataSourceName).First();
 
             if (_context.MethodDataSources.Where(x => (x.Method.Id == method.Id) && (x.Datafile.Id == dataSource.Id)).Count() == 0)
@@ -278,7 +278,7 @@ namespace DataDecipher.WebApp.Controllers
         public ActionResult ApplyRule(MainViewModel main)
         {
             main.ProcessedData = main.ProcessedData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
-           
+
             return PartialView("_DisplayProcessedData", main);
         }
 

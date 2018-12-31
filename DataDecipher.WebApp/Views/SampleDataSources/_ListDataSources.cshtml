@@ -4,21 +4,21 @@
         <span class="text-primary">Load a sample datasource</span>
     </div>
     <div class="card-body">
-        <form asp-controller="Main" asp-action="SelectSampleDataSource" data-ajax-begin="onSelectSampleDSBegin" data-ajax-complete="onSelectSampleDSComplete"
+        <form asp-controller="Main" asp-action="SelectDataSource" data-ajax-begin="onSelectSampleDSBegin" data-ajax-complete="onSelectSampleDSComplete"
               data-ajax-failure="onSelectSampleDSFailed" data-ajax-success="onSelectSampleDSSuccess"
               data-ajax="true" data-ajax-method="POST">
             <div class="container-fluid">
                 <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
 
                 <div class="form-group">
-                    @for (int i = 0; i < Model.AvailableSampleDataSources.Count; i++)
+                    @for (int i = 0; i < Model.AvailableDataSources.Count; i++)
                     {
-                        <div>
-                            @Html.RadioButtonFor(m => m.SelectedSampleDataSourceName, @Model.AvailableSampleDataSources[i].Uri)
-                            <label for="@Model.AvailableSampleDataSources[i].Name">
-                                @Model.AvailableSampleDataSources[i].Name
-                            </label>
-                        </div>
+                    <div>
+                        @Html.RadioButtonFor(m => m.SelectedDataSourceName, @Model.AvailableDataSources[i].Uri)
+                        <label for="@Model.AvailableDataSources[i].Name" title="@Model.AvailableDataSources[i].Description">
+                            @Model.AvailableDataSources[i].Name
+                        </label>
+                    </div>
                     }
                 </div>
                 <div class="form-group">

@@ -20,8 +20,8 @@
                     }
                 </select>
             </span>
-            <input type="text" id="SelectedDataSourceNameInSetParser" hidden value=@Model.SelectedDataSourceName />
-            <input type="text" id="ProcessedDataInSetParser" hidden value=@Model.ProcessedData />
+            <input type="text" id="SelectedDataSourceNameInSetParser" hidden asp-for=@Model.SelectedDataSourceName />
+            <input type="text" id="ProcessedDataInSetParser" hidden asp-for=@Model.ProcessedData />
         </div>
         <div class="card-body" id="SelectedParserConfiguration">
             @await Html.PartialAsync("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", Model)

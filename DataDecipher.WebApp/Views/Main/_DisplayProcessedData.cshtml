@@ -13,12 +13,13 @@
             <span class="text-primary">Contents of the processed file</span>
         </div>
         <div class="card-body">
-            <form asp-controller="Main" asp-action="LinkProcessedDataToMethod" data-ajax-begin="onLinkPDBegin" data-ajax-complete="onLinkPDComplete"
+            <form asp-controller="Main" asp-action="DisplayParserConfiguration" data-ajax-begin="onLinkPDBegin" data-ajax-complete="onLinkPDComplete"
                   data-ajax-failure="onLinkPDFailed" data-ajax-success="onLinkPDSuccess"
                   data-ajax="true" data-ajax-method="POST">
                 <div class="container-fluid">
                     <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
                     <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
+                    <input type="hidden" asp-for="@Model.ProcessedData" />
                     <div id="pdeditor1">
                         <p>
                             @Model.ProcessedData
@@ -26,8 +27,10 @@
                         <br />
                     </div>
                     <br />
+                    <div>
+                        <input class="btn btn-primary" type="submit" value="Set Parsing Rules" />
+                    </div>
                     <div id="DisplayPDFooter1">
-                        <input class="btn btn-primary" type="submit" value="Save" />
                     </div>
                 </div>
             </form>
