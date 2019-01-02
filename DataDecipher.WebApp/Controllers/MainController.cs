@@ -282,9 +282,18 @@ namespace DataDecipher.WebApp.Controllers
             return PartialView("_DisplayProcessedData", main);
         }
 
+        [HttpPost]
+        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRule, string ProcessedDataInProcessingRule)
+        {
+            main.ProcessedData = ProcessedDataInProcessingRule;
+            main.SelectedDataProcessingRule = _context.DataProcessingRule.Where(pr => pr.Name == SelectedProcessingRule).First();
+            return PartialView("~/Views/DataProcessingRules/_SelectedProcessingRUle.cshtml", main);
+        }
+
+
         //This Method is called first time to load the Parser Configuration views. 
         [HttpPost]
-        public async Task<IActionResult> DisplayParserConfiguration(MainViewModel main)
+        public ActionResult DisplayParserConfiguration(MainViewModel main)
         {
             main.SelectedParser = new ParserCsvFile();
             main.AvailableParsers = _context.ParserCsvFiles.ToList();
@@ -293,7 +302,7 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadSelectedCsvParser(string SelectedParser, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
+        public ActionResult LoadSelectedCsvParser(string SelectedParser, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
         {
             main.ProcessedData = ProcessedDataInSetParser;
             main.SelectedDataSourceName = SelectDataSourceNameInSetParser;

@@ -1,53 +1,47 @@
 ﻿@model DataDecipher.WebApp.Models.MainViewModel
 <div class="card">
     <div class="card-header">
-        <span class="text-primary">Apply processing rule</span>
+        <span class="text-primary">
+            Apply processing rule
+            <select id="ShowingExistingProcessingRules">
+                <option selected disabled="disabled">-- Select an existing rule --</option>
+                @for (int i = 0; i < Model.AvailableDataProcessingRules.Count; i++)
+                {
+                    <option for="@Model.AvailableDataProcessingRules[i].Id">
+                        @Model.AvailableDataProcessingRules[i].Name
+                    </option>
+                }
+            </select>
+        </span>
+        <input id="selectedMethodIdInProcessingRule" type="hidden" asp-for="@Model.SelectedMethod.Id" />
+        <input id="selectedDataSourceNameInProcessingRule" type="hidden" asp-for="@Model.SelectedDataSourceName" />
+        <input id="selectedRawDataInProcessingRule" type="hidden" asp-for="@Model.RawData" />
+        <input id="selectedProcessedDataInProcessingRule" type="hidden" asp-for="@Model.ProcessedData" />
     </div>
     <div class="card-body">
-        <div class="container-fluid">
-            <form asp-controller="Main" asp-action="ApplyRule" data-ajax-begin="onApplyRuleBegin" data-ajax-complete="onApplyRuleComplete"
-                  data-ajax-failure="onApplyRuleFailed" data-ajax-success="onApplyRuleSuccess"
-                  data-ajax="true" data-ajax-method="POST">
-                <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
-                <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
-                <input type="hidden" asp-for="@Model.RawData" />
-                <input type="hidden" asp-for="@Model.ProcessedData" />
-
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="@Model.SelectedDataProcessingRule.MatchCondition" class="badge badge-default-noborder"></label>
-                    <input asp-for="@Model.SelectedDataProcessingRule.MatchCondition" placeholder="Specify your match condition here" class="form-control" />
-                    <span asp-validation-for="@Model.SelectedDataProcessingRule.MatchCondition" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" class="badge badge-default-noborder"></label>
-                    <input asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" placeholder="Mention the phrase that will replace match condition" class="form-control" />
-                </div>
-                <div class="col">
-                    <input class="btn btn-primary" type="submit" value="Apply" />
-                </div>
-                <div id="ApplyRuleResults" class="col">
-                </div>
-            </form>
+        <div id="SelectedProcessingRuleConfiguration" class="container-fluid">
+            @await Html.PartialAsync("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", Model)
         </div>
     </div>
 </div>
-<script>
-var ApplyRuleResults = $("#ApplyRuleResults");
+<script type="text/javascript">
 
-var onApplyRuleBegin = function() {
-        ApplyRuleResults.html("<span class=\"text-primary\">Applying rule please wait...</span>");
-};
+    document.getElementById("ShowingExistingProcessingRules").onchange=function(){
+        selectDataSourceNameInSetParser = document.getElementById("selectedDataSourceNameInProcessingRule").value;
+        processedDataInProcessingRule = document.getElementById("selectedProcessedDataInProcessingRule").value;
+            alert(processedDataInProcessingRule);
+        selectedProcessingRule = this.options[this.selectedIndex].text;
+        $.ajax({
+                    url: '/Main/LoadSelectedProcessingRule',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { SelectedProcessingRule: selectedProcessingRule, ProcessedDataInProcessingRule: processedDataInProcessingRule },
+                    success: function(content) {
+                        $('#SelectedProcessingRuleConfiguration').html(content);
+                    },
+                    error: function(e) { }
+                });
+    }
 
-var onApplyRuleComplete = function(data, status) {
-        ApplyRuleResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Rule(s) applied successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-        $('#DisplayProcessedData').html(data.responseText);
-};
-
-var onApplyRuleSuccess = function(context) {
-
-};
-
-var onApplyRuleFailed = function(context) {
-
-};</script>
+</script>
