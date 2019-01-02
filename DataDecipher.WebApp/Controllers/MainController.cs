@@ -50,7 +50,7 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> SelectMethod(MainViewModel main)
         {
-            main.SelectedMethod = _context.Methods.Include(y=>y.LinkedDataSources).Where(x => x.Id == main.SelectedMethodId).First();
+            main.SelectedMethod = _context.Methods.Include(y=>y.LinkedDataSources).Where(x => x.Id == main.SelectedMethod.Id).First();
 
             if (main.SelectedMethod.LinkedDataSources.Count == 0)
             {
@@ -101,6 +101,13 @@ namespace DataDecipher.WebApp.Controllers
             main.SelectedDataSource = new DataSource();
 
             return PartialView("_SetDataSource", main);
+        }
+
+        [HttpPost]
+        public ActionResult ShowSelectedMethodDetails(MainViewModel main, string SelectedMethodName)
+        {
+            main.SelectedMethod = _context.Methods.Where(method => method.Name == SelectedMethodName).First();
+            return PartialView("~/Views/Methods/_DisplaySelectedMethod.cshtml", main);
         }
 
         [HttpPost]

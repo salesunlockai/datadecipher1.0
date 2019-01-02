@@ -2,56 +2,37 @@
 
 <div class="card">
     <div class="card-header">
-        <span class="text-primary">Load an existing method</span>
+        <span class="text-primary">
+            Load an existing method
+            <select id="ShowingExistingMethods">
+                <option selected disabled="disabled">-- Select an existing method --</option>
+                @for (int i = 0; i < Model.AvailableMethods.Count; i++)
+                {
+                    <option for="@Model.AvailableMethods[i].Id">
+                        @Model.AvailableMethods[i].Name
+                    </option>
+                }
+            </select>
+        </span>
     </div>
-    <div class="card-body">
-        <form asp-controller="Main" asp-action="SelectMethod" data-ajax-begin="onLoadMethodBegin" data-ajax-complete="onLoadMethodComplete"
-              data-ajax-failure="onLoadMethodFailed" data-ajax-success="onLoadMethodSuccess"
-              data-ajax="true" data-ajax-method="POST">
-            <div class="container-fluid">
-                <div class="form-group">
-                    @for (int i = 0; i < Model.AvailableMethods.Count; i++)
-                    {
-                        <div>
-                            <label for="@Model.AvailableMethods[i].Id" title=@Model.AvailableMethods[i].Description>
-                                @Html.RadioButtonFor(m => m.SelectedMethodId, @Model.AvailableMethods[i].Id)
-                                @Model.AvailableMethods[i].Name
-                            </label>
-                        </div>
-                     }
-                </div>
-                <div class="form-group">
-                    <div class="form-group">
-                        <input id="btnDataSOurceLoad" class="btn btn-primary" type="submit" value="Load" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div id="ListMethodFooter">
-                    </div>
-                </div>
-            </div>
-        </form>
+    <div id="SelectedMethodDetails" class="card-body">
+        @await Html.PartialAsync("~/Views/Methods/_DisplaySelectedMethod.cshtml", Model)
     </div>
 </div>
 
-<script>
-var loadMethodFooter = $("#ListMethodFooter");
+<script type="text/javascript">
 
-var onLoadMethodBegin = function() {
-        loadMethodFooter.html("<span class=\"text-primary\">Loading method please wait...</span>");
-};
-
-
-var onLoadMethodComplete = function(data, status) {
-        loadMethodFooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Method loaded successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-        $('#SetDataSource').html(data.responseText);
-};
-
-var onLoadMethodSuccess = function(context) {
-
-};
-
-var onLoadMethodFailed = function(context) {
-
-};
-</script>
+    document.getElementById("ShowingExistingMethods").onchange=function(){
+        selectedMethodName = this.options[this.selectedIndex].text;
+        $.ajax({
+                    url: '/Main/ShowSelectedMethodDetails',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { SelectedMethodName: selectedMethodName },
+                    success: function(content) {
+                        $('#SelectedMethodDetails').html(content);
+                    },
+                    error: function(e) { }
+                });
+    }</script>

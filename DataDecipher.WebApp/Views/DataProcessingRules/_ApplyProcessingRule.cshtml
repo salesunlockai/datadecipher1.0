@@ -29,7 +29,6 @@
     document.getElementById("ShowingExistingProcessingRules").onchange=function(){
         selectDataSourceNameInSetParser = document.getElementById("selectedDataSourceNameInProcessingRule").value;
         processedDataInProcessingRule = document.getElementById("selectedProcessedDataInProcessingRule").value;
-            alert(processedDataInProcessingRule);
         selectedProcessingRule = this.options[this.selectedIndex].text;
         $.ajax({
                     url: '/Main/LoadSelectedProcessingRule',
