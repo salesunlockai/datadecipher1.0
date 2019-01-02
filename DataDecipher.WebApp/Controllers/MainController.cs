@@ -75,7 +75,7 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewMethod(Models.Method method)
+        public async Task<IActionResult> CreateNewMethod(Models.Method method)
         {
             if (ModelState.IsValid)
             {
@@ -99,6 +99,7 @@ namespace DataDecipher.WebApp.Controllers
             main.AvailableSampleDataSources = await _context.SampleDataSources.Include(x => x.CreatedBy).Include(y => y.Type).Where(z => connectorIds.Contains(z.TypeId) && z.CreatedById == GetCurrentUserAsync().Result.Id).ToListAsync();
 
             main.SelectedDataSource = new DataSource();
+            main.SelectedMethod.LinkedDataSources = new List<MethodDataSource>();
 
             return PartialView("_SetDataSource", main);
         }

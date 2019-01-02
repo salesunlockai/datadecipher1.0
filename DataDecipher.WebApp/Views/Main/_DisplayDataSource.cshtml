@@ -23,11 +23,16 @@
                         <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
                         <input type="hidden" asp-for="@Model.RawData" />
                         <input type="hidden" asp-for="@Model.ProcessedData" />
-                        <div id="editor">
+                        @*<div id="editor">
                             <p>
-                                @Model.RawData
+
                             </p>
                             <br />
+                        </div>*@
+                        <div class="row">
+                            <div class="form-group">
+                                <textarea class="md-textarea form-control" rows="10">@Model.RawData</textarea>
+                            </div>>
                         </div>
                         <br />
                         <div>
@@ -43,9 +48,12 @@
         </div>
      </div>
 </div>
-<script>var quill = new Quill('#editor', {
+<script>
+
+@*var quill = new Quill('#editor', {
         theme: 'snow'
-});
+});*@
+
 var displayDSFooter = $("#DisplayDSFooter");
 
 var onLinkDSBegin = function() {

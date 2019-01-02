@@ -1,16 +1,27 @@
 ﻿@model DataDecipher.WebApp.Models.MainViewModel
-<div class="row>">
-    <div class="col-md-12">
-        <h6>Set your datasource</h6>
-        <br />
-    </div>
-</div>
-<div class="card-deck">
-    @if (Model.SelectedMethod.LinkedDataSources.Count() == 0)
-    {
-        @await Html.PartialAsync("~/Views/SampleDataSources/_ListDataSources.cshtml", Model)
-        @await Html.PartialAsync("~/Views/DataSources/_NewDataSource.cshtml", Model)
-    }
-    @await Html.PartialAsync("~/Views/DataSources/_ShowSelectedDataSource.cshtml", Model)
 
-</div>
+@if (Model.SelectedMethod.LinkedDataSources.Count() == 0)
+{
+    <div class="row>">
+        <div class="col-md-12">
+            <h6>Set your datasource</h6>
+            <br />
+        </div>
+    </div>
+    <div class="card-deck">
+        @await Html.PartialAsync("~/Views/DataSources/_NewDataSource.cshtml", Model)
+        @await Html.PartialAsync("~/Views/SampleDataSources/_ListDataSources.cshtml", Model)
+    </div>
+}
+else
+{
+    <div class="row>">
+        <div class="col-md-12">
+            <h6>Associated datasource</h6>
+            <br />
+        </div>
+    </div>
+    <div class="card-deck">
+        @await Html.PartialAsync("~/Views/DataSources/_ShowSelectedDataSource.cshtml", Model)
+    </div>
+}
