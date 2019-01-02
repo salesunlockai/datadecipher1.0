@@ -23,36 +23,20 @@
                         <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
                         <input type="hidden" asp-for="@Model.RawData" />
                         <input type="hidden" asp-for="@Model.ProcessedData" />
-                        @*<div id="editor">
-                            <p>
-
-                            </p>
-                            <br />
-                        </div>*@
-                        <div class="row">
-                            <div class="form-group">
-                                <textarea class="md-textarea form-control" rows="10">@Model.RawData</textarea>
-                            </div>>
+                        <div id="editor" >
+                            <textbox class="form-control" rows="10">@Model.RawData</textbox>
                         </div>
-                        <br />
-                        <div>
-                            <input class="btn btn-primary" type="submit" value="Process Raw Data" />
+                        <input class="btn btn-primary" type="submit" value="Process Raw Data" />
+                        <div id="DisplayDSFooter">
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="row>">
-                <div id="DisplayDSFooter">
-                </div>
-            </div>
         </div>
      </div>
 </div>
-<script>
 
-@*var quill = new Quill('#editor', {
-        theme: 'snow'
-});*@
+<script>
 
 var displayDSFooter = $("#DisplayDSFooter");
 
@@ -71,4 +55,6 @@ var onLinkDSSuccess = function(context) {
 
 var onLinkDSFailed = function(context) {
 
-};</script>
+};
+
+</script>
