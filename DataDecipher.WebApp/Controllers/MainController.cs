@@ -14,6 +14,7 @@ using Microsoft.WindowsAzure.Storage.File;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using RestSharp;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -233,7 +234,7 @@ namespace DataDecipher.WebApp.Controllers
             //Copied raw data to processed data in case user skips the pre-processing/cleansing step
             main.ProcessedData = main.RawData;
           
-            return PartialView("_DisplayDataSource", main);
+            return PartialView("~/Views/Main/_DisplayDataSource.cshtml", main);
         }
 
         [HttpPost]
@@ -251,7 +252,7 @@ namespace DataDecipher.WebApp.Controllers
             main.SelectedDataProcessingRule = new DataProcessingRule();
             main.AvailableDataProcessingRules = _context.DataProcessingRule.ToList();
 
-            return PartialView("_ApplyRules", main);
+            return PartialView("~/Views/Main/_ApplyRules.cshtml", main);
         }
 
         /// <summary>
@@ -270,7 +271,7 @@ namespace DataDecipher.WebApp.Controllers
                main.ProcessedData = main.ProcessedData.Replace(rule.MatchCondition, rule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
             }
 
-            return PartialView("_DisplayProcessedData", main);
+            return PartialView("~/Views/Main/_DisplayProcessedData.cshtml", main);
         }
 
         [HttpPost]
@@ -279,7 +280,7 @@ namespace DataDecipher.WebApp.Controllers
             main.ProcessedData = main.ProcessedData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
             _context.DataProcessingRule.Add(main.SelectedDataProcessingRule);
             _context.SaveChanges();
-            return PartialView("_DisplayProcessedData", main);
+            return PartialView("~/Views/Main/_DisplayProcessedData.cshtml", main);
         }
 
         [HttpPost]
@@ -287,7 +288,7 @@ namespace DataDecipher.WebApp.Controllers
         {
             main.ProcessedData = main.ProcessedData.Replace(main.SelectedDataProcessingRule.MatchCondition, main.SelectedDataProcessingRule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
 
-            return PartialView("_DisplayProcessedData", main);
+            return PartialView("~/Views/Main/_DisplayProcessedData.cshtml", main);
         }
 
         [HttpPost]
@@ -301,12 +302,13 @@ namespace DataDecipher.WebApp.Controllers
 
         //This Method is called first time to load the Parser Configuration views. 
         [HttpPost]
-        public ActionResult DisplayParserConfiguration(MainViewModel main)
+        public ActionResult DisplayParserConfiguration(MainViewModel main, string ProcessedDataInDisplayProcessedData, string SelectedDataSourceNameInDisplayProcessedData)
         {
             main.SelectedParser = new ParserCsvFile();
             main.AvailableParsers = _context.ParserCsvFiles.ToList();
+            main.ProcessedData = ProcessedDataInDisplayProcessedData;
 
-            return PartialView("_SetParser", main);
+            return PartialView("~/Views/Main/_SetParser.cshtml", main);
         }
 
         [HttpPost]
@@ -332,7 +334,7 @@ namespace DataDecipher.WebApp.Controllers
             }
 
             main.parsedData = DisplayParsedCsvFile(main.ProcessedData, main.SelectedParser.RequiredHeader, main.SelectedParser.Delimiter.ToString());
-            return PartialView("_ShowParsedData", main);
+            return PartialView("~/Views/Main/_ShowParsedData.cshtml", main);
         }
 
         [HttpPost]
@@ -388,37 +390,37 @@ namespace DataDecipher.WebApp.Controllers
 
         }
 
-        [HttpGet]
-        public IActionResult DisplayDataSource()
-        {
-            DataSource dataSource = ViewBag.SelectedDataSource;
+        //[HttpGet]
+        //public IActionResult DisplayDataSource()
+        //{
+        //    DataSource dataSource = ViewBag.SelectedDataSource;
           
-            var model1 = new RawData
-            {
-                FileName = "sample.csv",
-                FilePath = @"\Users\deepmalagupta\Projects\DataDecipher1.0\DataDecipher.WebApp\TestData\Raw\"
-            };
+        //    var model1 = new RawData
+        //    {
+        //        FileName = "sample.csv",
+        //        FilePath = @"\Users\deepmalagupta\Projects\DataDecipher1.0\DataDecipher.WebApp\TestData\Raw\"
+        //    };
            
-           /* CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+        //   /* CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
-            // Create a CloudFileClient object for credentialed access to Azure Files.
-            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+        //    // Create a CloudFileClient object for credentialed access to Azure Files.
+        //    CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
 
-            // Get a reference to the file share we created previously.
-            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+        //    // Get a reference to the file share we created previously.
+        //    CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
 
-            cloudFileShare.CreateIfNotExistsAsync();
+        //    cloudFileShare.CreateIfNotExistsAsync();
 
-            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+        //    CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
 
-            CloudFile cloudFile = cloudFileDirectory.GetFileReference(model1.fileName);
-            cloudFile.DownloadToFileAsync(@"/Users/deepmalagupta/sample.csv",FileMode.Create);*/
+        //    CloudFile cloudFile = cloudFileDirectory.GetFileReference(model1.fileName);
+        //    cloudFile.DownloadToFileAsync(@"/Users/deepmalagupta/sample.csv",FileMode.Create);*/
 
-            model1.RawDataContent = GetRawData(@"/Users/deepmalagupta/sample.csv");
+        //    model1.RawDataContent = GetRawData(@"/Users/deepmalagupta/sample.csv");
 
-            return PartialView("_RawData", model1);
+        //    return PartialView("_RawData", model1);
 
-        }
+        //}
 
         [HttpPost]
         public ParsedData DisplayParsedCsvFile(string inputSelectedFileData, string columns, string delimiter)
@@ -452,10 +454,18 @@ namespace DataDecipher.WebApp.Controllers
                 //string inputSelectedFile = "TestData/Raw/Sample.csv";
                 //System.IO.File.WriteAllText(inputSelectedFile, inputSelectedFileData);
                 //request.AddFile("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
-                request.AddFile("ParsingFile", "TestData/Raw/Sample.csv"); // adds to POST or URL querystring based on Method
+                request.AddParameter("ParsingFile", inputSelectedFileData); // adds to POST or URL querystring based on Method
                 request.AddParameter("ParsingRules", parsingRules);
                 IRestResponse response = client.Execute(request);
-                model1.parsedData = response.Content; // raw content as string
+
+                //Extract the results from the JSON
+                dynamic parserResponse = JValue.Parse(response.Content);
+                string returnStatus = parserResponse.Return_Status;
+                string parsingStatus = parserResponse.Parsing_Status;
+                string recordCount = parserResponse.Record_count;
+                string parsedDataFromJson = parserResponse.outputFile;
+
+                model1.parsedData = parsedDataFromJson; // raw content as string
                 model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
                 return model1;
             }

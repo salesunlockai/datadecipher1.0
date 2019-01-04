@@ -18,13 +18,10 @@
                   data-ajax="true" data-ajax-method="POST">
                 <div class="container-fluid">
                     <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
-                    <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
-                    <input type="hidden" asp-for="@Model.ProcessedData" />
-                    <div id="pdeditor1">
-                        <p>
-                            @Model.ProcessedData
-                        </p>
-                        <br />
+                    <input type="hidden" name="SelectedDataSourceNameInDisplayProcessedData" asp-for="@Model.SelectedDataSourceName" />
+                    <input type="hidden" name="ProcessedDataInDisplayProcessedData" asp-for="@Model.ProcessedData" />
+                    <div id="pdeditor">
+                        <textarea class="form-control" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.ProcessedData</textarea>
                     </div>
                     <br />
                     <div>
@@ -37,9 +34,12 @@
         </div>
     </div>
 </div>
-<script>var pdquill = new Quill('#pdeditor1', {
+<script>
+
+@*var pdquill = new Quill('#pdeditor1', {
         theme: 'snow'
-});
+});*@
+
 var displayPDFooter = $("#DisplayPDFooter1");
 
 var onLinkPDBegin = function(data,status) {

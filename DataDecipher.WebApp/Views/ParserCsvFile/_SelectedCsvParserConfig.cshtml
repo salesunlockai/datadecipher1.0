@@ -40,9 +40,9 @@
             <div class="form-group">
                 <input id="isCheckedSaveParser" name="isCheckedSaveParser" value="true" type="checkbox" />
                 <label for="isCheckedSaveParser" class="badge badge-default-noborder">Save Parser Configuration</label>
-                <input type="text" name="ProcessedDataInSelectCsvParserConfig" hidden value=@Model.ProcessedData />
             </div>
         </div>
+        <input type="text" name="ProcessedDataInSelectCsvParserConfig" hidden asp-for=@Model.ProcessedData />
         <div class="row>">
             <input class="btn btn-primary" type="submit" value="Run Parser" />
         </div>

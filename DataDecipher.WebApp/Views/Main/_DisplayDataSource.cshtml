@@ -21,10 +21,10 @@
                     <div class="container-fluid">
                         <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
                         <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
-                        <input type="hidden" asp-for="@Model.RawData" />
+                        <input type="hidden" asp-for="@Model.RawData" id="rawDataFromTheSourceFile"/>
                         <input type="hidden" asp-for="@Model.ProcessedData" />
                         <div id="editor" >
-                            <textbox class="form-control" rows="10">@Model.RawData</textbox>
+                            <textarea class="form-control" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.RawData</textarea>
                         </div>
                         <input class="btn btn-primary" type="submit" value="Process Raw Data" />
                         <div id="DisplayDSFooter">
@@ -38,23 +38,31 @@
 
 <script>
 
-var displayDSFooter = $("#DisplayDSFooter");
+    var displayDSFooter = $("#DisplayDSFooter");
 
-var onLinkDSBegin = function() {
-        displayDSFooter.html("<span class=\"text-primary\">Saving datasource please wait...</span>");
-};
+    var onLinkDSBegin = function() {
+            displayDSFooter.html("<span class=\"text-primary\">Saving datasource please wait...</span>");
+    };
 
-var onLinkDSComplete = function(data, status) {
-        displayDSFooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Datasource saved successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-        $('#ApplyRules').html(data.responseText);
-};
+    var onLinkDSComplete = function(data, status) {
+            displayDSFooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Datasource saved successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+            $('#ApplyRules').html(data.responseText);
+    };
 
-var onLinkDSSuccess = function(context) {
+    var onLinkDSSuccess = function(context) {
 
-};
+    };
 
-var onLinkDSFailed = function(context) {
+    var onLinkDSFailed = function(context) {
 
-};
+    };
+
+    @*document.onload = function()
+    {
+        alert(rawDataFromTheSourceFile);
+        var rawDataToBeDisplayed = rawDataFromTheSourceFile.replace(/\n/g, "<br />");;
+        alert(rawDataToBeDisplayed);
+        document.getElementById('textboxRawDataToBeDIsplayed').value(rawDataToBeDisplayed);
+    }*@
 
 </script>
