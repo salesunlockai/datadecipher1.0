@@ -9,6 +9,7 @@
             <div class="row>">
                 <div class="col>">
                     <div class="form-group">
+                        <label asp-for="@Model.SelectedMethod.Name" class="badge badge-default-noborder"></label>
                         @Html.DropDownListFor(s => s.AvailableMethods, new SelectList(Model.AvailableMethods, "Id", "Name"), "Select a method", new { @class = "form-control", onchange = "MethodIsSelectedFromMethodList(this.value)", id = "selectedMethodName" })
                     </div>
                 </div>

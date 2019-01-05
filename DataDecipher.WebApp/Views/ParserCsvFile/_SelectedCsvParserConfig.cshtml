@@ -37,17 +37,27 @@
             </div>
         </div>
         <div class="row>">
-            <div class="form-group">
-                <input id="isCheckedSaveParser" name="isCheckedSaveParser" value="true" type="checkbox" />
-                <label for="isCheckedSaveParser" class="badge badge-default-noborder">Save Parser Configuration</label>
+            <div class="col>">
+                <div class="form-group">
+                    <input id="isCheckedSaveParser" name="isCheckedSaveParser" value="true" type="checkbox" />
+                    <label for="isCheckedSaveParser" class="badge badge-default-noborder">Save Parser Configuration</label>
+                </div>
             </div>
         </div>
         <input type="hidden" name="ProcessedDataInSelectedCsvParserConfig" asp-for=@Model.ProcessedData />
         <div class="row>">
-            <input class="btn btn-primary" type="submit" value="Run Parser" />
+            <div class="col>">
+                <div class="form-group">
+                    <input class="btn btn-primary" type="submit" value="Run Parser" />
+                </div>
+            </div>
         </div>
         <div class="row>">
-            <div id="CreateParserFooter">
+            <div class="col>">
+                <div class="form-group">
+                    <div id="CreateParserFooter">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

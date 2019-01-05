@@ -263,10 +263,10 @@ namespace DataDecipher.WebApp.Controllers
         /// <param name="main">Main.</param>
         /// 
         [HttpPost]
-        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRule, string ProcessedDataInProcessingRule)
+        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRuleId, string ProcessedDataInProcessingRule)
         {
             main.ProcessedData = ProcessedDataInProcessingRule;
-            main.SelectedDataProcessingRule = _context.DataProcessingRule.Where(pr => pr.Name == SelectedProcessingRule).First();
+            main.SelectedDataProcessingRule = _context.DataProcessingRule.Where(pr => pr.Id == SelectedProcessingRuleId).First();
             return PartialView("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", main);
         }
 

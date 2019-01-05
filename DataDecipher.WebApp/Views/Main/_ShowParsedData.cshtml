@@ -1,7 +1,7 @@
 ﻿@model DataDecipher.WebApp.Models.MainViewModel
 <div class="row>">
     <div class="col-md-12">
-        <h6>Parsed Data for file: @Model.SelectedDataSourceName</h6>
+        <h6>Parsed output for the processed data</h6>
         <br />
     </div>
 </div>
@@ -11,7 +11,9 @@
             <span class="text-primary">Contents of the processed file in tabular format</span>
         </div>
         <div class="card-body">
-            @await Html.PartialAsync("~/Views/Shared/_ParsedData.cshtml", Model.parsedData)
+            <div id="row">
+                @await Html.PartialAsync("~/Views/Shared/_ParsedData.cshtml", Model.parsedData)
+            </div>
         </div>
     </div>
 </div>

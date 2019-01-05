@@ -1,7 +1,7 @@
 ﻿@model DataDecipher.WebApp.Models.ParsedData
 @using System.Data;
-<div style="overflow: auto; width:1200px; height:600px">
-    <table id="ParsedDataTable" border="1" cellpadding="5">
+<div style="overflow: auto; width:1200px; height:600px" >
+    <table id="ParsedDataTable" border="1" cellpadding="5" class="border border-black rounded">
         <thead>
             <tr>
                 @foreach (DataColumn col in Model.parsedDataTable.Columns)
@@ -25,16 +25,16 @@
 </div>
 <br />
 <input type="hidden" id="ParsedDataInJsonFormat" value="@Model.parsedDataAsJson" />
-<div class="form-group">
+
     <div class="row">
         <div class="col">
-            <input type="button" id="btnSaveAsCsvFile" onclick="saveTextAsCsvFile();" value="Download parsed data as CSV" class="btn btn-primary btn-round" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label for="outputCsvFileName" class="badge badge-default-noborder">Output CSV Filename (Save as):</label>
-            <input type="text" id="outputCsvFileNameToSaveAs" name="outputCsvFileName" placeholder="File Name" class="form-control" value="ParsedData.csv"/>
+            <div class="form-group">
+                <label for="outputCsvFileName" class="badge badge-default-noborder">
+                    Output CSV Filename (Save as):
+                    <input type="button" id="btnSaveAsCsvFile" onclick="saveTextAsCsvFile();" value="Download parsed data as CSV" class="btn btn-primary btn-round" />
+                    <input type="text" id="outputCsvFileNameToSaveAs" name="outputCsvFileName" placeholder="File Name" class="form-control" value="ParsedData.csv"/>
+                </label>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -65,124 +65,124 @@
 
 <script type="text/javascript">
 
-var createparserfooter = $("#CreateParsedDataViewFooter");
+    var createparserfooter = $("#CreateParsedDataViewFooter");
 
-var onBegin = function() {
-            createparserfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");};
+    var onBegin = function() {
+                createparserfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");};
 
-var onComplete = function(data,status) {
-            createparserfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>A new parsing job started.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-            $('#ShowParsedData').html(data.responseText);};
+    var onComplete = function(data,status) {
+                createparserfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>A new parsing job started.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+                $('#PublishOutput').html(data.responseText);};
 
-var onSuccess = function(context) {};
+    var onSuccess = function(context) {};
 
-var onFailed = function(context) {};
+    var onFailed = function(context) {};
 
-function saveTextAsCsvFile() {
-    var fileNameToSaveAsCsv = document.getElementById("outputCsvFileNameToSaveAs").value;
-    var html = document.getElementById("ParsedDataTable").outerHTML;
-    export_table_to_csv(html, fileNameToSaveAsCsv);
-}
+    function saveTextAsCsvFile() {
+        var fileNameToSaveAsCsv = document.getElementById("outputCsvFileNameToSaveAs").value;
+        var html = document.getElementById("ParsedDataTable").outerHTML;
+        export_table_to_csv(html, fileNameToSaveAsCsv);
+    }
 
     function saveTextAsJsonFile() {
     var fileNameToSaveAsJson = document.getElementById("outputJsonFileNameToSaveAs").value;
     var html = document.getElementById("ParsedDataInJsonFormat").value;
         alert("I am in JSON" + fileNameToSaveAsJson + "..." + html);
     export_table_to_csv(html, fileNameToSaveAsJson);
-}
-
-function download_csv(csv, filename) {
-    var csvFile;
-    var downloadLink;
-
-    // CSV FILE
-    csvFile = new Blob([csv], {type: "text/csv"});
-
-    // Download link
-    downloadLink = document.createElement("a");
-
-    // File name
-    downloadLink.download = filename;
-
-    // We have to create a link to the file
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-
-    // Make sure that the link is not displayed
-    downloadLink.style.display = "none";
-
-    // Add the link to your DOM
-    document.body.appendChild(downloadLink);
-
-    // Lanzamos
-    downloadLink.click();
-}
-
-function export_table_to_csv(html, filename) {
-    var csv = [];
-    var rows = document.querySelectorAll("table tr");
-
-    for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll("td, th");
-
-        for (var j = 0; j < cols.length; j++)
-            row.push(cols[j].innerText);
-
-        csv.push(row.join(","));
     }
 
-    // Download CSV
-    download_csv(csv.join("\n"), filename);
-}
+    function download_csv(csv, filename) {
+        var csvFile;
+        var downloadLink;
 
-function destroyClickedElement(event)
-{
-    document.body.removeChild(event.target);
-}
+        // CSV FILE
+        csvFile = new Blob([csv], {type: "text/csv"});
 
-function loadFileAsText()
-{
-    var fileToLoad = document.getElementById("fileToLoad").files[0];
+        // Download link
+        downloadLink = document.createElement("a");
 
-    var fileReader = new FileReader();
-    fileReader.onload = function(fileLoadedEvent)
+        // File name
+        downloadLink.download = filename;
+
+        // We have to create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+
+        // Make sure that the link is not displayed
+        downloadLink.style.display = "none";
+
+        // Add the link to your DOM
+        document.body.appendChild(downloadLink);
+
+        // Lanzamos
+        downloadLink.click();
+    }
+
+    function export_table_to_csv(html, filename) {
+        var csv = [];
+        var rows = document.querySelectorAll("table tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+
+            for (var j = 0; j < cols.length; j++)
+                row.push(cols[j].innerText);
+
+            csv.push(row.join(","));
+        }
+
+        // Download CSV
+        download_csv(csv.join("\n"), filename);
+    }
+
+    function destroyClickedElement(event)
     {
-        var textFromFileLoaded = fileLoadedEvent.target.result;
-        document.getElementById("inputTextToSave").value = textFromFileLoaded;
-    };
-    fileReader.readAsText(fileToLoad, "UTF-8");
-}
+        document.body.removeChild(event.target);
+    }
 
-function DisplayLineChart(dataForViz, xLegend, yLegend){
-    document.getElementById("Visualization").innerHtml = 'none';
-    @*alert("Reached inside");
-    data = [[2,0.000613146],
-[3,0.099954873],
-[4,0.498854936],
-[5,1000577045],
-[6,0.096932231],
-[7,0.406946873],
-[8,0.181319815],
-[9,0.619612433],
-[10,0.096932231],
-[12,0.100958575],
-[13,0.506799257],
-[14,0.0139278226],
-[15,0.931589765616102],
-[16,0.942221899758503],
-[17,0.942221895658527],
-[18,0.1518813892],
-[19,0.1567747365],
-[20,0.1366666641],
-[21,0.502667706],
-[22,0.000613146],
-[23,0.099954873],
-[24,0.498854936],
-[25,0.498854936],
-[26,0.000613146],
-[27,0.100958575],
-[28,0.406946873],
-[29,0.5067992666]];*@
-    createLineChart(dataForViz, xLegend, yLegend);
+    function loadFileAsText()
+    {
+        var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent)
+        {
+            var textFromFileLoaded = fileLoadedEvent.target.result;
+            document.getElementById("inputTextToSave").value = textFromFileLoaded;
+        };
+        fileReader.readAsText(fileToLoad, "UTF-8");
+    }
+
+    function DisplayLineChart(dataForViz, xLegend, yLegend){
+        document.getElementById("Visualization").innerHtml = 'none';
+        @*alert("Reached inside");
+        data = [[2,0.000613146],
+        [3,0.099954873],
+        [4,0.498854936],
+        [5,1000577045],
+        [6,0.096932231],
+        [7,0.406946873],
+        [8,0.181319815],
+        [9,0.619612433],
+        [10,0.096932231],
+        [12,0.100958575],
+        [13,0.506799257],
+        [14,0.0139278226],
+        [15,0.931589765616102],
+        [16,0.942221899758503],
+        [17,0.942221895658527],
+        [18,0.1518813892],
+        [19,0.1567747365],
+        [20,0.1366666641],
+        [21,0.502667706],
+        [22,0.000613146],
+        [23,0.099954873],
+        [24,0.498854936],
+        [25,0.498854936],
+        [26,0.000613146],
+        [27,0.100958575],
+        [28,0.406946873],
+        [29,0.5067992666]];*@
+        createLineChart(dataForViz, xLegend, yLegend);
     }
 
 </script>

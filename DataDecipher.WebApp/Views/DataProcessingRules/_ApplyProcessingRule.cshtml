@@ -3,7 +3,7 @@
     <div class="card-header">
         <span class="text-primary">
             Apply processing rule
-            <select id="ShowingExistingProcessingRules">
+            @*<select id="ShowingExistingProcessingRules">
                 <option selected disabled="disabled">-- Select an existing rule --</option>
                 @for (int i = 0; i < Model.AvailableDataProcessingRules.Count; i++)
                 {
@@ -11,7 +11,7 @@
                         @Model.AvailableDataProcessingRules[i].Name
                     </option>
                 }
-            </select>
+            </select>*@
         </span>
         <input id="selectedMethodIdInProcessingRule" type="hidden" asp-for="@Model.SelectedMethod.Id" />
         <input id="selectedDataSourceNameInProcessingRule" type="hidden" asp-for="@Model.SelectedDataSourceName" />
@@ -19,14 +19,38 @@
         <input id="selectedProcessedDataInProcessingRule" type="hidden" asp-for="@Model.ProcessedData" />
     </div>
     <div class="card-body">
-        <div id="SelectedProcessingRuleConfiguration" class="container-fluid">
-            @await Html.PartialAsync("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", Model)
+        <div class="container-fluid">
+            <div class="form-group">
+                <label asp-for="@Model.SelectedDataProcessingRule.Name" class="badge badge-default-noborder"></label>
+                @Html.DropDownListFor(s => s.AvailableDataProcessingRules, new SelectList(Model.AvailableDataProcessingRules, "Id", "Name"), "Select a processing rule", new { @class = "form-control", onchange = "ProcessingRuleIsSelectedRulesList(this.value)", id = "selectedProcessingRuleName" })
+            </div>
+            <div id="SelectedProcessingRuleConfiguration" class="form-group">
+                @await Html.PartialAsync("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", Model)
+            </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
 
-    document.getElementById("ShowingExistingProcessingRules").onchange=function(){
+    function ProcessingRuleIsSelectedRulesList(){
+        selectDataSourceNameInSetParser = document.getElementById("selectedDataSourceNameInProcessingRule").value;
+        processedDataInProcessingRule = document.getElementById("selectedProcessedDataInProcessingRule").value;
+        selectedProcessingRuleId = document.getElementById("selectedProcessingRuleName").value;
+        $.ajax({
+            url: '/Main/LoadSelectedProcessingRule',
+            type: 'POST',
+            datatype: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { SelectedProcessingRuleId: selectedProcessingRuleId, ProcessedDataInProcessingRule: processedDataInProcessingRule },
+            success: function(content) {
+                $('#SelectedProcessingRuleConfiguration').html(content);
+            },
+            error: function(e) { }
+        });
+    }
+
+
+    @*document.getElementById("ShowingExistingProcessingRules").onchange=function(){
         selectDataSourceNameInSetParser = document.getElementById("selectedDataSourceNameInProcessingRule").value;
         processedDataInProcessingRule = document.getElementById("selectedProcessedDataInProcessingRule").value;
         selectedProcessingRule = this.options[this.selectedIndex].text;
@@ -41,6 +65,6 @@
                     },
                     error: function(e) { }
                 });
-    }
+    }*@
 
 </script>
