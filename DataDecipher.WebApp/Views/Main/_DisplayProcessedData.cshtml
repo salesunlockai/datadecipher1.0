@@ -19,9 +19,8 @@
                 <div class="container-fluid">
                     <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
                     <input type="hidden" name="SelectedDataSourceNameInDisplayProcessedData" asp-for="@Model.SelectedDataSourceName" />
-                    <input type="hidden" name="ProcessedDataInDisplayProcessedData" asp-for="@Model.ProcessedData" />
-                    <div id="pdeditor">
-                        <textarea class="form-control" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.ProcessedData</textarea>
+                    <div>
+                        <textarea class="form-control border border-black rounded" rows="15" cols="150" name="textboxProcessedDataToBeDisplayed">@Model.ProcessedData</textarea>
                     </div>
                     <br />
                     <div>
@@ -35,10 +34,6 @@
     </div>
 </div>
 <script>
-
-@*var pdquill = new Quill('#pdeditor1', {
-        theme: 'snow'
-});*@
 
 var displayPDFooter = $("#DisplayPDFooter1");
 

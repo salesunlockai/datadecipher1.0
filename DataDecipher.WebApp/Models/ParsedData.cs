@@ -10,5 +10,6 @@ namespace DataDecipher.WebApp.Models
         public string parsedData { get; set; }
         public DataTable parsedDataTable { get; set; }
         public string[] records { get; set; }
+        public string parsedDataAsJson { get; set; }
     }
 }

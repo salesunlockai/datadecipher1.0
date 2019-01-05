@@ -11,7 +11,7 @@
 <div class="card-deck">
     <div class="card">
         <div class="card-header">
-            <span class="text-primary">Contents of the file: @Model.SelectedDataSourceName</span>
+            <span class="text-primary">Contents of the file: @Model.SelectedDataSource.Name</span>
         </div>
         <div class="card-body">
             <div class="row">
@@ -24,8 +24,9 @@
                         <input type="hidden" asp-for="@Model.RawData" id="rawDataFromTheSourceFile"/>
                         <input type="hidden" asp-for="@Model.ProcessedData" />
                         <div id="editor" >
-                            <textarea class="form-control" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.RawData</textarea>
+                            <textarea class="form-control border border-black rounded" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.RawData</textarea>
                         </div>
+                        <br/>
                         <input class="btn btn-primary" type="submit" value="Process Raw Data" />
                         <div id="DisplayDSFooter">
                         </div>

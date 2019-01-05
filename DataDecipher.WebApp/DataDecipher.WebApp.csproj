@@ -26,6 +26,7 @@
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="RestSharp" Version="106.5.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="d3" Version="5.7.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -164,6 +165,8 @@
     <Content Remove="Views\ParserCsvFile\Details.cshtml" />
     <Content Remove="Views\ParserCsvFile\Edit.cshtml" />
     <Content Remove="Views\ParserCsvFile\Index.cshtml" />
+    <Content Remove="wwwroot\js\visualization.js" />
+    <Content Remove="wwwroot\css\Visualization.css" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -274,5 +277,7 @@
     <None Include="Views\ParserCsvFile\Details.cshtml" />
     <None Include="Views\ParserCsvFile\Edit.cshtml" />
     <None Include="Views\ParserCsvFile\Index.cshtml" />
+    <None Include="wwwroot\js\visualization.js" />
+    <None Include="wwwroot\css\Visualization.css" />
   </ItemGroup>
 </Project>

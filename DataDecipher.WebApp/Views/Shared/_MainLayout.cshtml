@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/now-ui-kit.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/simple-sidebar.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/assets/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/Visualization.css">
 </head>
 <body class="profile-page sidebar-collapse">
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -20,7 +21,9 @@
     <script src="~/lib/jQuery-ajax-unobtrusive-master/dist/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/jQuery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/bootstrap/assets/js/now-ui-kit.js"></script>
-    <script src="~/lib/bootstrap/assets/js/quill.min.js"></script></script>
+    <script src="~/lib/bootstrap/assets/js/quill.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="~/js/visualization.js"></script>
 
     @RenderSection("Scripts", required: false)
     @await Html.PartialAsync("_HeaderNavBar")
@@ -31,11 +34,13 @@
         </div>
     </div>
 
-    <script>$("#menu-toggle").click(function(e) {
+    <script>
+$("#menu-toggle").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
 });</script>
-    <script>$(document).ready(function() {
+    <script>
+$(document).ready(function() {
             $('#myTable').dataTable();
 });</script>
 

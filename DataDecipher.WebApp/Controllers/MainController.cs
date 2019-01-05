@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using System.Data;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using DataDecipher.WebApp.Models;
 using DataDecipher.WebApp.Data;
@@ -51,7 +52,7 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> SelectMethod(MainViewModel main)
         {
-            main.SelectedMethod = _context.Methods.Include(y=>y.LinkedDataSources).Where(x => x.Id == main.SelectedMethod.Id).First();
+            main.SelectedMethod = _context.Methods.Include(y => y.LinkedDataSources).Where(x => x.Id == main.SelectedMethod.Id).First();
 
             if (main.SelectedMethod.LinkedDataSources.Count == 0)
             {
@@ -67,7 +68,7 @@ namespace DataDecipher.WebApp.Controllers
             }
             else
             {
-                main.SelectedDataSource = _context.MethodDataSources.Include(y => y.Datafile).Where(x => x.Id == main.SelectedMethod.LinkedDataSources.First().Id).Select(z=>z.Datafile).First();
+                main.SelectedDataSource = _context.MethodDataSources.Include(y => y.Datafile).Where(x => x.Id == main.SelectedMethod.LinkedDataSources.First().Id).Select(z => z.Datafile).First();
                 main.SelectedDataSourceName = main.SelectedDataSource.Uri;
             }
 
@@ -106,9 +107,9 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult ShowSelectedMethodDetails(MainViewModel main, string SelectedMethodName)
+        public ActionResult ShowSelectedMethodDetails(MainViewModel main, string SelectedMethodId)
         {
-            main.SelectedMethod = _context.Methods.Where(method => method.Name == SelectedMethodName).First();
+            main.SelectedMethod = _context.Methods.Where(method => method.Id == SelectedMethodId).First();
             return PartialView("~/Views/Methods/_DisplaySelectedMethod.cshtml", main);
         }
 
@@ -116,7 +117,7 @@ namespace DataDecipher.WebApp.Controllers
         public async Task<ActionResult> SelectDataSource(MainViewModel main)
         {
 
-            string fileName =  main.SelectedDataSourceName.Split('/').Last(); 
+            string fileName = main.SelectedDataSourceName.Split('/').Last();
 
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
@@ -154,7 +155,7 @@ namespace DataDecipher.WebApp.Controllers
         {
             main.SelectedDataSourceName = main.SelectedSampleDataSourceName;
 
-            string fileName =  main.SelectedDataSourceName.Split('/').Last(); 
+            string fileName = main.SelectedDataSourceName.Split('/').Last();
 
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
@@ -207,7 +208,7 @@ namespace DataDecipher.WebApp.Controllers
 
             CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
 
-          
+
             CloudFile cloudFile = cloudFileDirectory.GetFileReference(dataSource.DataFile.FileName);
             await cloudFile.DeleteIfExistsAsync();
             using (var stream = new MemoryStream())
@@ -233,7 +234,7 @@ namespace DataDecipher.WebApp.Controllers
 
             //Copied raw data to processed data in case user skips the pre-processing/cleansing step
             main.ProcessedData = main.RawData;
-          
+
             return PartialView("~/Views/Main/_DisplayDataSource.cshtml", main);
         }
 
@@ -260,15 +261,24 @@ namespace DataDecipher.WebApp.Controllers
         /// </summary>
         /// <returns>The rules.</returns>
         /// <param name="main">Main.</param>
+        /// 
+        [HttpPost]
+        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRule, string ProcessedDataInProcessingRule)
+        {
+            main.ProcessedData = ProcessedDataInProcessingRule;
+            main.SelectedDataProcessingRule = _context.DataProcessingRule.Where(pr => pr.Name == SelectedProcessingRule).First();
+            return PartialView("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", main);
+        }
+
         [HttpPost]
         public ActionResult ApplyRules(MainViewModel main)
         {
-            List<DataProcessingRule> rules= main.AvailableDataProcessingRules.Where(sim => sim.IsSelected == true).ToList();
+            List<DataProcessingRule> rules = main.AvailableDataProcessingRules.Where(sim => sim.IsSelected == true).ToList();
 
-            foreach(DataProcessingRule r in rules)
+            foreach (DataProcessingRule r in rules)
             {
-               DataProcessingRule rule = _context.DataProcessingRule.Where(sim => sim.Id == r.Id).First(); 
-               main.ProcessedData = main.ProcessedData.Replace(rule.MatchCondition, rule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
+                DataProcessingRule rule = _context.DataProcessingRule.Where(sim => sim.Id == r.Id).First();
+                main.ProcessedData = main.ProcessedData.Replace(rule.MatchCondition, rule.ReplaceWith, StringComparison.CurrentCultureIgnoreCase);
             }
 
             return PartialView("~/Views/Main/_DisplayProcessedData.cshtml", main);
@@ -291,41 +301,33 @@ namespace DataDecipher.WebApp.Controllers
             return PartialView("~/Views/Main/_DisplayProcessedData.cshtml", main);
         }
 
-        [HttpPost]
-        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRule, string ProcessedDataInProcessingRule)
-        {
-            main.ProcessedData = ProcessedDataInProcessingRule;
-            main.SelectedDataProcessingRule = _context.DataProcessingRule.Where(pr => pr.Name == SelectedProcessingRule).First();
-            return PartialView("~/Views/DataProcessingRules/_SelectedProcessingRUle.cshtml", main);
-        }
-
-
         //This Method is called first time to load the Parser Configuration views. 
         [HttpPost]
-        public ActionResult DisplayParserConfiguration(MainViewModel main, string ProcessedDataInDisplayProcessedData, string SelectedDataSourceNameInDisplayProcessedData)
+        public ActionResult DisplayParserConfiguration(MainViewModel main, string textboxProcessedDataToBeDisplayed, string SelectedDataSourceNameInDisplayProcessedData)
         {
             main.SelectedParser = new ParserCsvFile();
             main.AvailableParsers = _context.ParserCsvFiles.ToList();
-            main.ProcessedData = ProcessedDataInDisplayProcessedData;
+            main.ProcessedData = textboxProcessedDataToBeDisplayed;
 
             return PartialView("~/Views/Main/_SetParser.cshtml", main);
         }
 
         [HttpPost]
-        public ActionResult LoadSelectedCsvParser(string SelectedParser, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
+        public ActionResult LoadSelectedCsvParser(string SelectedParserId, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
         {
             main.ProcessedData = ProcessedDataInSetParser;
             main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
-            main.SelectedParser = _context.ParserCsvFiles.Where(parser => parser.Name == SelectedParser).First();
+            main.SelectedParser = _context.ParserCsvFiles.Where(parser => parser.ID == SelectedParserId).First();
             return PartialView("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", main);
         }
 
 
         ////This method is used to create a new parser in case user enters 
         [HttpPost]
-        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, ParserCsvFile parserCsvFile, string ProcessedDataInSelectCsvParserConfig, bool isCheckedSaveParser = false)
+        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, ParserCsvFile parserCsvFile, string ProcessedDataInSelectedCsvParserConfig, bool isCheckedSaveParser = false)
         {
-            main.ProcessedData = ProcessedDataInSelectCsvParserConfig;
+            main.ProcessedData = ProcessedDataInSelectedCsvParserConfig;
+            //System.IO.File.WriteAllLines(@"~/TestData/Raw/TemporaryFileHHH.txt", ProcessedDataInSelectCsvParserConfig);
             main.SelectedParser.Delimiter = parserCsvFile.Delimiter;
             if (ModelState.IsValid && isCheckedSaveParser)
             {
@@ -334,6 +336,7 @@ namespace DataDecipher.WebApp.Controllers
             }
 
             main.parsedData = DisplayParsedCsvFile(main.ProcessedData, main.SelectedParser.RequiredHeader, main.SelectedParser.Delimiter.ToString());
+
             return PartialView("~/Views/Main/_ShowParsedData.cshtml", main);
         }
 
@@ -394,13 +397,13 @@ namespace DataDecipher.WebApp.Controllers
         //public IActionResult DisplayDataSource()
         //{
         //    DataSource dataSource = ViewBag.SelectedDataSource;
-          
+
         //    var model1 = new RawData
         //    {
         //        FileName = "sample.csv",
         //        FilePath = @"\Users\deepmalagupta\Projects\DataDecipher1.0\DataDecipher.WebApp\TestData\Raw\"
         //    };
-           
+
         //   /* CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
         //    // Create a CloudFileClient object for credentialed access to Azure Files.
@@ -438,7 +441,7 @@ namespace DataDecipher.WebApp.Controllers
                 string parsingRules = "{\"funcInput\":{\"attribute_list\":[\"";
                 for (int i = 0; i < columnNames.Length; i++)
                 {
-                    if(i < (columnNames.Length - 1))
+                    if (i < (columnNames.Length - 1))
                         parsingRules = parsingRules + columnNames[i] + "\",\"";
                     else parsingRules = parsingRules + columnNames[i] + "\"],\"";
                 }
@@ -451,8 +454,8 @@ namespace DataDecipher.WebApp.Controllers
                 request.Method = RestSharp.Method.POST;
                 request.JsonSerializer.ContentType = "multipart/form-data";
                 request.Parameters.Clear();
-                //string inputSelectedFile = "TestData/Raw/Sample.csv";
-                //System.IO.File.WriteAllText(inputSelectedFile, inputSelectedFileData);
+                string inputSelectedFile = "TestData/Raw/SampleClean.csv";
+                string inputSelectedFileData1 = System.IO.File.ReadAllText(inputSelectedFile);
                 //request.AddFile("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
                 request.AddParameter("ParsingFile", inputSelectedFileData); // adds to POST or URL querystring based on Method
                 request.AddParameter("ParsingRules", parsingRules);
@@ -464,16 +467,21 @@ namespace DataDecipher.WebApp.Controllers
                 string parsingStatus = parserResponse.Parsing_Status;
                 string recordCount = parserResponse.Record_count;
                 string parsedDataFromJson = parserResponse.outputFile;
-
-                model1.parsedData = parsedDataFromJson; // raw content as string
-                model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
-                return model1;
+                if (returnStatus == 200.ToString())
+                {
+                    model1.parsedData = parsedDataFromJson; // raw content as string
+                    model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
+                    model1.parsedDataAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(model1.parsedDataTable, Newtonsoft.Json.Formatting.Indented);
+                    //model1.parsedDataAsJson = DataTableToJSONWithStringBuilder(model1.parsedDataTable);
+                    return model1;
+                }
+                else return null;
             }
             else return null;
         }
 
         [HttpPost]
-        public IActionResult DisplayParsedTxtDatFile(string inputSelectedFile, 
+        public IActionResult DisplayParsedTxtDatFile(string inputSelectedFile,
                                                      string recordMarkerStartText,
                                                      string recordMarkerEndText,
                                                      string tableMarkerStartText,
@@ -581,8 +589,8 @@ namespace DataDecipher.WebApp.Controllers
             string[] rows = content.Split('\n'); //split full file text into rows  
             for (int i = 0; i < rows.Count() - 1; i++)
             {
-                if (!string.IsNullOrEmpty(rows[i]) || !string.IsNullOrWhiteSpace(rows[i])) 
-                { 
+                if (!string.IsNullOrEmpty(rows[i]) || !string.IsNullOrWhiteSpace(rows[i]))
+                {
                     string[] rowValues = rows[i].Split(delimiter); //split each row with comma to get individual values  
                     {
                         if (i == 0)

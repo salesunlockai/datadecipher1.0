@@ -10,7 +10,7 @@
         <div class="card-header">
             <span class="text-primary">
                 Load an existing CSV Parser
-                <select id="ShowingExistingParsers">
+                @*<select id="ShowingExistingParsers">
                     <option selected disabled="disabled">-- Select a parser --</option>
                     @for (int i = 0; i < Model.AvailableParsers.Count; i++)
                     {
@@ -18,27 +18,51 @@
                             @Model.AvailableParsers[i].Name
                         </option>
                     }
-                </select>
+                </select>*@
             </span>
-            <input type="text" id="SelectedDataSourceNameInSetParser" hidden asp-for=@Model.SelectedDataSourceName />
-            <input type="text" id="ProcessedDataInSetParser" hidden asp-for=@Model.ProcessedData />
+            <input type="hidden" id="SelectedDataSourceNameInSetParser" asp-for=@Model.SelectedDataSourceName />
+            <input type="hidden" id="ProcessedDataInSetParser" asp-for=@Model.ProcessedData />
         </div>
-        <div class="card-body" id="SelectedParserConfiguration">
-            @await Html.PartialAsync("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", Model)
+        <div class="card-body">
+            <div class="container-fluid">
+                <div class="row>">
+                    <div class="col>">
+                        <div class="form-group">
+                            @Html.DropDownListFor(s => s.AvailableParsers, new SelectList(Model.AvailableParsers, "ID", "Name"), "Select a parser", new { @class = "form-control", onchange = "ParserIsSelectedFromParserList(this.value)", id = "selectedParserName" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="SelectedParserConfiguration">
+                @await Html.PartialAsync("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", Model)
+            </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-@*$(document).ready(function(){
-    $(".dropdown").on("show.bs.dropdown", function(e){
-        var linkText = $(e.relatedTarget).text(); // Get the link text
-        alert("Click on OK button to view the dropdown menu for - " + linkText);
-    });
-});*@
 
-document.getElementById("ShowingExistingParsers").onchange=function(){
-    @*$('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);*@
+    function ParserIsSelectedFromParserList(){
+        @*alert(document.getElementById("selectedMethodName").value);*@
+        @*$("#SelectedAvailableMethod").val($(this).text());*@
+        selectedParserId = document.getElementById("selectedParserName").value;
+        selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
+        processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;
+        $.ajax({
+                    url: '/Main/LoadSelectedCsvParser',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { SelectedParserId: selectedParserId, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
+                    success: function(content) {
+                        $('#SelectedParserConfiguration').html(content);
+                    },
+                    error: function(e) { }
+                });
+    }
+
+@*document.getElementById("ShowingExistingParsers").onchange=function(){
+    $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
     selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
     processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;
     selectedParserName = this.options[this.selectedIndex].text;
@@ -52,7 +76,7 @@ document.getElementById("ShowingExistingParsers").onchange=function(){
                     $('#SelectedParserConfiguration').html(content);
                 },
                 error: function(e) { }
-            });
+            });*@
 
     @*selectedDataFileName = $('#inputSelectedFile').val;
 
@@ -101,6 +125,6 @@ document.getElementById("ShowingExistingParsers").onchange=function(){
         default:
             x.innerhtml = 'none';
     }*@
-}
+@*}*@
 
 </script>

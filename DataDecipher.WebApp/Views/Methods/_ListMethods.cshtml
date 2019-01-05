@@ -2,27 +2,28 @@
 
 <div class="card">
     <div class="card-header">
-        <span class="text-primary">
-            Load an existing method
-            <select id="ShowingExistingMethods">
-                <option selected disabled="disabled">-- Select an existing method --</option>
-                @for (int i = 0; i < Model.AvailableMethods.Count; i++)
-                {
-                    <option for="@Model.AvailableMethods[i].Id">
-                        @Model.AvailableMethods[i].Name
-                    </option>
-                }
-            </select>
-        </span>
+        <span class="text-primary">Load an existing method</span>
     </div>
-    <div id="SelectedMethodDetails" class="card-body">
-        @await Html.PartialAsync("~/Views/Methods/_DisplaySelectedMethod.cshtml", Model)
+    <div class="card-body">
+        <div class="container-fluid">
+            <div class="row>">
+                <div class="col>">
+                    <div class="form-group">
+                        @Html.DropDownListFor(s => s.AvailableMethods, new SelectList(Model.AvailableMethods, "Id", "Name"), "Select a method", new { @class = "form-control", onchange = "MethodIsSelectedFromMethodList(this.value)", id = "selectedMethodName" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="SelectedAvailableMethod" />
+        <div id="SelectedMethodDetails">
+            @await Html.PartialAsync("~/Views/Methods/_DisplaySelectedMethod.cshtml", Model)
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
 
-    document.getElementById("ShowingExistingMethods").onchange=function(){
+    @*document.getElementById("AvailableMethods").onchange=function(){
         selectedMethodName = this.options[this.selectedIndex].text;
         $.ajax({
                     url: '/Main/ShowSelectedMethodDetails',
@@ -35,4 +36,24 @@
                     },
                     error: function(e) { }
                 });
-    }</script>
+    }*@
+
+    function MethodIsSelectedFromMethodList(){
+        @*alert(document.getElementById("selectedMethodName").value);*@
+        @*$("#SelectedAvailableMethod").val($(this).text());*@
+        selectedMethodId = document.getElementById("selectedMethodName").value;
+        $.ajax({
+            url: '/Main/ShowSelectedMethodDetails',
+            type: 'POST',
+            datatype: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { SelectedMethodId: selectedMethodId },
+            success: function(content) {
+                $('#SelectedMethodDetails').html(content);
+            },
+            error: function(e) { }
+        });
+    }
+
+
+</script>

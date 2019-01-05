@@ -42,7 +42,7 @@
                 <label for="isCheckedSaveParser" class="badge badge-default-noborder">Save Parser Configuration</label>
             </div>
         </div>
-        <input type="text" name="ProcessedDataInSelectCsvParserConfig" hidden asp-for=@Model.ProcessedData />
+        <input type="hidden" name="ProcessedDataInSelectedCsvParserConfig" asp-for=@Model.ProcessedData />
         <div class="row>">
             <input class="btn btn-primary" type="submit" value="Run Parser" />
         </div>
