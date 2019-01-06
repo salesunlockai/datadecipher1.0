@@ -1,0 +1,44 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">
+            Apply processing rule
+        </span>
+        <input id="selectedMethodIdInProcessingRule" type="hidden" asp-for="@Model.SelectedMethod.Id" />
+        <input id="selectedDataSourceNameInProcessingRule" type="hidden" asp-for="@Model.SelectedDataSourceName" />
+        <input id="selectedRawDataInProcessingRule" type="hidden" asp-for="@Model.RawData" />
+        <input id="selectedProcessedDataInProcessingRule" type="hidden" asp-for="@Model.ProcessedData" />
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <div class="form-group">
+                <label asp-for="@Model.SelectedDataProcessingRule.Name" class="badge badge-default-noborder"></label>
+                @Html.DropDownListFor(s => s.AvailableDataProcessingRules, new SelectList(Model.AvailableDataProcessingRules, "Id", "Name"), "Select a processing rule", new { @class = "form-control", onchange = "ProcessingRuleIsSelectedRulesList(this.value)", id = "selectedProcessingRuleName" })
+            </div>
+            <div id="SelectedProcessingRuleConfiguration" class="form-group">
+                @await Html.PartialAsync("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function ProcessingRuleIsSelectedRulesList(){
+        selectDataSourceNameInSetParser = document.getElementById("selectedDataSourceNameInProcessingRule").value;
+        processedDataInProcessingRule = document.getElementById("selectedProcessedDataInProcessingRule").value;
+        selectedProcessingRuleId = document.getElementById("selectedProcessingRuleName").value;
+        $.ajax({
+            url: '/Main/LoadSelectedProcessingRule',
+            type: 'POST',
+            datatype: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { SelectedProcessingRuleId: selectedProcessingRuleId, ProcessedDataInProcessingRule: processedDataInProcessingRule },
+            success: function(content) {
+                $('#SelectedProcessingRuleConfiguration').html(content);
+            },
+            error: function(e) { }
+        });
+    }
+    
+</script>

@@ -64,15 +64,15 @@
 </form>
 
 <script>
-var createparserfooter = $("#CreateParserFooter");
-var onBegin = function() {
-            createparserfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");};
+    var createparserfooter = $("#CreateParserFooter");
+    var onBegin = function() {
+                createparserfooter.html("<span class=\"text-primary\">Creating parser please wait...</span>");};
 
-var onComplete = function(data,status) {
-            createparserfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>A new parsing job started.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-            $('#ShowParsedData').html(data.responseText);};
+    var onComplete = function(data,status) {
+                createparserfooter.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>A new parsing job started.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+                $('#ShowParsedData').html(data.responseText);};
 
-var onSuccess = function(context) {};
+    var onSuccess = function(context) {};
 
-var onFailed = function(context) {};
+    var onFailed = function(context) {};
 </script>

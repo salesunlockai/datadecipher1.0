@@ -11,16 +11,16 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="@Model.SelectedDataProcessingRule.Description" class="badge badge-default-noborder"></label>
-        <textarea asp-for="@Model.SelectedDataProcessingRule.Description" placeholder="Little bit more about your processing rule goes here" class="form-control" disabled>@Model.SelectedDataProcessingRule.Description</textarea>
+        <textarea asp-for="@Model.SelectedDataProcessingRule.Description" placeholder="Little bit more about your processing rule goes here" class="form-control" readonly>@Model.SelectedDataProcessingRule.Description</textarea>
     </div>
     <div class="form-group">
         <label asp-for="@Model.SelectedDataProcessingRule.MatchCondition" class="badge badge-default-noborder"></label>
-        <input asp-for="@Model.SelectedDataProcessingRule.MatchCondition" placeholder="Specify your match condition here" class="form-control" />
+        <input asp-for="@Model.SelectedDataProcessingRule.MatchCondition" placeholder="Specify your match condition here" class="form-control" readonly/>
         <span asp-validation-for="@Model.SelectedDataProcessingRule.MatchCondition" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" class="badge badge-default-noborder"></label>
-        <input asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" placeholder="Mention the phrase that will replace match condition" class="form-control" />
+        <input asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" placeholder="Mention the phrase that will replace match condition" class="form-control" readonly/>
     </div>
     <div class="col">
         <input class="btn btn-primary" type="submit" value="Apply" />
@@ -30,22 +30,22 @@
 </form>
 
 <script>
-var ApplyRuleResults = $("#ApplyRuleResults");
+    var ApplyRuleResults = $("#ApplyRuleResults");
 
-var onApplyRuleBegin = function() {
-        ApplyRuleResults.html("<span class=\"text-primary\">Applying rule please wait...</span>");
-};
+    var onApplyRuleBegin = function() {
+            ApplyRuleResults.html("<span class=\"text-primary\">Applying rule please wait...</span>");
+    };
 
-var onApplyRuleComplete = function(data, status) {
-        ApplyRuleResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Rule(s) applied successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
-        $('#DisplayProcessedData').html(data.responseText);
-};
+    var onApplyRuleComplete = function(data, status) {
+            ApplyRuleResults.html("<div class=\"alert alert-success\" role=\"alert\"><div class=\"container-fluid\"><div class=\"alert-icon\"><i class=\"now-ui-icons ui-2_like\"></i></div>Rule(s) applied successfully.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\"><i class=\"now-ui-icons ui-1_simple-remove\"></i></span></button></div></div>");
+            $('#DisplayProcessedData').html(data.responseText);
+    };
 
-var onApplyRuleSuccess = function(context) {
+    var onApplyRuleSuccess = function(context) {
 
-};
+    };
 
-var onApplyRuleFailed = function(context) {
+    var onApplyRuleFailed = function(context) {
 
-};
+    };
 </script>

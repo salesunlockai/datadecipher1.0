@@ -39,9 +39,6 @@
                     <li>
                         <a asp-controller="ParserXmlFiles" asp-action="Index">XML</a>
                     </li>
-                    <li>
-                        <a asp-controller="ParserJsonFiles" asp-action="Index">JSON</a>
-                    </li>
                 </ul>
             </li>
             <li>
@@ -83,20 +80,24 @@
     </ul>
 </div>
 
-<script>function ToggleParserCollapse() {
-  var x = document.getElementById('collapseParsers');
-  if (x.style.display == 'block') {
-    x.style.display = 'none';
-  } else {
-    x.style.display = 'block';
-  }
-}
+<script>
 
-function TogglePublishCollapse() {
-  var x = document.getElementById('collapsePublish');
-  if (x.style.display == 'block') {
-    x.style.display = 'none';
-  } else {
-    x.style.display = 'block';
-  }
-}</script>
+    function ToggleParserCollapse() {
+      var x = document.getElementById('collapseParsers');
+      if (x.style.display == 'block') {
+        x.style.display = 'none';
+      } else {
+        x.style.display = 'block';
+      }
+    }
+
+    function TogglePublishCollapse() {
+      var x = document.getElementById('collapsePublish');
+      if (x.style.display == 'block') {
+        x.style.display = 'none';
+      } else {
+        x.style.display = 'block';
+      }
+    }
+
+</script>

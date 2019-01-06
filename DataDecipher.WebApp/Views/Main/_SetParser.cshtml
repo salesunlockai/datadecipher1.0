@@ -10,15 +10,6 @@
         <div class="card-header">
             <span class="text-primary">
                 Load an existing CSV Parser
-                @*<select id="ShowingExistingParsers">
-                    <option selected disabled="disabled">-- Select a parser --</option>
-                    @for (int i = 0; i < Model.AvailableParsers.Count; i++)
-                    {
-                        <option for="@Model.AvailableParsers[i].ID">
-                            @Model.AvailableParsers[i].Name
-                        </option>
-                    }
-                </select>*@
             </span>
             <input type="hidden" id="SelectedDataSourceNameInSetParser" asp-for=@Model.SelectedDataSourceName />
             <input type="hidden" id="ProcessedDataInSetParser" asp-for=@Model.ProcessedData />
@@ -43,8 +34,6 @@
 <script type="text/javascript">
 
     function ParserIsSelectedFromParserList(){
-        @*alert(document.getElementById("selectedMethodName").value);*@
-        @*$("#SelectedAvailableMethod").val($(this).text());*@
         selectedParserId = document.getElementById("selectedParserName").value;
         selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
         processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;

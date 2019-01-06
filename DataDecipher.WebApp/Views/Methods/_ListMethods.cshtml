@@ -24,24 +24,7 @@
 
 <script type="text/javascript">
 
-    @*document.getElementById("AvailableMethods").onchange=function(){
-        selectedMethodName = this.options[this.selectedIndex].text;
-        $.ajax({
-                    url: '/Main/ShowSelectedMethodDetails',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { SelectedMethodName: selectedMethodName },
-                    success: function(content) {
-                        $('#SelectedMethodDetails').html(content);
-                    },
-                    error: function(e) { }
-                });
-    }*@
-
     function MethodIsSelectedFromMethodList(){
-        @*alert(document.getElementById("selectedMethodName").value);*@
-        @*$("#SelectedAvailableMethod").val($(this).text());*@
         selectedMethodId = document.getElementById("selectedMethodName").value;
         $.ajax({
             url: '/Main/ShowSelectedMethodDetails',
@@ -55,6 +38,5 @@
             error: function(e) { }
         });
     }
-
 
 </script>
