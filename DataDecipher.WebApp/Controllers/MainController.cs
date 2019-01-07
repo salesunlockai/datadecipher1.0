@@ -305,8 +305,8 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public ActionResult DisplayParserConfiguration(MainViewModel main, string textboxProcessedDataToBeDisplayed, string SelectedDataSourceNameInDisplayProcessedData)
         {
-            main.SelectedParser = new ParserCsvFile();
-            main.AvailableParsers = _context.ParserCsvFiles.ToList();
+            main.SelectedParser = new CsvParserConfig();
+            main.AvailableParsers = _context.CsvParserConfigs.ToList();
             main.ProcessedData = textboxProcessedDataToBeDisplayed;
 
             return PartialView("~/Views/Main/_SetParser.cshtml", main);
@@ -317,21 +317,21 @@ namespace DataDecipher.WebApp.Controllers
         {
             main.ProcessedData = ProcessedDataInSetParser;
             main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
-            main.SelectedParser = _context.ParserCsvFiles.Where(parser => parser.ID == SelectedParserId).First();
-            return PartialView("~/Views/ParserCsvFile/_SelectedCsvParserConfig.cshtml", main);
+            main.SelectedParser = _context.CsvParserConfigs.Where(parser => parser.ID == SelectedParserId).First();
+            return PartialView("~/Views/CsvParserConfig/_SelectedCsvParserConfig.cshtml", main);
         }
 
 
         ////This method is used to create a new parser in case user enters 
         [HttpPost]
-        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, ParserCsvFile parserCsvFile, string ProcessedDataInSelectedCsvParserConfig, bool isCheckedSaveParser = false)
+        public async Task<IActionResult> RunNewCsvParser(MainViewModel main, CsvParserConfig parserCsvFile, string ProcessedDataInSelectedCsvParserConfig, bool isCheckedSaveParser = false)
         {
             main.ProcessedData = ProcessedDataInSelectedCsvParserConfig;
             //System.IO.File.WriteAllLines(@"~/TestData/Raw/TemporaryFileHHH.txt", ProcessedDataInSelectCsvParserConfig);
             main.SelectedParser.Delimiter = parserCsvFile.Delimiter;
             if (ModelState.IsValid && isCheckedSaveParser)
             {
-                _context.ParserCsvFiles.Add(main.SelectedParser);
+                _context.CsvParserConfigs.Add(main.SelectedParser);
                 await _context.SaveChangesAsync();
             }
 

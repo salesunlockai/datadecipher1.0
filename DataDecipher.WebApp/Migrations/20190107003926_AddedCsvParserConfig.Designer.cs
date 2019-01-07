@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataDecipher.WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181226202613_AddParserCsvFiles")]
-    partial class AddParserCsvFiles
+    [Migration("20190107003926_AddedCsvParserConfig")]
+    partial class AddedCsvParserConfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -110,6 +110,39 @@ namespace DataDecipher.WebApp.Migrations
                     b.HasIndex("PlanId");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("DataDecipher.WebApp.Models.CsvParserConfig", b =>
+                {
+                    b.Property<string>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("Delimiter")
+                        .IsRequired()
+                        .HasConversion(new ValueConverter<string, string>(v => default(string), v => default(string), new ConverterMappingHints(size: 1)));
+
+                    b.Property<string>("Details");
+
+                    b.Property<DateTime>("LastModifiedDate");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("RequiredHeader")
+                        .IsRequired();
+
+                    b.Property<string>("Status");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CreatedById");
+
+                    b.ToTable("CsvParserConfigs");
                 });
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.DataProcessingRule", b =>
@@ -223,11 +256,15 @@ namespace DataDecipher.WebApp.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("CsvParserConfigID");
+
                     b.Property<string>("DatafileId");
 
                     b.Property<string>("MethodId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CsvParserConfigID");
 
                     b.HasIndex("DatafileId");
 
@@ -339,11 +376,15 @@ namespace DataDecipher.WebApp.Migrations
 
                     b.Property<bool>("CanEdit");
 
+                    b.Property<string>("CsvParserConfigID");
+
                     b.Property<string>("MethodId");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CsvParserConfigID");
 
                     b.HasIndex("MethodId");
 
@@ -453,6 +494,14 @@ namespace DataDecipher.WebApp.Migrations
                         .HasForeignKey("PlanId");
                 });
 
+            modelBuilder.Entity("DataDecipher.WebApp.Models.CsvParserConfig", b =>
+                {
+                    b.HasOne("DataDecipher.WebApp.Data.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("DataDecipher.WebApp.Models.DataSource", b =>
                 {
                     b.HasOne("DataDecipher.WebApp.Data.ApplicationUser", "CreatedBy")
@@ -484,6 +533,10 @@ namespace DataDecipher.WebApp.Migrations
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.MethodDataSource", b =>
                 {
+                    b.HasOne("DataDecipher.WebApp.Models.CsvParserConfig")
+                        .WithMany("LinkedDataSources")
+                        .HasForeignKey("CsvParserConfigID");
+
                     b.HasOne("DataDecipher.WebApp.Models.DataSource", "Datafile")
                         .WithMany()
                         .HasForeignKey("DatafileId");
@@ -526,6 +579,10 @@ namespace DataDecipher.WebApp.Migrations
 
             modelBuilder.Entity("DataDecipher.WebApp.Models.SharedMethod", b =>
                 {
+                    b.HasOne("DataDecipher.WebApp.Models.CsvParserConfig")
+                        .WithMany("SharedUsers")
+                        .HasForeignKey("CsvParserConfigID");
+
                     b.HasOne("DataDecipher.WebApp.Models.Method", "Method")
                         .WithMany("SharedUsers")
                         .HasForeignKey("MethodId");

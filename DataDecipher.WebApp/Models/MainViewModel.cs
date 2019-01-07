@@ -38,9 +38,9 @@ namespace DataDecipher.WebApp.Models
         //Here are all the properties required for a Parser View
         public string SelectedParserId { get; set; }
 
-        public ParserCsvFile SelectedParser { get; set; }
+        public CsvParserConfig SelectedParser { get; set; }
 
-        public List<ParserCsvFile> AvailableParsers { get; set; }
+        public List<CsvParserConfig> AvailableParsers { get; set; }
 
         //Holds the Parsed Data for the currently selected source data
 

@@ -1,4 +1,4 @@
-@model DataDecipher.WebApp.Models.ParserCsvFile
+@model DataDecipher.WebApp.Models.CsvParserConfig
 
 @{
     ViewData["Title"] = "Delete";
@@ -32,6 +32,30 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RequiredHeader)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastModifiedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastModifiedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
         </dd>
     </dl>
 

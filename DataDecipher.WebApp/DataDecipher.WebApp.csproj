@@ -160,13 +160,12 @@
     <Content Remove="Views\Shared\_ParsedData.cshtml" />
     <Content Remove="TestData\Raw\MPX_XML_JSON.json" />
     <Content Remove="TestData\Raw\Sample_XML.json" />
-    <Content Remove="Views\ParserCsvFile\Create.cshtml" />
-    <Content Remove="Views\ParserCsvFile\Delete.cshtml" />
     <Content Remove="Views\ParserCsvFile\Details.cshtml" />
     <Content Remove="Views\ParserCsvFile\Edit.cshtml" />
     <Content Remove="Views\ParserCsvFile\Index.cshtml" />
     <Content Remove="wwwroot\js\visualization.js" />
     <Content Remove="wwwroot\css\Visualization.css" />
+    <Content Remove="Views\CsvParserConfig\_SelectedCsvParserConfig.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\.DS_Store" />
@@ -272,12 +271,8 @@
     <None Include="Views\ApplicationRoles\Index.cshtml" />
     <None Include="Views\ApplicationUser\Index.cshtml" />
     <None Include="Views\Shared\_ParsedData.cshtml" />
-    <None Include="Views\ParserCsvFile\Create.cshtml" />
-    <None Include="Views\ParserCsvFile\Delete.cshtml" />
-    <None Include="Views\ParserCsvFile\Details.cshtml" />
-    <None Include="Views\ParserCsvFile\Edit.cshtml" />
-    <None Include="Views\ParserCsvFile\Index.cshtml" />
     <None Include="wwwroot\js\visualization.js" />
     <None Include="wwwroot\css\Visualization.css" />
+    <None Include="Views\CsvParserConfig\_SelectedCsvParserConfig.cshtml" />
   </ItemGroup>
 </Project>

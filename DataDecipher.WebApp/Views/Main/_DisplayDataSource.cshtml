@@ -12,25 +12,23 @@
             <span class="text-primary">Contents of the file: @Model.SelectedDataSource.Name</span>
         </div>
         <div class="card-body">
-            <div class="row">
-                <form asp-controller="Main" asp-action="LinkDataSourceToMethod" data-ajax-begin="onLinkDSBegin" data-ajax-complete="onLinkDSComplete"
-                      data-ajax-failure="onLinkDSFailed" data-ajax-success="onLinkDSSuccess"
-                      data-ajax="true" data-ajax-method="POST">
-                    <div class="container-fluid">
-                        <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
-                        <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
-                        <input type="hidden" asp-for="@Model.RawData" id="rawDataFromTheSourceFile"/>
-                        <input type="hidden" asp-for="@Model.ProcessedData" />
-                        <div id="editor" >
-                            <textarea class="form-control border border-black rounded" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.RawData</textarea>
-                        </div>
-                        <br/>
-                        <input class="btn btn-primary" type="submit" value="Process Raw Data" />
-                        <div id="DisplayDSFooter">
-                        </div>
+            <form asp-controller="Main" asp-action="LinkDataSourceToMethod" data-ajax-begin="onLinkDSBegin" data-ajax-complete="onLinkDSComplete"
+                  data-ajax-failure="onLinkDSFailed" data-ajax-success="onLinkDSSuccess"
+                  data-ajax="true" data-ajax-method="POST">
+                <div class="container-fluid">
+                    <input type="hidden" asp-for="@Model.SelectedMethod.Id" />
+                    <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
+                    <input type="hidden" asp-for="@Model.RawData" id="rawDataFromTheSourceFile"/>
+                    <input type="hidden" asp-for="@Model.ProcessedData" />
+                    <div id="editor" >
+                        <textarea class="form-control border border-black rounded" rows="15" cols="150" id="textboxRawDataToBeDIsplayed">@Model.RawData</textarea>
                     </div>
-                </form>
-            </div>
+                    <br/>
+                    <input class="btn btn-primary" type="submit" value="Process Raw Data" />
+                    <div id="DisplayDSFooter">
+                    </div>
+                </div>
+            </form>
         </div>
      </div>
 </div>

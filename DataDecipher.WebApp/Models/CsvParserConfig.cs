@@ -6,23 +6,34 @@ using DataDecipher.WebApp.Data;
 
 namespace DataDecipher.WebApp.Models
 {
-    public class Method
+    public class CsvParserConfig
     {
-        public string Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string ID { get; set; }
 
-        [Display(Name = "Method name")]
         [Required(ErrorMessage = "Please provide a name")]
+        [Display(Name = "Parser Name")]
         public string Name { get; set; }
 
-        [Display(Name = "Method description")]
-        public string Description { get; set; }
+        [Display(Name = "Parser Details")]
+        public string Details { get; set; }
+
+        [Required(ErrorMessage = "Please provide a delimiter")]
+        public char Delimiter { get; set; }
+
+        [Required(ErrorMessage = "Please provide a one or more header column name(s)")]
+        [Display(Name = "Header Column Names")]
+        public string RequiredHeader { get; set; }
 
         [Display(Name = "Created by")]
         public ApplicationUser CreatedBy { get; set; }
 
+        [Required]
         [Display(Name = "Created date")]
         public DateTime CreatedDate { get; set; }
 
+        [Required]
         [Display(Name = "Last modified date")]
         public DateTime LastModifiedDate { get; set; }
 
@@ -35,8 +46,5 @@ namespace DataDecipher.WebApp.Models
 
         [NotMapped]
         public List<ApplicationUser> AvailableUsers { get; set; }
-
     }
-
-
 }
