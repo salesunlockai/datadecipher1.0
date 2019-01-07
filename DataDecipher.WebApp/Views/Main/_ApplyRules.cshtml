@@ -7,6 +7,6 @@
     </div>
 </div>
 <div id="InitMethod" class="card-deck">
-    @await Html.PartialAsync("~/Views/DataProcessingRules/_ApplyExistingProcessingRule.cshtml", Model)
     @await Html.PartialAsync("~/Views/DataProcessingRules/_CreateAndOrSaveNewProcessingRule.cshtml", Model)
+    @await Html.PartialAsync("~/Views/DataProcessingRules/_ApplyExistingProcessingRule.cshtml", Model)
 </div>

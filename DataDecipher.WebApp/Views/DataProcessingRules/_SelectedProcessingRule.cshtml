@@ -7,7 +7,7 @@
     <input type="hidden" asp-for="@Model.SelectedDataSourceName" />
     <input type="hidden" asp-for="@Model.RawData" />
     <input type="hidden" asp-for="@Model.ProcessedData" />
-    
+
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="@Model.SelectedDataProcessingRule.Description" class="badge badge-default-noborder"></label>
@@ -15,12 +15,16 @@
     </div>
     <div class="form-group">
         <label asp-for="@Model.SelectedDataProcessingRule.MatchCondition" class="badge badge-default-noborder"></label>
-        <input asp-for="@Model.SelectedDataProcessingRule.MatchCondition" placeholder="Specify your match condition here" class="form-control" readonly/>
+        <input asp-for="@Model.SelectedDataProcessingRule.MatchCondition" placeholder="Specify your match condition here" class="form-control" readonly />
         <span asp-validation-for="@Model.SelectedDataProcessingRule.MatchCondition" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" class="badge badge-default-noborder"></label>
-        <input asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" placeholder="Mention the phrase that will replace match condition" class="form-control" readonly/>
+        <input asp-for="@Model.SelectedDataProcessingRule.ReplaceWith" placeholder="Mention the phrase that will replace match condition" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <input id="isEditExistingProcessingRule" name="isEditExistingProcessingRule" value="true" type="checkbox" />
+        <label for="isEditExistingProcessingRule" class="badge badge-default-noborder">Edit Data Processing Rule</label>
     </div>
     <div class="col">
         <input class="btn btn-primary" type="submit" value="Apply" />
