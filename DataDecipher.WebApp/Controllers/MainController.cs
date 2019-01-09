@@ -116,37 +116,44 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> SelectDataSource(MainViewModel main)
         {
+            try
+            {
 
-            string fileName = main.SelectedDataSourceName.Split('/').Last();
+                string fileName = main.SelectedDataSourceName.Split('/').Last();
 
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration.GetConnectionString("StorageConnectionString"));
 
-            // Create a CloudFileClient object for credentialed access to Azure Files.
-            CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+                // Create a CloudFileClient object for credentialed access to Azure Files.
+                CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
 
-            // Get a reference to the file share we created previously.
-            CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
+                // Get a reference to the file share we created previously.
+                CloudFileShare cloudFileShare = fileClient.GetShareReference(GetCurrentUserAsync().Result.Id);
 
-            await cloudFileShare.CreateIfNotExistsAsync();
+                await cloudFileShare.CreateIfNotExistsAsync();
 
-            CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
+                CloudFileDirectory cloudFileDirectory = cloudFileShare.GetRootDirectoryReference();
 
-            CloudFile cloudFile = cloudFileDirectory.GetFileReference(fileName);
+                CloudFile cloudFile = cloudFileDirectory.GetFileReference(fileName);
 
-            MemoryStream stream = new MemoryStream();
+                MemoryStream stream = new MemoryStream();
 
-            await cloudFile.DownloadToStreamAsync(stream);
+                await cloudFile.DownloadToStreamAsync(stream);
 
-            stream.Position = 0;
+                stream.Position = 0;
 
-            StreamReader reader = new StreamReader(stream);
+                StreamReader reader = new StreamReader(stream);
 
-            main.RawData = reader.ReadToEnd();
+                main.RawData = reader.ReadToEnd();
 
-            //Copied raw data to processed data in case user skips the pre-processing/cleansing step
-            main.ProcessedData = main.RawData;
+                //Copied raw data to processed data in case user skips the pre-processing/cleansing step
+                main.ProcessedData = main.RawData;
 
-            return PartialView("_DisplayDataSource", main);
+                return PartialView("_DisplayDataSource", main);
+            }
+            catch(Exception e)
+            {
+                return PartialView("_GeneralError",e);
+            }
 
         }
 
