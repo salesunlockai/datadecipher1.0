@@ -270,8 +270,9 @@ namespace DataDecipher.WebApp.Controllers
         /// <param name="main">Main.</param>
         /// 
         [HttpPost]
-        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRuleId, string ProcessedDataInProcessingRule)
+        public ActionResult LoadSelectedProcessingRule(MainViewModel main, string SelectedProcessingRuleId, string ProcessedDataInProcessingRule, string SelectedDataSourceNameInProcessingRule)
         {
+            main.SelectedDataSourceName = SelectedDataSourceNameInProcessingRule;
             main.ProcessedData = ProcessedDataInProcessingRule;
             main.SelectedDataProcessingRule = _context.DataProcessingRule.Where(pr => pr.Id == SelectedProcessingRuleId).First();
             return PartialView("~/Views/DataProcessingRules/_SelectedProcessingRule.cshtml", main);
@@ -312,11 +313,18 @@ namespace DataDecipher.WebApp.Controllers
         [HttpPost]
         public ActionResult DisplayParserConfiguration(MainViewModel main, string textboxProcessedDataToBeDisplayed, string SelectedDataSourceNameInDisplayProcessedData)
         {
-            main.SelectedParser = new CsvParserConfig();
-            main.AvailableParsers = _context.CsvParserConfigs.ToList();
-            main.ProcessedData = textboxProcessedDataToBeDisplayed;
+            try {
+                main.SelectedParser = new CsvParserConfig();
+                main.AvailableParsers = _context.CsvParserConfigs.ToList();
+                main.ProcessedData = textboxProcessedDataToBeDisplayed;
+                main.SelectedDataSourceName = SelectedDataSourceNameInDisplayProcessedData;
 
-            return PartialView("~/Views/Main/_SetParser.cshtml", main);
+                return PartialView("~/Views/Main/_SetParser.cshtml", main);
+            }
+            catch (Exception e)
+            {
+                return PartialView("_GeneralError", e);
+            }
         }
 
         [HttpPost]
@@ -326,6 +334,24 @@ namespace DataDecipher.WebApp.Controllers
             main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
             main.SelectedParser = _context.CsvParserConfigs.Where(parser => parser.ID == SelectedParserId).First();
             return PartialView("~/Views/CsvParserConfig/_SelectedCsvParserConfig.cshtml", main);
+        }
+
+        [HttpPost]
+        public ActionResult LoadSelectedXmlParser(string SelectedParserId, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
+        {
+            main.ProcessedData = ProcessedDataInSetParser;
+            main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
+            //main.SelectedParser = _context.XmlParserConfigs.Where(parser => parser.ID == SelectedParserId).First();
+            return PartialView("~/Views/CsvParserConfig/_SelectedXmlParserConfig.cshtml", main);
+        }
+
+        [HttpPost]
+        public ActionResult LoadSelectedTxtParser(string SelectedParserId, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
+        {
+            main.ProcessedData = ProcessedDataInSetParser;
+            main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
+            //main.SelectedParser = _context.TxtParserConfigs.Where(parser => parser.ID == SelectedParserId).First();
+            return PartialView("~/Views/CsvParserConfig/_SelectedTxtParserConfig.cshtml", main);
         }
 
 

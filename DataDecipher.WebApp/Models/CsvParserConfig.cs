@@ -20,9 +20,10 @@ namespace DataDecipher.WebApp.Models
         public string Details { get; set; }
 
         [Required(ErrorMessage = "Please provide a delimiter")]
+        [Display(Name = "Delimiter")]
         public char Delimiter { get; set; }
 
-        [Required(ErrorMessage = "Please provide a one or more header column name(s)")]
+        [Required(ErrorMessage = "Please provide one or more header column name(s)")]
         [Display(Name = "Header Column Names")]
         public string RequiredHeader { get; set; }
 

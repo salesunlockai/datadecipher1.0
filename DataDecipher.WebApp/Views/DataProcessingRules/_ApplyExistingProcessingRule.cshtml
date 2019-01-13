@@ -23,9 +23,8 @@
 </div>
 
 <script type="text/javascript">
-
-    function ProcessingRuleIsSelectedRulesList(){
-        selectDataSourceNameInSetParser = document.getElementById("selectedDataSourceNameInProcessingRule").value;
+function ProcessingRuleIsSelectedRulesList(){
+        selectDataSourceNameInSetProcessiongRule= document.getElementById("selectedDataSourceNameInProcessingRule").value;
         processedDataInProcessingRule = document.getElementById("selectedProcessedDataInProcessingRule").value;
         selectedProcessingRuleId = document.getElementById("selectedProcessingRuleName").value;
         $.ajax({
@@ -33,12 +32,10 @@
             type: 'POST',
             datatype: 'text',
             contentType: 'application/x-www-form-urlencoded',
-            data: { SelectedProcessingRuleId: selectedProcessingRuleId, ProcessedDataInProcessingRule: processedDataInProcessingRule },
+            data: { SelectedProcessingRuleId: selectedProcessingRuleId, ProcessedDataInProcessingRule: processedDataInProcessingRule, SelectedDataSourceNameInProcessingRule: selectDataSourceNameInSetProcessiongRule },
             success: function(content) {
                 $('#SelectedProcessingRuleConfiguration').html(content);
             },
             error: function(e) { }
         });
-    }
-    
-</script>
+    }</script>

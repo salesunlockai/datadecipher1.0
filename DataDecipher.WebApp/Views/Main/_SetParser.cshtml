@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-header">
             <span class="text-primary">
-                Load an existing CSV Parser
+                Load an existing parser
             </span>
             <input type="hidden" id="SelectedDataSourceNameInSetParser" asp-for=@Model.SelectedDataSourceName />
             <input type="hidden" id="ProcessedDataInSetParser" asp-for=@Model.ProcessedData />
@@ -25,7 +25,6 @@
                 </div>
             </div>
             <div id="SelectedParserConfiguration">
-                @await Html.PartialAsync("~/Views/CsvParserConfig/_SelectedCsvParserConfig.cshtml", Model)
             </div>
         </div>
     </div>
@@ -37,7 +36,10 @@
         selectedParserId = document.getElementById("selectedParserName").value;
         selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
         processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;
-        $.ajax({
+        var fileExtension = selectDataSourceNameInSetParser.replace(/^.*\./, '');
+        switch (fileExtension) {
+            case 'csv':
+                $.ajax({
                     url: '/Main/LoadSelectedCsvParser',
                     type: 'POST',
                     datatype: 'text',
@@ -48,72 +50,33 @@
                     },
                     error: function(e) { }
                 });
+                break;
+            case 'xml':
+                $.ajax({
+                    url: '/Main/LoadSelectedXmlParser',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { SelectedParserId: selectedParserId, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
+                    success: function(content) {
+                        $('#SelectedParserConfiguration').html(content);
+                    },
+                    error: function(e) { }
+                });
+                break;
+            case 'txt': case 'dat': default:
+                $.ajax({
+                    url: '/Main/LoadSelectedXmlParser',
+                    type: 'POST',
+                    datatype: 'text',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { SelectedParserId: selectedParserId, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
+                    success: function(content) {
+                        $('#SelectedParserConfiguration').html(content);
+                    },
+                    error: function(e) { }
+                });
+        }
     }
-
-@*document.getElementById("ShowingExistingParsers").onchange=function(){
-    $('#inputSelectedFile').val(sel.options[sel.selectedIndex].text);
-    selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
-    processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;
-    selectedParserName = this.options[this.selectedIndex].text;
-    $.ajax({
-                url: '/Main/LoadSelectedCsvParser',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { SelectedParser: selectedParserName, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
-                success: function(content) {
-                    $('#SelectedParserConfiguration').html(content);
-                },
-                error: function(e) { }
-            });*@
-
-    @*selectedDataFileName = $('#inputSelectedFile').val;
-
-    fileExtension = $('#inputSelectedFile').val.replace(/^.*\./, '');
-    alert(selectedParserName + " for filename " + fileExtension);*@
-    @*switch (fileExtension) {
-        case 'txt': case 'dat':
-            $.ajax({
-                url: '/Main/LoadSelectedTxtParser',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { SelectecParser: selectedParserName },
-                success: function(content) {
-                    $('#SelectedParserConfiguration').html(content);
-                },
-                error: function(e) { }
-            });
-            break;
-        case 'csv':
-            $.ajax({
-                url: '/Main/LoadSelectedCsvParser',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { SelectecParser: selectedParserName },
-                success: function(content) {
-                    $('#SelectedParserConfiguration').html(content);
-                },
-                error: function(e) { }
-            });
-            break;
-        case 'xml':
-            $.ajax({
-                url: '/Main/LoadSelectedXmlParser',
-                type: 'POST',
-                datatype: 'text',
-                contentType: 'application/x-www-form-urlencoded',
-                data: { SelectecParser: selectedParserName },
-                success: function(content) {
-                    $('#SelectedParserConfiguration').html(content);
-                },
-                error: function(e) { }
-            });
-            break;
-        default:
-            x.innerhtml = 'none';
-    }*@
-@*}*@
 
 </script>
