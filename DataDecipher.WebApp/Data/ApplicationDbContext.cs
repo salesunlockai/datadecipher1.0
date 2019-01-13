@@ -35,6 +35,8 @@ namespace DataDecipher.WebApp.Data
 
         public DbSet<DataDecipher.WebApp.Models.DataProcessingRule> DataProcessingRule { get; set; }
         public DbSet<CsvParserConfig> CsvParserConfigs { get; set; }
+        public DbSet<XmlParserConfig> XmlParserConfigs { get; set; }
+        public DbSet<TxtParserConfig> TxtParserConfigs { get; set; }
 
 
     }
