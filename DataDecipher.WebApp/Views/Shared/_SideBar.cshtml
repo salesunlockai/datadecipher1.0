@@ -28,16 +28,16 @@
                 <a href="#" onclick="ToggleParserCollapse()">Parser</a>
                 <ul id="collapseParsers" style="list-style: none; display:none;">
                     <li>
-                        <a asp-controller="ParserDatFiles" asp-action="Index">DAT</a>
+                        <a asp-controller="CsvParserConfig" asp-action="Index">CSV</a>
+                    </li>
+                    <li>
+                        <a asp-controller="ParserXmlFiles" asp-action="Index">XML</a>
                     </li>
                     <li>
                         <a asp-controller="ParserTxtFiles" asp-action="Index">TXT</a>
                     </li>
                     <li>
-                        <a asp-controller="CsvParserConfig" asp-action="Index">CSV</a>
-                    </li>
-                    <li>
-                        <a asp-controller="ParserXmlFiles" asp-action="Index">XML</a>
+                        <a asp-controller="ParserTxtFiles" asp-action="Index">DAT</a>
                     </li>
                 </ul>
             </li>
