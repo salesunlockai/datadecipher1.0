@@ -1,0 +1,113 @@
+@model IEnumerable<DataDecipher.WebApp.Models.TxtParserConfig>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecordMarkerStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecordMarkerEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeaderMarkerStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeaderMarkerEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TableMarkerStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TableMarkerEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeaderFields)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TableFields)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Delimiter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastModifiedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Details)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecordMarkerStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecordMarkerEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HeaderMarkerStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HeaderMarkerEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TableMarkerStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TableMarkerEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HeaderFields)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TableFields)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Delimiter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastModifiedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
