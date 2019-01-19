@@ -1,82 +1,11 @@
 ﻿@model DataDecipher.WebApp.Models.MainViewModel
 <div class="row>">
-    <div class="col-md-12">
+    <div class="col-md-8">
         <h6>Set your parser configuration</h6>
         <br />
     </div>
 </div>
-<div class="card-deck">
-    <div class="card">
-        <div class="card-header">
-            <span class="text-primary">
-                Load an existing parser
-            </span>
-            <input type="hidden" id="SelectedDataSourceNameInSetParser" asp-for=@Model.SelectedDataSourceName />
-            <input type="hidden" id="ProcessedDataInSetParser" asp-for=@Model.ProcessedData />
-        </div>
-        <div class="card-body">
-            <div class="container-fluid">
-                <div class="row>">
-                    <div class="col>">
-                        <div class="form-group">
-                            @Html.DropDownListFor(s => s.AvailableParsers, new SelectList(Model.AvailableParsers, "ID", "Name"), "Select a parser", new { @class = "form-control", onchange = "ParserIsSelectedFromParserList(this.value)", id = "selectedParserName" })
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="SelectedParserConfiguration">
-            </div>
-        </div>
-    </div>
+<div id="InitParser" class="card-deck">
+    @await Html.PartialAsync("~/Views/CsvParserConfig/_CreateAndOrSaveNewCsvParserConfig.cshtml", Model)
+    @await Html.PartialAsync("~/Views/CsvParserConfig/_ApplyExistingCsvParserConfig.cshtml", Model)
 </div>
-
-<script type="text/javascript">
-
-    function ParserIsSelectedFromParserList(){
-        selectedParserId = document.getElementById("selectedParserName").value;
-        selectDataSourceNameInSetParser = document.getElementById("SelectedDataSourceNameInSetParser").value;
-        processedDataInSetParser = document.getElementById("ProcessedDataInSetParser").value;
-        var fileExtension = selectDataSourceNameInSetParser.replace(/^.*\./, '');
-        switch (fileExtension) {
-            case 'csv':
-                $.ajax({
-                    url: '/Main/LoadSelectedCsvParser',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { SelectedParserId: selectedParserId, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
-                    success: function(content) {
-                        $('#SelectedParserConfiguration').html(content);
-                    },
-                    error: function(e) { }
-                });
-                break;
-            case 'xml':
-                $.ajax({
-                    url: '/Main/LoadSelectedXmlParser',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { SelectedParserId: selectedParserId, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
-                    success: function(content) {
-                        $('#SelectedParserConfiguration').html(content);
-                    },
-                    error: function(e) { }
-                });
-                break;
-            case 'txt': case 'dat': default:
-                $.ajax({
-                    url: '/Main/LoadSelectedXmlParser',
-                    type: 'POST',
-                    datatype: 'text',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { SelectedParserId: selectedParserId, SelectDataSourceNameInSetParser: selectDataSourceNameInSetParser, ProcessedDataInSetParser: processedDataInSetParser },
-                    success: function(content) {
-                        $('#SelectedParserConfiguration').html(content);
-                    },
-                    error: function(e) { }
-                });
-        }
-    }
-
-</script>

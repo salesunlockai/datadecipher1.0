@@ -328,11 +328,11 @@ namespace DataDecipher.WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult LoadSelectedCsvParser(string SelectedParserId, MainViewModel main, string SelectDataSourceNameInSetParser, string ProcessedDataInSetParser)
+        public ActionResult LoadSelectedCsvParserConfiguration(string selectedParserId, MainViewModel main, string SelectedDataSourceNameInSetParser, string ProcessedDataInSelectedCsvParserConfig)
         {
-            main.ProcessedData = ProcessedDataInSetParser;
-            main.SelectedDataSourceName = SelectDataSourceNameInSetParser;
-            main.SelectedParser = _context.CsvParserConfigs.Where(parser => parser.ID == SelectedParserId).First();
+            main.ProcessedData = ProcessedDataInSelectedCsvParserConfig;
+            main.SelectedDataSourceName = SelectedDataSourceNameInSetParser;
+            main.SelectedParser = _context.CsvParserConfigs.Where(parser => parser.ID == selectedParserId).First();
             return PartialView("~/Views/CsvParserConfig/_SelectedCsvParserConfig.cshtml", main);
         }
 
@@ -368,8 +368,13 @@ namespace DataDecipher.WebApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            main.parsedData = DisplayParsedCsvFile(main.ProcessedData, main.SelectedParser.RequiredHeader, main.SelectedParser.Delimiter.ToString());
+            var processedData = DisplayParsedCsvFile(main.ProcessedData, main.SelectedParser.RequiredHeader, main.SelectedParser.Delimiter.ToString());
 
+            if (processedData == null)
+            {
+                return PartialView("~/Views/Shared/_GeneralError.cshtml");
+            }
+            main.parsedData = processedData;
             return PartialView("~/Views/Main/_ShowParsedData.cshtml", main);
         }
 
@@ -480,35 +485,68 @@ namespace DataDecipher.WebApp.Controllers
                 }
                 parsingRules = parsingRules + "delimiter\":\"" + delimiter + "\"}}";
 
-
-                //REST Call
-                var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
-                var request = new RestRequest();
-                request.Method = RestSharp.Method.POST;
-                request.JsonSerializer.ContentType = "multipart/form-data";
-                request.Parameters.Clear();
-                string inputSelectedFile = "TestData/Raw/SampleClean.csv";
-                string inputSelectedFileData1 = System.IO.File.ReadAllText(inputSelectedFile);
-                //request.AddFile("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
-                request.AddParameter("ParsingFile", inputSelectedFileData); // adds to POST or URL querystring based on Method
-                request.AddParameter("ParsingRules", parsingRules);
-                IRestResponse response = client.Execute(request);
-
-                //Extract the results from the JSON
-                dynamic parserResponse = JValue.Parse(response.Content);
-                string returnStatus = parserResponse.Return_Status;
-                string parsingStatus = parserResponse.Parsing_Status;
-                string recordCount = parserResponse.Record_count;
-                string parsedDataFromJson = parserResponse.outputFile;
-                if (returnStatus == 200.ToString())
+                //Custom CSV Parser
+                DataTable objDataTable = new DataTable();
+                //const string fileName = "TestData/Raw/citiesClean.csv";
+                //model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
+                byte[] byteArray = Encoding.ASCII.GetBytes(inputSelectedFileData);
+                MemoryStream stream = new MemoryStream(byteArray);
+                //using (var stream = System.IO.File.OpenRead(fileName))
+                using (var reader = new StreamReader(stream))
                 {
-                    model1.parsedData = parsedDataFromJson; // raw content as string
-                    model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
-                    model1.parsedDataAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(model1.parsedDataTable, Newtonsoft.Json.Formatting.Indented);
-                    //model1.parsedDataAsJson = DataTableToJSONWithStringBuilder(model1.parsedDataTable);
-                    return model1;
+                    var data = CsvParser.ParseHeadAndTail(reader, delimiter[0], '"');
+
+                    var header = data.Item1;
+                    var lines = data.Item2;
+
+                    foreach(var columnName in header)
+                    {
+                        objDataTable.Columns.Add(columnName);
+                    }
+
+                    foreach (var line in lines)
+                    {
+                        DataRow dataRow = objDataTable.NewRow();
+                        for (var i = 0; i < header.Count; i++)
+                            if (!string.IsNullOrEmpty(line[i]))
+                                dataRow[header[i]] = line[i];
+                                //Console.WriteLine("{0}={1}", header[i], line[i]);
+                        objDataTable.Rows.Add(dataRow);
+                        //Console.WriteLine();
+                        //parsedDataFromJson = parsedDataFromJson + line;
+                    }
                 }
-                else return null;
+                model1.parsedDataTable = objDataTable;
+                return model1;
+
+                ////REST Call
+                //var client = new RestClient("https://fileparserapp-new.appspot.com/FileParser/CSV");
+                //var request = new RestRequest();
+                //request.Method = RestSharp.Method.POST;
+                //request.JsonSerializer.ContentType = "multipart/form-data";
+                //request.Parameters.Clear();
+                ////string inputSelectedFile = "TestData/Raw/SampleClean.csv";
+                ////string inputSelectedFileData1 = System.IO.File.ReadAllText(inputSelectedFile);
+                ////request.AddFile("ParsingFile", inputSelectedFile); // adds to POST or URL querystring based on Method
+                //request.AddParameter("ParsingFile", inputSelectedFileData); // adds to POST or URL querystring based on Method
+                //request.AddParameter("ParsingRules", parsingRules);
+                //IRestResponse response = client.Execute(request);
+
+                ////Extract the results from the JSON
+                //dynamic parserResponse = JValue.Parse(response.Content);
+                //string returnStatus = parserResponse.Return_Status;
+                //string parsingStatus = parserResponse.Parsing_Status;
+                //string recordCount = parserResponse.Record_count;
+                //string parsedDataFromJson = parserResponse.outputFile;
+                //if (returnStatus == 200.ToString())
+                //{
+                //model1.parsedData = parsedDataFromJson; // raw content as string
+                //    model1.parsedDataTable = GetParsedDataTable(model1.parsedData, delimiter);
+                //    model1.parsedDataAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(model1.parsedDataTable, Newtonsoft.Json.Formatting.Indented);
+                //    //model1.parsedDataAsJson = DataTableToJSONWithStringBuilder(model1.parsedDataTable);
+                //    return model1;
+                //}
+                //else return null;
             }
             else return null;
         }

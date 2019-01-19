@@ -65,7 +65,7 @@ namespace DataDecipher.WebApp.Models
         [Display(Name = "Status")]
         public string Status { get; set; }
 
-        public ICollection<SharedMethod> SharedUsers { get; set; }
+        //public ICollection<SharedMethod> SharedUsers { get; set; }
 
         public ICollection<MethodDataSource> LinkedDataSources { get; set; }
 

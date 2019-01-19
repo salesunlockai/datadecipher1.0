@@ -1,0 +1,40 @@
+﻿@model DataDecipher.WebApp.Models.MainViewModel
+<div class="card">
+    <div class="card-header">
+        <span class="text-primary">
+            Load an existing parser configuration
+        </span>
+        <input type="hidden" id="SelectedDataSourceNameInSetParser" asp-for=@Model.SelectedDataSourceName />
+        <input type="hidden" id="ProcessedDataInCsvParserConfig" asp-for=@Model.ProcessedData />
+    </div>
+    <div class="card-body">
+        <div class="container-fluid">
+            <div class="form-group">
+                <label asp-for="@Model.SelectedParser.Name" class="badge badge-default-noborder"></label>
+                @Html.DropDownListFor(s => s.AvailableParsers, new SelectList(Model.AvailableParsers, "ID", "Name"), "Select a parser", new { @class = "form-control", onchange = "CsvParserConfigIsSelected(this.value)", id = "SelectedParserName" })
+            </div>
+            <div id="SelectedCsvParserConfiguration" class="form-group">
+                @await Html.PartialAsync("~/Views/CsvParserConfig/_SelectedCsvParserConfig.cshtml", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function CsvParserConfigIsSelected(){
+        selectedDataSourceNameInSetParser= document.getElementById("SelectedDataSourceNameInSetParser").value;
+        processedDataInSelectedCsvParserConfig = document.getElementById("ProcessedDataInCsvParserConfig").value;
+        selectedParserId = document.getElementById("SelectedParserName").value;
+        $.ajax({
+            url: '/Main/LoadSelectedCsvParserConfiguration',
+            type: 'POST',
+            datatype: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { selectedParserId: selectedParserId, ProcessedDataInSelectedCsvParserConfig: processedDataInSelectedCsvParserConfig, SelectedDataSourceNameInSetParser: selectedDataSourceNameInSetParser },
+            success: function(content) {
+                $('#SelectedCsvParserConfiguration').html(content);
+            },
+            error: function(e) { }
+        });
+    }
+</script>
