@@ -1,0 +1,77 @@
+﻿<div class="row>">
+    <div class="col-md-12">
+        <h6>Create Visualizations</h6>
+        <br />
+    </div>
+</div>
+<div class="card-deck">
+    <div class="card">
+        <div class="card-header">
+            <span class="text-primary">Visualize Parsed Data</span>
+        </div>
+        <div class="card-body">
+            <div id="row">
+                <label class="badge badge-default-noborder">
+                    X-Axis Data Field:
+                    <input type="text" id="xAxisDataFieldForLineChart" placeholder="Select X-Axis Data Field" class="form-control" />
+                </label>
+                <label class="badge badge-default-noborder">
+                    Y-Axis Data Field:
+                    <input type="text" id="yAxisDataFieldForLineChart" placeholder="Select Y-Axis Data Field" class="form-control" />
+                </label>
+                <input type="button" id="showLineChart" onclick="DisplayLineChart(@ViewBag.ParsedDataInJsonFormat);" value="Create Line Chart" class="btn btn-primary btn-round" />
+                <input type="button" id="showScatterPlot" onclick="DisplayScatterPlot(@ViewBag.ParsedDataInJsonFormat);" value="Create Scatter Plot" class="btn btn-primary btn-round" />
+                @*<input type="button" id="showBarChart" onclick="DisplayBarChart(@ViewBag.ParsedDataInJsonFormat);" value="Create Bar Chart" class="btn btn-primary btn-round" />*@
+                @*<input type="button" id="showHorizontalBarChart" onclick="DisplayHorizontalBarChart(@ViewBag.ParsedDataInJsonFormat);" value="Create Horizontal Bar Chart" class="btn btn-primary btn-round" />*@
+                <input type="button" id="showDoughnutChart" onclick="DisplayDoughnutChart(@ViewBag.ParsedDataInJsonFormat);" value="Create Doughtnut Chart" class="btn btn-primary btn-round" />
+                <div id="Visualization" class="form-control">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function DisplayLineChart(dataForViz){
+        deleteLineChart();
+        document.getElementById("Visualization").innerHtml = 'none';
+        xDataField = document.getElementById("xAxisDataFieldForLineChart").value;
+        yDataField = document.getElementById("yAxisDataFieldForLineChart").value;
+        createLineChart(dataForViz, xDataField, yDataField);
+    }
+
+    function DisplayScatterPlot(dataForViz){
+        deleteLineChart();
+        document.getElementById("Visualization").innerHtml = 'none';
+        xDataField = document.getElementById("xAxisDataFieldForLineChart").value;
+        yDataField = document.getElementById("yAxisDataFieldForLineChart").value;
+        createScatterPlot(dataForViz, xDataField, yDataField);
+    }
+
+    function DisplayBarChart(dataForViz){
+        deleteLineChart();
+        document.getElementById("Visualization").innerHtml = 'none';
+        xDataField = document.getElementById("xAxisDataFieldForLineChart").value;
+        yDataField = document.getElementById("yAxisDataFieldForLineChart").value;
+        createBarChart(dataForViz, xDataField, yDataField);
+    }
+
+    function DisplayHorizontalBarChart(dataForViz){
+        deleteLineChart();
+        document.getElementById("Visualization").innerHtml = 'none';
+        xDataField = document.getElementById("xAxisDataFieldForLineChart").value;
+        yDataField = document.getElementById("yAxisDataFieldForLineChart").value;
+        createHorizontalBarChart(dataForViz, xDataField, yDataField);
+    }
+
+    function DisplayDoughnutChart(dataForViz){
+        deleteLineChart();
+        document.getElementById("Visualization").innerHtml = 'none';
+        xDataField = document.getElementById("xAxisDataFieldForLineChart").value;
+        yDataField = document.getElementById("yAxisDataFieldForLineChart").value;
+        Create_Doughnut_Chart(dataForViz, xDataField, yDataField);
+    }
+
+</script>

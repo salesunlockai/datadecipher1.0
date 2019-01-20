@@ -355,7 +355,7 @@ namespace DataDecipher.WebApp.Controllers
         }
 
 
-        ////This method is used to create a new parser in case user enters 
+        //This method is used to create a new parser in case user enters 
         [HttpPost]
         public async Task<IActionResult> RunNewCsvParser(MainViewModel main, CsvParserConfig parserCsvFile, string ProcessedDataInSelectedCsvParserConfig, bool isCheckedSaveParser = false)
         {
@@ -376,6 +376,24 @@ namespace DataDecipher.WebApp.Controllers
             }
             main.parsedData = processedData;
             return PartialView("~/Views/Main/_ShowParsedData.cshtml", main);
+        }
+
+        //This method is used to create a new parser in case user enters 
+        [HttpPost]
+        public ActionResult LoadVisualizationPanel(MainViewModel main, string ParsedDataInJsonFormat)
+        {
+            if (ParsedDataInJsonFormat == null)
+            {
+                return PartialView("~/Views/Shared/_GeneralError.cshtml");
+            }
+
+            //if (main != null)
+            //{
+            //    main.parsedData.parsedDataAsJson = ParsedDataInJsonFormat;
+            //}
+
+            ViewBag.ParsedDataInJsonFormat = ParsedDataInJsonFormat;
+            return PartialView("~/Views/Main/_CreateDataViz.cshtml");
         }
 
         [HttpPost]

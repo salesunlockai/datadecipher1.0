@@ -39,33 +39,27 @@
     <input type="button" id="btnSaveAsJsonFile" onclick="saveTextAsJsonFile();" value="Download parsed data as JSON" class="btn btn-primary btn-round" />
 </label>
 
-@*<div class="row">
-    <div class="col">
-        <input type="button" id="btnSaveAsJsonFile" onclick="saveTextAsJsonFile();" value="Download parsed data as JSON" class="btn btn-primary btn-round" />
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <label for="outputJsonFileName" class="badge badge-default-noborder">Output JSON Filename (Save as):</label>
-        <input type="text" id="outputJsonFileNameToSaveAs" name="outputJsonFileName" placeholder="File Name" class="form-control" value="ParsedData.json" />
-    </div>
-</div>*@
-
-<div class="row">
-    <div class="col">
-        <div id="ShowVisualization">
-            <input type="button" id="showVisualization" onclick="DisplayLineChart(@Model.parsedDataAsJson,'Testfile','ExtCal');" value="Create Line Chart" class="btn btn-primary btn-round" />
-            <div id="Visualization">
-            </div>
-        </div>
-    </div>
-    <div class="row>">
-        <div id="CreateParsedDataViewFooter">
-        </div>
-    </div>
+<input type="button"
+       id="showVisualization" onclick="CreateVisualizations()" value="Visualize Parsed Data" class="btn btn-primary" />
+<div id="CreateParsedDataViewFooter">
 </div>
 
 <script type="text/javascript">
+
+    function CreateVisualizations(){
+        parsedDataInJsonFormat= document.getElementById("ParsedDataInJsonFormat").value;
+        $.ajax({
+            url: '/Main/LoadVisualizationPanel',
+            type: 'POST',
+            datatype: 'text',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { ParsedDataInJsonFormat: parsedDataInJsonFormat},
+            success: function(content) {
+                $('#CreateVisualization').html(content);
+            },
+            error: function(e) { }
+        });
+    }
 
     var createparserfooter = $("#CreateParsedDataViewFooter");
 
@@ -151,39 +145,6 @@
             document.getElementById("inputTextToSave").value = textFromFileLoaded;
         };
         fileReader.readAsText(fileToLoad, "UTF-8");
-    }
-
-    function DisplayLineChart(dataForViz, xLegend, yLegend){
-        document.getElementById("Visualization").innerHtml = 'none';
-        @*alert("Reached inside");
-        data = [[2,0.000613146],
-        [3,0.099954873],
-        [4,0.498854936],
-        [5,1000577045],
-        [6,0.096932231],
-        [7,0.406946873],
-        [8,0.181319815],
-        [9,0.619612433],
-        [10,0.096932231],
-        [12,0.100958575],
-        [13,0.506799257],
-        [14,0.0139278226],
-        [15,0.931589765616102],
-        [16,0.942221899758503],
-        [17,0.942221895658527],
-        [18,0.1518813892],
-        [19,0.1567747365],
-        [20,0.1366666641],
-        [21,0.502667706],
-        [22,0.000613146],
-        [23,0.099954873],
-        [24,0.498854936],
-        [25,0.498854936],
-        [26,0.000613146],
-        [27,0.100958575],
-        [28,0.406946873],
-        [29,0.5067992666]];*@
-        createLineChart(dataForViz, xLegend, yLegend);
     }
 
 </script>
