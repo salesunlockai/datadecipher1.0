@@ -27,39 +27,40 @@
 <br />
 <input type="hidden" id="ParsedDataInJsonFormat" value="@Model.parsedDataAsJson" />
 
-    <div class="row">
-        <div class="col">
-            <div class="form-group">
-                <label for="outputCsvFileName" class="badge badge-default-noborder">
-                    Output CSV Filename (Save as):
-                    <input type="button" id="btnSaveAsCsvFile" onclick="saveTextAsCsvFile();" value="Download parsed data as CSV" class="btn btn-primary btn-round" />
-                    <input type="text" id="outputCsvFileNameToSaveAs" name="outputCsvFileName" placeholder="File Name" class="form-control" value="ParsedData.csv"/>
-                </label>
+<label for="outputCsvFileName" class="badge badge-default-noborder">
+    Output CSV Filename (Save as):
+    <input type="text" id="outputCsvFileNameToSaveAs" name="outputCsvFileName" placeholder="File Name" class="form-control" value="ParsedData.csv" />
+    <input type="button" id="btnSaveAsCsvFile" onclick="saveTextAsCsvFile();" value="Download parsed data as CSV" class="btn btn-primary btn-round" />
+</label>
+
+<label for="outputJsonFileName" class="badge badge-default-noborder">
+    Output JSON Filename (Save as):
+    <input type="text" id="outputJsonFileNameToSaveAs" name="outputJsonFileName" placeholder="File Name" class="form-control" value="ParsedData.json" />
+    <input type="button" id="btnSaveAsJsonFile" onclick="saveTextAsJsonFile();" value="Download parsed data as JSON" class="btn btn-primary btn-round" />
+</label>
+
+@*<div class="row">
+    <div class="col">
+        <input type="button" id="btnSaveAsJsonFile" onclick="saveTextAsJsonFile();" value="Download parsed data as JSON" class="btn btn-primary btn-round" />
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <label for="outputJsonFileName" class="badge badge-default-noborder">Output JSON Filename (Save as):</label>
+        <input type="text" id="outputJsonFileNameToSaveAs" name="outputJsonFileName" placeholder="File Name" class="form-control" value="ParsedData.json" />
+    </div>
+</div>*@
+
+<div class="row">
+    <div class="col">
+        <div id="ShowVisualization">
+            <input type="button" id="showVisualization" onclick="DisplayLineChart(@Model.parsedDataAsJson,'Testfile','ExtCal');" value="Create Line Chart" class="btn btn-primary btn-round" />
+            <div id="Visualization">
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            <input type="button" id="btnSaveAsJsonFile" onclick="saveTextAsJsonFile();" value="Download parsed data as JSON" class="btn btn-primary btn-round" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label for="outputJsonFileName" class="badge badge-default-noborder">Output JSON Filename (Save as):</label>
-            <input type="text" id="outputJsonFileNameToSaveAs" name="outputJsonFileName" placeholder="File Name" class="form-control" value="ParsedData.json" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div id="ShowVisualization">
-                <input type="button" id="showVisualization" onclick="DisplayLineChart(@Model.parsedDataAsJson,'Testfile','ExtCal');" value="Create Line Chart" class="btn btn-primary btn-round" />
-                <div id="Visualization">
-                </div>
-            </div>
-        </div>
-        <div class="row>">
-            <div id="CreateParsedDataViewFooter">
-            </div>
+    <div class="row>">
+        <div id="CreateParsedDataViewFooter">
         </div>
     </div>
 </div>
@@ -86,10 +87,9 @@
     }
 
     function saveTextAsJsonFile() {
-    var fileNameToSaveAsJson = document.getElementById("outputJsonFileNameToSaveAs").value;
-    var html = document.getElementById("ParsedDataInJsonFormat").value;
-        alert("I am in JSON" + fileNameToSaveAsJson + "..." + html);
-    export_table_to_csv(html, fileNameToSaveAsJson);
+        var fileNameToSaveAsJson = document.getElementById("outputJsonFileNameToSaveAs").value;
+        var html = document.getElementById("ParsedDataInJsonFormat").value;
+        export_table_to_csv(html, fileNameToSaveAsJson);
     }
 
     function download_csv(csv, filename) {

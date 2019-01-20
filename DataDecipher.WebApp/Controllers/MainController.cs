@@ -499,7 +499,7 @@ namespace DataDecipher.WebApp.Controllers
                     var header = data.Item1;
                     var lines = data.Item2;
 
-                    foreach(var columnName in header)
+                    foreach(string columnName in header)
                     {
                         objDataTable.Columns.Add(columnName);
                     }
@@ -517,6 +517,7 @@ namespace DataDecipher.WebApp.Controllers
                     }
                 }
                 model1.parsedDataTable = objDataTable;
+                model1.parsedDataAsJson = Newtonsoft.Json.JsonConvert.SerializeObject(objDataTable, Newtonsoft.Json.Formatting.Indented);
                 return model1;
 
                 ////REST Call
